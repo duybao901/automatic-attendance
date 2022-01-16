@@ -1,3 +1,4 @@
+import { Request } from 'express'
 export interface UserLogin {
     account: string;
     password: string;
@@ -11,6 +12,16 @@ export interface User extends UserRegister {
     avatar: string;
     role: string;
     confirm: boolean;
-    createdAt: string
+    createdAt: string;
     updatedAt: string;
+}
+
+export interface DecodeToken {
+    id: string;
+    iat: number;
+    exp: number;
+}
+
+export interface RequestUser extends Request {
+    user?: User
 }

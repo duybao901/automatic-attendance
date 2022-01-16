@@ -26,3 +26,4 @@ app.listen(PORT, () => {
 
 // Router
 app.use("/api", routers.authRouter);
+app.use("/api", routers.userRouter);

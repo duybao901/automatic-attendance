@@ -1,22 +1,24 @@
-import {Request, Response} from "express";
+import { Request, Response } from "express";
 import Users from "../models/userModel";
 import brycpt from "bcrypt";
+import jwt from "jsonwebtoken";
 import {
     generateAccessToken,
     generateRefreshToken,
 } from "../config/generateToken";
-import {UserLogin, UserRegister} from "../config/interface";
+import { UserLogin, UserRegister, DecodeToken } from "../config/interface";
 
 // Controller
 class AuthController {
+    // Register
     async register(req: Request, res: Response) {
         try {
-            const {name, account, password}: UserRegister = req.body;
+            const { name, account, password }: UserRegister = req.body;
 
-            const user = await Users.findOne({account});
+            const user = await Users.findOne({ account });
 
             if (user)
-                return res.status(400).json({msg: "Account is already exits."});
+                return res.status(400).json({ msg: "Account is already exits." });
 
             const passwordHasd = await brycpt.hash(password, 12);
 
@@ -31,25 +33,33 @@ class AuthController {
                 msg: "Register success! Please, Wait admin confirm.",
             });
         } catch (error: any) {
-            return res.status(500).json({msg: error.message});
+            return res.status(500).json({ msg: error.message });
         }
     }
+
+    // Login
     async login(req: Request, res: Response) {
         try {
-            const {account, password}: UserLogin = req.body;
+            const { account, password }: UserLogin = req.body;
 
-            const user = await Users.findOne({account});
+            const user = await Users.findOne({ account });
 
+            // Find user
             if (!user)
-                return res.status(400).json({msg: "Account is not exits."});
+                return res.status(400).json({ msg: "Account is not exits." });
 
+            // Compare password
             const isMatch = await brycpt.compare(password, user.password);
-
             if (!isMatch)
-                return res.status(400).json({msg: "Password is incorrect."});
+                return res.status(400).json({ msg: "Password is incorrect." });
 
-            const access_token = generateAccessToken({id: user._id});
-            const refresh_token = generateRefreshToken({id: user._id});
+            // Check account is confirm
+            if (!user.confirm) {
+                return res.status(400).json({ msg: "Account not approved." })
+            }
+
+            const access_token = generateAccessToken({ id: user._id });
+            const refresh_token = generateRefreshToken({ id: user._id });
 
             //  SET COOKIE
             res.cookie("refreshToken", refresh_token, {
@@ -64,15 +74,33 @@ class AuthController {
                 access_token,
             });
         } catch (error: any) {
-            return res.status(500).json({msg: error.message});
+            return res.status(500).json({ msg: error.message });
         }
     }
+
+    // Refresh Token -> {User, Access Token}
     async refreshToken(req: Request, res: Response) {
         try {
             const refreshToken = req.cookies.refreshToken;
-            return res.json({refreshToken});
+            if (!refreshToken)
+                return res.status(400).json({ msg: "Please login now." });
+
+            const decode = await <DecodeToken>jwt.verify(refreshToken, `${process.env.REFRESH_TOKEN_SECRET}`);
+
+            if (!decode) return res.status(400).json({ msg: "Please login now." });
+
+
+            const user = await Users.findById(decode.id);
+            if (!user) return res.status(400).json({ msg: "This account is not exist." })
+
+            const access_token = generateAccessToken({ id: user._id });
+            return res.json({
+                data: user,
+                access_token
+            })
+
         } catch (error: any) {
-            return res.status(500).json({msg: error.message});
+            return res.status(500).json({ msg: error.message });
         }
     }
 }
