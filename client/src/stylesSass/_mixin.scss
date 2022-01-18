@@ -1,0 +1,22 @@
+@mixin inputStyle {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 6px;
+    padding: 0 16px;
+    border: 1px solid $border-color;
+    font-size: 1.6rem;
+    &:focus-visible {
+        border-color: $color-primary;
+        outline: none;
+    }
+    &.danger{
+        border-color: $color-dander;
+    }
+}
+@mixin labelStyle {
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+    line-height: 1.8rem;
+    font-weight: 500;
+    color: $color-text;
+}

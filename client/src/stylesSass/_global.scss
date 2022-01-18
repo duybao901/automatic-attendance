@@ -1,0 +1,69 @@
+@import "./variables";
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+html {
+    font-size: 62.5%;
+    color: $color-text;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+        "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    max-width: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+#root {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.btn-primary {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    color: $color-white;
+    border-radius: 20px;
+    background-color: $color-primary;
+    border: none;
+    outline: none;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.1s linear;
+    &:hover {
+        background-color: $color-primary-dark;
+    }
+}
+
+.btn-circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    color: $color-text-hint;
+    font-size: 2.4rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.1s linear;
+    &:hover {
+        background-color: $color-text-hint-hover;
+    }
+    &:active {
+        background-color: $color-text-hint-hover-active;
+    }
+}
