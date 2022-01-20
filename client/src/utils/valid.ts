@@ -1,36 +1,55 @@
-import { UserRegister } from "../utils/interface"
+import { UserRegister, UserLogin } from "../utils/interface"
 export const validRegister = (userRegister: UserRegister) => {
     const errors: any = {};
 
-    if (userRegister.name === "") {
+    const { name, account, password, cfPassword } = userRegister;
+
+    if (!name) {
         errors.errorName = "Name is required"
     } else {
-        if (userRegister.name.length > 50) {
+        if (name.length > 50) {
             errors.errorName = "Your name is up to 50 chars long."
         }
     }
 
-    if (userRegister.account === "") {
+    if (!account) {
         errors.errorAccount = 'Account is required'
-    } else if (!validEmail(userRegister.account)) {
+    } else if (!validEmail(account)) {
         errors.errorAccount = "Email format is incorrect."
     }
 
-    if (userRegister.password === "") {
+    if (!password) {
         errors.errorPassword = 'Password is required'
     } else {
-        if (userRegister.password.trim().length < 6) {
+        if (password.trim().length < 6) {
             errors.errorPassword = "Password is at least 6 characters"
         }
     }
 
-    if (userRegister.cfPassword === "") {
+    if (!cfPassword) {
         errors.errorCfPassword = 'Confirm password is required'
     }
 
-    if (userRegister.password !== userRegister.cfPassword) {
+    if (password !== cfPassword) {
         errors.errorPasswordMatch = "Password not match"
     }
+    return errors;
+}
+
+export const validLogin = (userLogin: UserLogin) => {
+    const errors: any = {};
+
+    const { account, password } = userLogin
+
+    if (!account) {
+        errors.errorAccount = 'Account is required'
+    } else if (!validEmail(account)) {
+        errors.errorAccount = "Email format is incorrect."
+    }
+
+    if (!password) {
+        errors.errorPassword = 'Password is required'
+    } 
     return errors;
 }
 

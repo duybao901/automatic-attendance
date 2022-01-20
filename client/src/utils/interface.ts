@@ -1,8 +1,10 @@
 import { ChangeEvent } from 'react'
+import rootReducer from '../store/reducers/index'
 
 export type InputChange = ChangeEvent<HTMLInputElement>
 export type FormSubmit = ChangeEvent<HTMLFormElement>
 
+export type RootReducer = ReturnType<typeof rootReducer>;
 export interface Params {
     page: string
     slug: string
@@ -13,8 +15,8 @@ export interface UserLogin {
     password: string;
 }
 export interface UserRegister extends UserLogin {
-    name: string;
-    cfPassword: string
+    name?: string;
+    cfPassword?: string
 }
 
 export interface User extends UserRegister {
@@ -26,10 +28,10 @@ export interface User extends UserRegister {
     updatedAt: string;
 }
 
-export interface UserRegisterErrors {
-    errorName: string
+export interface UserAuthErrors {
+    errorName?: string
     errorAccount: string
     errorPassword: string
-    errorCfPassword: string
-    errorPasswordMatch: string
+    errorCfPassword?: string
+    errorPasswordMatch?: string
 }

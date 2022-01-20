@@ -9,7 +9,7 @@
         border-color: $color-primary;
         outline: none;
     }
-    &.danger{
+    &.danger {
         border-color: $color-dander;
     }
 }
@@ -19,4 +19,30 @@
     line-height: 1.8rem;
     font-weight: 500;
     color: $color-text;
+}
+
+// Reponsive
+// media queries
+@mixin MediaQuery($canvas) {
+    @if $canvas == VXS {
+        @media only screen and (max-width: $VXS) {
+            @content;
+        }
+    } @else if $canvas == XS {
+        @media only screen and (max-width: $XS) {
+            @content;
+        }
+    } @else if $canvas == SM {
+        @media only screen and (max-width: $SM) {
+            @content;
+        }
+    } @else if $canvas == MD {
+        @media only screen and (max-width: $MD) {
+            @content;
+        }
+    } @else if $canvas == XL {
+        @media only screen and (max-width: $XL) {
+            @content;
+        }
+    }
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import "./auth.scss"
-import { InputChange, FormSubmit, UserRegister, UserRegisterErrors } from '../../utils/interface'
+import { InputChange, FormSubmit, UserRegister, UserAuthErrors } from '../../utils/interface'
 import { validRegister } from '../../utils/valid'
 const SignUpForm = () => {
 
@@ -11,7 +11,7 @@ const SignUpForm = () => {
         cfPassword: ""
     }
 
-    const initalStateErores: UserRegisterErrors = {
+    const initalStateErores: UserAuthErrors = {
         errorName: "",
         errorAccount: "",
         errorPassword: "",
@@ -20,7 +20,7 @@ const SignUpForm = () => {
     }
 
     const [user, setUser] = useState<UserRegister>(initalState)
-    const [errors, setErrors] = useState<UserRegisterErrors>(initalStateErores)
+    const [errors, setErrors] = useState<UserAuthErrors>(initalStateErores)
     const [showPassword, setShowPassword] = useState(false);
     const [showCfPassword, setShowCfPassword] = useState(false);
 
@@ -125,7 +125,7 @@ const SignUpForm = () => {
                     (!errors.errorCfPassword && errors.errorPasswordMatch) && <small className="error-text">{errors.errorPasswordMatch}</small>
                 }
             </div>
-            <button className="btn-primary">Register</button>
+            <button className="btn-primary">Sign up</button>
         </form>
     )
 }
