@@ -34,14 +34,14 @@ code {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
+    height: 48px;
     color: $color-white;
     border-radius: 20px;
     background-color: $color-primary;
     border: none;
     outline: none;
-    font-size: 1.4rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.1s linear;
     &:hover {

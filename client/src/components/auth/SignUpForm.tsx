@@ -1,8 +1,14 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import "./auth.scss"
 import { InputChange, FormSubmit, UserRegister, UserAuthErrors } from '../../utils/interface'
 import { validRegister } from '../../utils/valid'
+import { postAPI } from '../../utils/fetchApi'
+import { ALERT } from '../../store/types/alertTypes'
+import Loading from '../globals/Loading'
 const SignUpForm = () => {
+
+    const dispatch = useDispatch();
 
     const initalState: UserRegister = {
         name: "",
@@ -21,8 +27,9 @@ const SignUpForm = () => {
 
     const [user, setUser] = useState<UserRegister>(initalState)
     const [errors, setErrors] = useState<UserAuthErrors>(initalStateErores)
-    const [showPassword, setShowPassword] = useState(false);
-    const [showCfPassword, setShowCfPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showCfPassword, setShowCfPassword] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false)
 
 
     const { name, account, password, cfPassword } = user;
@@ -64,13 +71,24 @@ const SignUpForm = () => {
 
     }
 
-    const handeSubmit = (e: FormSubmit) => {
+    const handeSubmit = async (e: FormSubmit) => {
         e.preventDefault()
         const errors = validRegister(user)
         setErrors(errors)
         // If no error -> Pass validation
-        if(Object.keys(errors).length === 0){
-            console.log(user)
+        if (Object.keys(errors).length === 0) {
+            setLoading(true)
+            try {
+                const res = await postAPI('register', user);
+                setLoading(false)
+                console.log(res)
+                setUser(initalState)
+                dispatch({ type: ALERT, payload: { success: res.data.msg } })
+            } catch (error: any) {
+                setLoading(false)
+                dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+                console.log(error.response.data.msg);
+            }
         }
     }
 
@@ -125,7 +143,9 @@ const SignUpForm = () => {
                     (!errors.errorCfPassword && errors.errorPasswordMatch) && <small className="error-text">{errors.errorPasswordMatch}</small>
                 }
             </div>
-            <button className="btn-primary">Sign up</button>
+            <button className="btn-primary">{
+                loading ? <Loading type='small'/> : "Sign up"
+            }</button>
         </form>
     )
 }

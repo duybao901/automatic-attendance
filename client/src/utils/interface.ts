@@ -4,7 +4,7 @@ import rootReducer from '../store/reducers/index'
 export type InputChange = ChangeEvent<HTMLInputElement>
 export type FormSubmit = ChangeEvent<HTMLFormElement>
 
-export type RootReducer = ReturnType<typeof rootReducer>;
+export type RootStore = ReturnType<typeof rootReducer>;
 export interface Params {
     page: string
     slug: string

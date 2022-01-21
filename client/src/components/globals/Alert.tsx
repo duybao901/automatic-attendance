@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { RootReducer } from '../../utils/interface'
+import { RootStore } from '../../utils/interface'
 import { toast } from 'react-toastify'
 import { ALERT } from '../../store/types/alertTypes'
+import GlobalLoading from './GlobalLoading'
 const Alert = () => {
     const dispatch = useDispatch()
-    const { alert } = useSelector((state: RootReducer) => state)
+    const { alert } = useSelector((state: RootStore) => state)
 
     const hanldeCloseToast = () => {
-        dispatch({ type: ALERT, payload: {} })
+        dispatch({ type: ALERT, payload: { ...alert, success: "", error: "" } })
     }
 
     const handleShowToastSuccess = () => {
@@ -39,10 +40,15 @@ const Alert = () => {
 
     useEffect(() => {
         alert.success && handleShowToastSuccess()
-        alert.error && handleShowToastError()
-    }, [alert])
+    }, [alert.success])
 
-    return <></>
+    useEffect(() => {
+        alert.error && handleShowToastError()
+    }, [alert.error])
+
+    return <>
+        {alert.loading && <GlobalLoading />}
+    </>
 
 }
 
