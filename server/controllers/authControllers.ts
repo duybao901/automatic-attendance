@@ -70,7 +70,7 @@ class AuthController {
 
             return res.json({
                 msg: "Login success",
-                data: user,
+                user,
                 access_token,
             });
         } catch (error: any) {
@@ -95,7 +95,7 @@ class AuthController {
 
             const access_token = generateAccessToken({ id: user._id });
             return res.json({
-                data: user,
+                user,
                 access_token
             })
 
