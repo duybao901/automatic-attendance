@@ -1,0 +1,97 @@
+@import "../stylesSass/variables";
+.dashbroad {
+    &__header {
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        height: 60px;
+        box-shadow: $box-shadow-1;
+        margin-bottom: 2px;
+        & i {
+            color: rgb(100, 116, 139);
+        }
+    }
+    &__user {
+        display: flex;
+        align-items: center;
+        height: 200px;
+        width: 100%;
+        padding: 0 30px;
+        box-shadow: $box-shadow-1;
+        margin-bottom: 2px;
+        background-color: $color-white;
+        &-infor {
+            display: flex;
+            align-items: center;
+            & img {
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                margin-right: 10px;
+            }
+            & .infor__name {
+                font-size: 3.6rem;
+                font-weight: 600;
+                color: $color-text;
+            }
+
+            & .infor__detail {
+                display: flex;
+                align-items: center;
+                color: #64748b;
+                & i {
+                    font-size: 2rem;
+                    margin-right: 5px;
+                }
+                & span {
+                    font-size: 1.4rem;
+                    line-height: 2rem;
+                }
+            }
+        }
+    }
+    &__body {
+        width: 100%;
+        min-height: calc(100vh - 200px - 60px - 2px - 2px);
+        background-color: #f1f5f9;
+        &-box {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 30px;
+            & .box-item {
+                width: calc(25% - 30px);
+                height: 200px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                margin-left: 30px;
+                margin-bottom: 25px;
+                border-radius: 20px;
+                background-color: $color-white;
+                box-shadow: $box-shadow-1;
+                text-decoration: none;
+                & i {
+                    font-size: 7rem;
+                }
+                & h3 {
+                    margin-top: 10px;
+                    font-size: 1.7rem;
+                    font-weight: 600;
+                }
+                &:first-child {
+                    color: #3b82f6;
+                }
+                &:nth-child(2){
+                    color: #ef4444;
+                }   
+                &:nth-child(3){
+                    color: #f59e0b;
+                } 
+                &:nth-child(4){
+                    color: #22c55e;
+                }          
+            }
+        }
+    }
+}

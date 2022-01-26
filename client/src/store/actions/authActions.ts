@@ -24,3 +24,21 @@ export const refreshToken = () => async (dispatch: Dispatch<AuthType | AlertType
         dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
     }
 }
+
+export const logout = () => async (dispatch: Dispatch<AuthType | AlertType>) => {
+    try {
+
+        dispatch({ type: ALERT, payload: { loading: true } })
+
+        localStorage.removeItem("first-login")
+        await getAPI('logout');
+
+        dispatch({ type: ALERT, payload: { loading: false } })
+        window.location.href = "/sign-in"
+      
+
+
+    } catch (error: any) {
+        dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+    }
+}

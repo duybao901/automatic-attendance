@@ -95,21 +95,21 @@ const SignUpForm = () => {
     return (
         <form onSubmit={handeSubmit}>
             <div className='form-group'>
-                <label htmlFor="name">Full name *</label>
+                <label htmlFor="name">Họ và Tên *</label>
                 <input className={errors.errorName && "danger"} type="text" id="name" name="name" value={name} onChange={handleChange} />
                 {
                     errors.errorName && <small className="error-text">{errors.errorName}</small>
                 }
             </div>
             <div className='form-group'>
-                <label htmlFor="account">Account *</label>
+                <label htmlFor="account">Email *</label>
                 <input className={errors.errorAccount && "danger"} type="text" id="account" name="account" value={account} onChange={handleChange} />
                 {
                     errors.errorAccount && <small className="error-text">{errors.errorAccount}</small>
                 }
             </div>
             <div className='form-group'>
-                <label htmlFor="password">Password *</label>
+                <label htmlFor="password">Mật khẩu *</label>
                 <div className="form-group__password">
                     <input className={errors.errorPassword && "danger"} type={showPassword ? "text" : "password"} id="password" name="password" value={password} onChange={handleChange} />
                     <span onClick={() => setShowPassword(!showPassword)} className="btn-circle">
@@ -125,7 +125,7 @@ const SignUpForm = () => {
                 }
             </div>
             <div className='form-group'>
-                <label htmlFor="cfPassword">Confirm password *</label>
+                <label htmlFor="cfPassword">Nhập lại mật khẩu *</label>
                 <div className="form-group__password">
                     <input className={errors.errorCfPassword && "danger"} type={showCfPassword ? "text" : "password"} id="cfPassword" name="cfPassword" value={cfPassword} onChange={handleChange} />
                     <span onClick={() => setShowCfPassword(!showCfPassword)} className="btn-circle">
@@ -144,7 +144,7 @@ const SignUpForm = () => {
                 }
             </div>
             <button className="btn-primary">{
-                loading ? <Loading type='small'/> : "Sign up"
+                loading ? <Loading type='small'/> : "Đăng kí"
             }</button>
         </form>
     )

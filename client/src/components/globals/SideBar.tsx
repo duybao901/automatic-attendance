@@ -3,9 +3,12 @@ import Logo from '../../images/logo.png'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootStore } from '../../utils/interface'
 import { Link, useLocation } from 'react-router-dom'
+import { logout } from '../../store/actions/authActions'
 import "./SideBar.scss"
 
 const SideBar = () => {
+
+    const dispatch = useDispatch();
 
     const { auth } = useSelector((state: RootStore) => state)
     const localtion = useLocation();
@@ -17,23 +20,10 @@ const SideBar = () => {
         return "";
     }
 
-    const menu = [
-        {
-            path: "/",
-            label: "dashbroad",
-            icon: "bx bx-calendar-week"
-        },
-        {
-            path: "/profile",
-            label: "Profile",
-            icon: " bx bx-user-circle"
-        },
-        {
-            path: "/",
-            label: "sign out",
-            icon: "bx bx-exit"
-        },
-    ]
+    const handleLogout = () => {
+        dispatch(logout())
+    }
+
 
     return <div className="side-bar">
         <div className="side-bar__header">
@@ -52,29 +42,29 @@ const SideBar = () => {
         <div className='side-bar__menu'>
             <div className="side-bar__menu-user">
                 <div className="user__as">
-                    <h3>Signed in as</h3>
-                    <p>{auth.user?.account}</p>
+                    <h3>Đăng nhập với tư cách</h3>
+                    <p>{auth.user?.role}</p>
                 </div>
                 <ul className="user__list">
 
                     <li className={avtive("/")}>
                         <Link to="/">
                             <i className="bx bx-calendar-week"></i>
-                            <span>Dashbroad</span>
+                            <span>Điều khiển</span>
                         </Link>
                     </li>
 
                     <li className={avtive(`/profile/${auth.user?._id}`)}>
                         <Link to={`/profile/${auth.user?._id}`}>
-                            <i className="bx bx-calendar-week"></i>
-                            <span>Profile</span>
+                            <i className="bx bx-user-circle"></i>
+                            <span>Tài khoản</span>
                         </Link>
                     </li>
 
                     <li >
-                        <a>
-                            <i className="bx bx-calendar-week"></i>
-                            <span>Sign out</span>
+                        <a onClick={handleLogout}>
+                            <i className="bx bx-exit"></i>
+                            <span>Đăng xuất</span>
                         </a>
                     </li>
 

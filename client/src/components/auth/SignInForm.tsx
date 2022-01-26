@@ -74,7 +74,7 @@ const SignInForm = () => {
     return (
         <form onSubmit={handeSubmit}>
             <div className='form-group'>
-                <label htmlFor="account">Account *</label>
+                <label htmlFor="account">Email *</label>
                 <input className={errors.errorAccount && "danger"} type="text" id="account" name="account" value={account} onChange={handleChange} />
                 {
                     errors.errorAccount && <small className="error-text">{errors.errorAccount}</small>
@@ -82,7 +82,7 @@ const SignInForm = () => {
             </div>
 
             <div className='form-group'>
-                <label htmlFor="password">Password *</label>
+                <label htmlFor="password">Mật khẩu *</label>
                 <div className="form-group__password">
                     <input className={errors.errorPassword && "danger"} type={showPassword ? "text" : "password"} id="password" name="password" value={password} onChange={handleChange} />
                     <span onClick={() => setShowPassword(!showPassword)} className="btn-circle">
@@ -98,7 +98,7 @@ const SignInForm = () => {
                 }
             </div>
             <button className="btn-primary">{
-                loading ? <Loading type='small' /> : "Sign in"
+                loading ? <Loading type='small' /> : "Đăng nhập"
             }</button>
         </form>
     )

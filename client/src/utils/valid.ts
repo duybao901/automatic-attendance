@@ -5,33 +5,33 @@ export const validRegister = (userRegister: UserRegister) => {
     const { name, account, password, cfPassword } = userRegister;
 
     if (!name) {
-        errors.errorName = "Name is required"
+        errors.errorName = "Tên là bắt buộc"
     } else {
         if (name.length > 50) {
-            errors.errorName = "Your name is up to 50 chars long."
+            errors.errorName = "Tên của bạn giới hạn 50 ký tự"
         }
     }
 
     if (!account) {
-        errors.errorAccount = 'Account is required'
+        errors.errorAccount = 'Email là bắt buộc'
     } else if (!validEmail(account)) {
-        errors.errorAccount = "Email format is incorrect."
+        errors.errorAccount = "Email định dạng không hợp lệ"
     }
 
     if (!password) {
-        errors.errorPassword = 'Password is required'
+        errors.errorPassword = 'Mật khẩu là bắt buộc'
     } else {
         if (password.trim().length < 6) {
-            errors.errorPassword = "Password is at least 6 characters"
+            errors.errorPassword = "Mật khẩu phải có ít nhất 6 kí tự"
         }
     }
 
     if (!cfPassword) {
-        errors.errorCfPassword = 'Confirm password is required'
+        errors.errorCfPassword = 'Yêu cầu nhập lại mật khẩu'
     }
 
     if (password !== cfPassword) {
-        errors.errorPasswordMatch = "Password not match"
+        errors.errorPasswordMatch = "Mật khẩu không trùng khớp"
     }
     return errors;
 }
@@ -42,13 +42,13 @@ export const validLogin = (userLogin: UserLogin) => {
     const { account, password } = userLogin
 
     if (!account) {
-        errors.errorAccount = 'Account is required'
+        errors.errorAccount = 'Email là bắt buộc'
     } else if (!validEmail(account)) {
-        errors.errorAccount = "Email format is incorrect."
+        errors.errorAccount = "Email định dạng không hợp lệ"
     }
 
     if (!password) {
-        errors.errorPassword = 'Password is required'
+        errors.errorPassword = 'Mật khẩu là bắt buộc'
     } 
     return errors;
 }

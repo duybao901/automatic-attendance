@@ -8,8 +8,8 @@ const SignUp = () => {
             <div className="auth-page__form">
                 <div className="auth-page__form-wrapper">
                     <img src={Logo} alt="logo" className="auth-page__form-logo" />
-                    <h2 className="auth-page__form-title">Sign Up</h2>
-                    <p className="auth-page__form-detail">Already have an account? <Link to='/sign-in'>Sign in</Link></p>
+                    <h2 className="auth-page__form-title">Đăng Kí</h2>
+                    <p className="auth-page__form-detail">Bạn có sẳn tài khoản? <Link to='/sign-in'>Đăng nhập</Link></p>
                     <SignUpForm />
                 </div>
             </div>

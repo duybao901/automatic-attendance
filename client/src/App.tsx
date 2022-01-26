@@ -8,7 +8,6 @@ import Alert from "./components/globals/Alert";
 import { RootStore } from './utils/interface'
 import Register from './pages/sign-up'
 import Login from './pages/sign-in'
-
 import Home from './pages/index'
 import { refreshToken } from './store/actions/authActions'
 import PrivateRouter from "./components/customRoute/PrivateRoute";
@@ -44,10 +43,11 @@ function App() {
         {/* Router */}
         <div className="body">
             <Router>
-                <SideBar />
-                <div className='main'>
+                {/* Side Bar */}
+                {auth.access_token && <SideBar />}
+                <div className='main pd-left'>
                     <Switch>
-                        <Route path="/dashboards" exact component={auth.access_token ? Home : Login}></Route>
+                        <Route path="/" exact component={auth.access_token ? Home : Login}></Route>
                         <Route path='/sign-up' component={Register} exact />
 
                         <PrivateRouter path="/:page" exact component={PageRender}></PrivateRouter>

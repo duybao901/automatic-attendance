@@ -10,7 +10,7 @@ import { UserLogin, UserRegister, DecodeToken } from "../config/interface";
 
 // Controller
 class AuthController {
-    // Register
+    // Đăng kí
     async register(req: Request, res: Response) {
         try {
             const { name, account, password }: UserRegister = req.body;
@@ -18,7 +18,7 @@ class AuthController {
             const user = await Users.findOne({ account });
 
             if (user)
-                return res.status(400).json({ msg: "Account is already exits." });
+                return res.status(400).json({ msg: "Tài khoản đã tồn tại." });
 
             const passwordHasd = await brycpt.hash(password, 12);
 
@@ -30,14 +30,14 @@ class AuthController {
 
             await newUser.save();
             return res.json({
-                msg: "Register success! Please, Wait admin confirm.",
+                msg: "Đăng kí thành công ! Đợi admin duyệt tài khoản của bạn.",
             });
         } catch (error: any) {
             return res.status(500).json({ msg: error.message });
         }
     }
 
-    // Login
+    // Đăng nhập
     async login(req: Request, res: Response) {
         try {
             const { account, password }: UserLogin = req.body;
@@ -46,16 +46,16 @@ class AuthController {
 
             // Find user
             if (!user)
-                return res.status(400).json({ msg: "Account is not exits." });
+                return res.status(400).json({ msg: "Tài khoản không tồn tại." });
 
             // Compare password
             const isMatch = await brycpt.compare(password, user.password);
             if (!isMatch)
-                return res.status(400).json({ msg: "Password is incorrect." });
+                return res.status(400).json({ msg: "Sai mật khẩu." });
 
             // Check account is confirm
             if (!user.confirm) {
-                return res.status(400).json({ msg: "Account not approved." })
+                return res.status(400).json({ msg: "Tài khoản chưa được duyệt." })
             }
 
             const access_token = generateAccessToken({ id: user._id });
@@ -69,7 +69,7 @@ class AuthController {
             });
 
             return res.json({
-                msg: "Login success",
+                msg: "Đăng nhập thành công",
                 user,
                 access_token,
             });
@@ -99,6 +99,16 @@ class AuthController {
                 access_token
             })
 
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message });
+        }
+    }
+
+    // Đăng xuất
+    async logout(req: Request, res: Response) {
+        try {
+            res.clearCookie("refreshToken");
+            return res.json({ msg: "Đăng xuất thành công." })
         } catch (error: any) {
             return res.status(500).json({ msg: error.message });
         }
