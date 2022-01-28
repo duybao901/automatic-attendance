@@ -17,12 +17,13 @@ import SideBar from "./components/globals/SideBar";
 function App() {
 
     const dispatch = useDispatch();
-    const { auth } = useSelector((state: RootStore) => state)
+    const { auth, sidebar } = useSelector((state: RootStore) => state)
 
     useEffect(() => {
         dispatch(refreshToken())
     }, [dispatch])
 
+    console.log(sidebar.open)
 
     return <div className="App">
         {/* Alert */}
@@ -45,7 +46,7 @@ function App() {
             <Router>
                 {/* Side Bar */}
                 {auth.access_token && <SideBar />}
-                <div className='main pd-left'>
+                <div className={`main ${sidebar.open ? "" : "pd-left"}`}>
                     <Switch>
                         <Route path="/" exact component={auth.access_token ? Home : Login}></Route>
                         <Route path='/sign-up' component={Register} exact />

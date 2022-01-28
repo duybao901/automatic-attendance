@@ -3,29 +3,24 @@ import { useSelector } from 'react-redux'
 import { RootStore } from '../utils/interface'
 import { Link } from 'react-router-dom'
 import "./index.scss"
+import DashBroadHeader from '../components/dashbroad/DashBroadHeader'
+import DashBroadUser from '../components/dashbroad/DashBroadUser'
 const Home = () => {
 
     const { auth } = useSelector((state: RootStore) => state)
 
     return (
         <div className="dashbroad">
-            <div className="dashbroad__header">
-                <i className='bx bx-menu btn-circle' ></i>
-            </div>
-            <div className="dashbroad__user">
-                <div className="dashbroad__user-infor">
-                    <img src={auth.user?.avatar} alt="avatar" />
-                    <div>
-                        <h2 className="infor__name">Chào mừng, {auth.user?.name}</h2>
-                        <div className="infor__detail">
-                            <i className='bx bxs-graduation'></i>
-                            <span>Bạn đăng nhập với tư cách là {auth.user?.role}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <DashBroadHeader />
+            <DashBroadUser auth={auth} />
             <div className="dashbroad__body">
                 <div className="dashbroad__body-box">
+                    {
+                        auth.user?.role === 'admin' && <Link className="box-item" to="/teacher">
+                            <i className='bx bxs-graduation'></i>
+                            <h3>Giáo viên</h3>
+                        </Link>
+                    }
                     <Link className="box-item" to="/student">
                         <i className='bx bx-id-card'></i>
                         <h3>Sinh viên</h3>
