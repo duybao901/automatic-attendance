@@ -22,7 +22,6 @@ const Teacher = () => {
     if (auth.user?.role !== "admin") return <NotFound />
 
     return <div className="dashbroad">
-        <DashBroadHeader />
         <DashBroadUser auth={auth} />
         <TeacherCp />
     </div>;

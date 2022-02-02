@@ -6,8 +6,7 @@ import Users from '../models/userModel'
 export const auth = async (req: RequestUser, res: Response, next: NextFunction) => {
     try {
         const token = req.header("Authorization");
-        
-
+    
         if (!token) return res.status(400).json({ msg: "Ivalid Authentication." })
 
         const decode = <DecodeToken>jwt.verify(token, `${process.env.ACCESS_TOKEN_SECRET}`)

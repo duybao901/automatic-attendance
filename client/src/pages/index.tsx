@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { RootStore } from '../utils/interface'
 import { Link } from 'react-router-dom'
 import "./index.scss"
-import DashBroadHeader from '../components/dashbroad/DashBroadHeader'
 import DashBroadUser from '../components/dashbroad/DashBroadUser'
 const Home = () => {
 
@@ -11,7 +10,6 @@ const Home = () => {
 
     return (
         <div className="dashbroad">
-            <DashBroadHeader />
             <DashBroadUser auth={auth} />
             <div className="dashbroad__body">
                 <div className="dashbroad__body-box">

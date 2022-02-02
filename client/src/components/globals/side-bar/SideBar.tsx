@@ -29,10 +29,7 @@ const SideBar = () => {
     }
 
     return <div className='side-bar-wrapper'>
-
-        {
-            sidebar.open === false && <div className="side-bar__fade" onClick={handleCloseSideBar}></div>
-        }
+        <div className={`side-bar__fade ${sidebar.open === false ? "active" : ""}`} onClick={handleCloseSideBar}></div>
 
         <div className={`side-bar ${sidebar.open ? "side-bar--right" : ""}`}>
             <div className="side-bar__header">

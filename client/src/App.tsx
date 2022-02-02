@@ -12,6 +12,7 @@ import Home from './pages/index'
 import { refreshToken } from './store/actions/authActions'
 import PrivateRouter from "./components/customRoute/PrivateRoute";
 import SideBar from "./components/globals/side-bar/SideBar";
+import DashBroadHeader from "./components/dashbroad/DashBroadHeader";
 
 function App() {
 
@@ -44,6 +45,8 @@ function App() {
                 {/* Side Bar */}
                 {auth.access_token && <SideBar />}
                 <div className={`main ${sidebar.open ? "" : "pd-left"}`}>
+
+                    <DashBroadHeader />
                     <Switch>
                         <Route path="/" exact component={auth.access_token ? Home : Login}></Route>
                         <Route path='/sign-up' component={Register} exact />
