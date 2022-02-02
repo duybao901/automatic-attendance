@@ -1,11 +1,11 @@
 import React from 'react';
-import Logo from '../../images/logo.png'
+import Logo from '../../../images/logo.png'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootStore } from '../../utils/interface'
+import { RootStore } from '../../../utils/interface'
 import { Link, useLocation } from 'react-router-dom'
-import { logout } from '../../store/actions/authActions'
+import { logout } from '../../../store/actions/authActions'
 import "./SideBar.scss"
-import { SideBarType, TOGGLE } from '../../store/types/sidebarTypes'
+import { TOGGLE } from '../../../store/types/sidebarTypes'
 const SideBar = () => {
 
     const dispatch = useDispatch();

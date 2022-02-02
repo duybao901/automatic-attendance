@@ -5,7 +5,7 @@ import { InputChange, FormSubmit, UserRegister, UserAuthErrors } from '../../uti
 import { validRegister } from '../../utils/valid'
 import { postAPI } from '../../utils/fetchApi'
 import { ALERT } from '../../store/types/alertTypes'
-import Loading from '../globals/Loading'
+import Loading from '../globals/loading/Loading'
 const SignUpForm = () => {
 
     const dispatch = useDispatch();

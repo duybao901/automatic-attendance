@@ -6,6 +6,7 @@ import Users from '../models/userModel'
 export const auth = async (req: RequestUser, res: Response, next: NextFunction) => {
     try {
         const token = req.header("Authorization");
+        
 
         if (!token) return res.status(400).json({ msg: "Ivalid Authentication." })
 
@@ -28,6 +29,7 @@ export const authAdmin = async (req: RequestUser, res: Response, next: NextFunct
         if (!req.user) {
             return res.status(400).json({ msg: "Ivalid Authentication." })
         }
+      
 
         // Check role
         if (req.user.role !== "admin") return res.status(400).json({ msg: "You are not admin." });

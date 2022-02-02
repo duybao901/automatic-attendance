@@ -1,5 +1,5 @@
 import React from 'react';
-import GlobalLoadingImage from '../../images/global-loading.gif'
+import GlobalLoadingImage from '../../../images/global-loading.gif'
 import "./GlobalLoading.scss"
 const GlobalLoading = () => {
   return <div className='global-loading'>

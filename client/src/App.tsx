@@ -4,15 +4,14 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import PageRender from "./PageRender";
-import Alert from "./components/globals/Alert";
+import Alert from "./components/globals/alert/Alert";
 import { RootStore } from './utils/interface'
 import Register from './pages/sign-up'
 import Login from './pages/sign-in'
 import Home from './pages/index'
 import { refreshToken } from './store/actions/authActions'
 import PrivateRouter from "./components/customRoute/PrivateRoute";
-import SideBar from "./components/globals/SideBar";
-
+import SideBar from "./components/globals/side-bar/SideBar";
 
 function App() {
 
@@ -22,8 +21,6 @@ function App() {
     useEffect(() => {
         dispatch(refreshToken())
     }, [dispatch])
-
-    console.log(sidebar.open)
 
     return <div className="App">
         {/* Alert */}

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import "./auth.scss"
 import { InputChange, FormSubmit, UserLogin, UserAuthErrors } from '../../utils/interface'
 import { validLogin } from '../../utils/valid'
-import Loading from '../globals/Loading'
+import Loading from '../globals/loading/Loading'
 import { postAPI } from '../../utils/fetchApi'
 import { useDispatch } from 'react-redux'
 import { ALERT } from '../../store/types/alertTypes'

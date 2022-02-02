@@ -20,7 +20,19 @@ class UserController {
             return res.status(500).json({ msg: error.message });
         }
     }
-    
+
+    async getTeachers(req: Request, res: Response) {
+        try {
+            const teachers = await Users.find({
+                role: "teacher",
+                confirm: false
+            })
+            return res.json({ teachers })
+        } catch (err: any) {
+            return res.status(500).json({ msg: err.message })
+        }
+    }
+
 }
 
 export default new UserController;

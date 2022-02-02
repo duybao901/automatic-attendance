@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { RootStore } from '../../utils/interface'
+import { RootStore } from '../../../utils/interface'
 import { toast } from 'react-toastify'
-import { ALERT } from '../../store/types/alertTypes'
-import GlobalLoading from './GlobalLoading'
+import { ALERT } from '../../../store/types/alertTypes'
+import GlobalLoading from '../global-loading/GlobalLoading'
 const Alert = () => {
     const dispatch = useDispatch()
     const { alert } = useSelector((state: RootStore) => state)

@@ -8,8 +8,17 @@ export const getAPI = async (url: string, token?: any) => {
     return res;
 }
 
-export const postAPI = async (url: string, body: object, token?: any) => {
+export const postAPI = async (url: string, body?: object, token?: any) => {
     const res = await axios.post(`/api/${url}`, body, {
+        headers: {
+            Authorization: token
+        }
+    })
+    return res;
+}
+
+export const putAPI = async (url: string, body?: object, token?: any) => {
+    const res = await axios.put(`/api/${url}`, body, {
         headers: {
             Authorization: token
         }
