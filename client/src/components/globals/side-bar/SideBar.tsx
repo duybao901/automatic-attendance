@@ -68,7 +68,7 @@ const SideBar = () => {
                         </li>
 
                         <li >
-                            <a onClick={handleLogout}>
+                            <a href='#' onClick={handleLogout}>
                                 <i className="bx bx-exit"></i>
                                 <span>Đăng xuất</span>
                             </a>

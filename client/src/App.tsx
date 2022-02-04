@@ -46,7 +46,7 @@ function App() {
                 {auth.access_token && <SideBar />}
                 <div className={`main ${sidebar.open ? "" : "pd-left"}`}>
 
-                    <DashBroadHeader />
+                    {auth.access_token && <DashBroadHeader />}
                     <Switch>
                         <Route path="/" exact component={auth.access_token ? Home : Login}></Route>
                         <Route path='/sign-up' component={Register} exact />
