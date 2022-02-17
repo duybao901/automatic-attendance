@@ -21,13 +21,21 @@ const Teacher = () => {
 
                     </tr>
                 </thead>
-                <tbody>
                 {
-                    teacher.teachers?.map((teacher, index) => {
-                        return <TeacherRow teacher={teacher} key={index} />
-                    })
+                    teacher.loading && <td style={{ width: "20%" }} className="teacher__tabel-id"> <h3 style={{ fontSize: "13px", padding: '10px 0px 0px 0px', color: "#473fce" }}>Loading...</h3></td>
                 }
-                </tbody>
+                {
+                    teacher.teachers?.length === 0 ?
+
+                        <td style={{ width: "20%" }} className="teacher__tabel-id"> <h3 style={{ fontSize: "14px", padding: '10px 0px 0px 0px', color: "#1e293b" }}>Không có giáo viên để duyệt</h3></td>
+                        :
+                        <tbody>
+                            {teacher.teachers?.map((teacher, index) => {
+                                return <TeacherRow teacher={teacher} key={index} />
+                            })}
+                        </tbody>
+                }
+
             </table>
         </div>
     </div>

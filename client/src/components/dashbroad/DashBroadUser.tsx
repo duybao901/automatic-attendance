@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AuthPayload } from '../../store/types/authTypes'
-
+import VietNameIcon from '../../images/vietnam.png'
+import dayjs from 'dayjs'
 interface DashBroadUserProps {
     auth: AuthPayload
 }
 
 const DashBroadUser: React.FC<DashBroadUserProps> = ({ auth }) => {
+
+    const [time, setTime] = useState(new Date().toISOString())
+
+    useEffect(() => {
+        setInterval(() => {
+            setTime(new Date().toISOString())
+        }, 1000)
+    }, [])
+
     return <div className="dashbroad__user">
         <div className="dashbroad__user-infor">
             <img src={auth.user?.avatar} alt="avatar" />
@@ -16,6 +26,16 @@ const DashBroadUser: React.FC<DashBroadUserProps> = ({ auth }) => {
                     <span>Bạn đăng nhập với tư cách là {auth.user?.role}</span>
                 </div>
             </div>
+        </div>
+        <div className="dashbroad__user-time">
+            <div className='time__box'>
+                <div className="time__box-text">
+                    <span>{dayjs(time).format('hh:mm:ss A')}</span>
+                    <span>{dayjs(time).format('DD-MM-YYYY')}</span>
+                </div>
+                <img src={VietNameIcon} alt="vietnam-icon" />
+            </div>
+
         </div>
     </div>;
 };
