@@ -13,9 +13,8 @@ export const refreshToken = () => async (dispatch: Dispatch<AuthType | AlertType
 
     const firstLogin = localStorage.getItem("first-login")
     if (!firstLogin) return;
-
     try {
-        dispatch({ type: ALERT, payload: { loading: true } })
+        dispatch({ type: ALERT, payload: { loading: true } })    
         const res = await getAPI("refresh_token")
         dispatch({ type: AUTH, payload: res.data })
         dispatch({ type: ALERT, payload: { loading: false } })

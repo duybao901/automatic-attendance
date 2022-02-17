@@ -12,8 +12,8 @@ const Alert = () => {
         dispatch({ type: ALERT, payload: { ...alert, success: "", error: "" } })
     }
 
-    const handleShowToastSuccess = () => {
-        toast.success(alert.success, {
+    const handleShowToastSuccess = (msg: string) => {
+        toast.success(msg, {
             autoClose: 2000,
             hideProgressBar: false,
             closeOnClick: true,
@@ -25,8 +25,8 @@ const Alert = () => {
         })
     }
 
-    const handleShowToastError = () => {
-        toast.error(alert.error, {
+    const handleShowToastError = (msg: string) => {
+        toast.error(msg, {
             autoClose: 2000,
             hideProgressBar: false,
             closeOnClick: true,
@@ -39,11 +39,23 @@ const Alert = () => {
     }
 
     useEffect(() => {
-        alert.success && handleShowToastSuccess()
+        if (typeof alert.success === "string") {
+            alert.success && handleShowToastSuccess(alert.success as string)
+        } else {
+            alert.success?.map(msg => {
+                return handleShowToastSuccess(msg)
+            })
+        }
     }, [alert.success])
 
     useEffect(() => {
-        alert.error && handleShowToastError()
+        if (typeof alert.error === "string") {
+            alert.error && handleShowToastError(alert.error as string)
+        } else {
+            alert.error?.map(msg => {
+                return handleShowToastError(msg)
+            })
+        }
     }, [alert.error])
 
     return <>

@@ -1,5 +1,5 @@
-import { UserRegister, UserLogin } from "../utils/interface"
-export const validRegister = (userRegister: UserRegister) => {
+import { UserRegister, UserLogin, UserProfile } from "../utils/interface"
+export const validRegister = (userRegister: UserRegister | UserProfile) => {
     const errors: any = {};
 
     const { name, account, password, cfPassword } = userRegister;
@@ -49,7 +49,30 @@ export const validLogin = (userLogin: UserLogin) => {
 
     if (!password) {
         errors.errorPassword = 'Mật khẩu là bắt buộc'
-    } 
+    }
+    return errors;
+}
+
+export const validUpdatePassword = (userUpdate: UserProfile) => {
+
+    const errors: any = {};
+
+   
+
+
+    const { password, cfPassword } = userUpdate
+    if (password) {
+        if (password.trim().length < 6) {
+            errors.errorPassword = "Mật khẩu phải có ít nhất 6 kí tự"
+        }
+        if (!cfPassword) {
+            errors.errorPassword = 'Nhập lại mật khẩu là bắt buộc'
+        } else {
+            if (password !== cfPassword) {
+                errors.errorPasswordMatch = "Mật khẩu không trùng khớp"
+            }
+        }
+    }
     return errors;
 }
 

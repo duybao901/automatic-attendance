@@ -48,6 +48,13 @@ code {
     &:hover {
         background-color: $color-primary-dark;
     }
+    &--disable{
+        background-color: $color-text-secondary;
+        cursor: default;
+        &:hover {
+            background-color: $color-text-secondary;
+        }
+    }
 }
 
 .btn-circle {

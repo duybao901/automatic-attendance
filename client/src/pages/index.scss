@@ -30,6 +30,7 @@
                 height: 60px;
                 object-fit: cover;
                 margin-right: 10px;
+                border-radius: 50%;
             }
             & .infor__name {
                 font-size: 3.6rem;
@@ -59,7 +60,7 @@
         &-box {
             display: flex;
             flex-wrap: wrap;
-            padding: 30px;
+            padding: 20px;
             margin-left: -30px;
             & .box-item {
                 width: calc(25% - 30px);

@@ -35,3 +35,11 @@ export interface UserAuthErrors {
     errorCfPassword?: string
     errorPasswordMatch?: string
 }
+
+export interface UserProfile {
+    name?: string
+    account?: string
+    password?: string
+    cfPassword?: string
+    avatar?: string | Blob
+}
