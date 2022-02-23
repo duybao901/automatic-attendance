@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import { Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
@@ -18,7 +17,7 @@ app.use(cookieParser()); // req.cookies to set cookie
 
 // Connect Database
 import "./config/Database";
-
+    
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log("Server is running on port:", PORT);
@@ -27,3 +26,4 @@ app.listen(PORT, () => {
 // Router
 app.use("/api", routers.authRouter);
 app.use("/api", routers.userRouter);
+app.use("/api", routers.courseRouter);

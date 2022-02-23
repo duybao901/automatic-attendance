@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import {User} from "../config/interface";
+import { User } from "../config/interface";
+
 const userScheme = new mongoose.Schema(
     {
         account: {
@@ -37,4 +38,4 @@ const userScheme = new mongoose.Schema(
     }
 );
 
-export default mongoose.model<User>("User", userScheme);
+export default mongoose.model<User>("user", userScheme);

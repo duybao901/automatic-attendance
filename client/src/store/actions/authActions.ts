@@ -35,8 +35,6 @@ export const logout = () => async (dispatch: Dispatch<AuthType | AlertType>) => 
         dispatch({ type: ALERT, payload: { loading: false } })
         window.location.href = "/sign-in"
       
-
-
     } catch (error: any) {
         dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
     }

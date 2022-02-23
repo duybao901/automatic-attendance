@@ -6,7 +6,7 @@
         display: flex;
         align-items: center;
         padding: 0 20px;
-        height: 60px;
+        height: $height-top-header;
         box-shadow: $box-shadow-1;
         margin-bottom: 2px;
         & i {
@@ -16,7 +16,7 @@
     &__user {
         display: flex;
         align-items: center;
-        height: 200px;
+        height: $height-top-user;
         width: 100%;
         padding: 0 30px;
         box-shadow: $box-shadow-1;
@@ -68,7 +68,7 @@
                         font-size: 1.4rem;
                         font-weight: 600;
                         color: rgb(104, 104, 104);
-                        margin-right: 4px;
+                        margin-right: 10px;
                         display: block;
                     }
                 }
@@ -77,7 +77,7 @@
     }
     &__body {
         width: 100%;
-        min-height: calc(100vh - 200px - 60px - 2px - 2px);
+        min-height: $height-body;
         background-color: #f1f5f9;
         &-box {
             display: flex;
@@ -131,10 +131,21 @@
     }
     @include MediaQuery(SM) {
         &__user {
+            flex-direction: column;
+            padding: 16px 20px;
+            height: 120px;
+            align-items: flex-start;
             &-infor {
                 & .infor__name {
-                    font-size: 2.4rem;
+                    font-size: 1.6rem;
                 }
+                & img {
+                    width: 40px;
+                    height: 40px;
+                }
+            }
+            &-time {
+                margin-left: auto;
             }
         }
         &__body {

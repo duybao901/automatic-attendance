@@ -4,6 +4,7 @@ import { RootStore } from '../utils/interface'
 import { Link } from 'react-router-dom'
 import "./index.scss"
 import DashBroadUser from '../components/dashbroad/DashBroadUser'
+
 const Home = () => {
 
     const { auth } = useSelector((state: RootStore) => state)
@@ -31,14 +32,10 @@ const Home = () => {
                         <i className='bx bx-edit'></i>
                         <h3>Điểm danh</h3>
                     </Link>
-                    <Link className="box-item" to="/subjects">
+                    <Link className="box-item" to="/course">
                         <i className='bx bx-book-open'></i>
                         <h3>Môn học</h3>
                     </Link>
-                    {/* <Link className="box-item" to="/student">
-                        <i className='bx bx-id-card'></i>
-                        <h3>Môn học</h3>
-                    </Link> */}
                 </div>
             </div>
         </div>

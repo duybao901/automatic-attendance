@@ -1,7 +1,7 @@
 import axios from "axios"
 export const checkImageUpload = (file: File) => {
     const errors: string[] = []
-    if (file.type != "image/jpeg" && file.type != "image/png" && file.type != "jpg") {
+    if (file.type !== "image/jpeg" && file.type !== "image/png" && file.type !== "jpg") {
         errors.push("Định dạng file không hợp lệ")
     }
 

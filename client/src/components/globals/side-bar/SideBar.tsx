@@ -33,7 +33,9 @@ const SideBar = () => {
 
         <div className={`side-bar ${sidebar.open ? "side-bar--right" : ""}`}>
             <div className="side-bar__header">
-                <img className="side-bar__header-logo" src={Logo} alt='logo'></img>
+                <Link to='/'>
+                    <img className="side-bar__header-logo" src={Logo} alt='logo'></img>
+                </Link>
             </div>
             <div className='side-bar__infor'>
                 <img src={auth.user ? auth.user.avatar : ""} alt="user-avatar">
@@ -67,11 +69,11 @@ const SideBar = () => {
                             </Link>
                         </li>
 
-                        <li >
-                            <a href='#' onClick={handleLogout}>
+                        <li>
+                            <div onClick={handleLogout}>
                                 <i className="bx bx-exit"></i>
                                 <span>Đăng xuất</span>
-                            </a>
+                            </div>
                         </li>
 
                     </ul>

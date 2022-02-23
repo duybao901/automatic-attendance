@@ -10,6 +10,7 @@ import Register from './pages/sign-up'
 import Login from './pages/sign-in'
 import Home from './pages/index'
 import { refreshToken } from './store/actions/authActions'
+import { getCourses } from "./store/actions/courseActions"
 import PrivateRouter from "./components/customRoute/PrivateRoute";
 import SideBar from "./components/globals/side-bar/SideBar";
 import DashBroadHeader from "./components/dashbroad/DashBroadHeader";
@@ -21,7 +22,12 @@ function App() {
 
     useEffect(() => {
         dispatch(refreshToken())
+
     }, [dispatch])
+
+    useEffect(() => {
+        dispatch(getCourses(auth))
+    }, [dispatch,auth])
 
     return <div className="App">
         {/* Alert */}

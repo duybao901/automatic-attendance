@@ -11,9 +11,13 @@ const DashBroadUser: React.FC<DashBroadUserProps> = ({ auth }) => {
     const [time, setTime] = useState(new Date().toISOString())
 
     useEffect(() => {
-        setInterval(() => {
+        const timer = setInterval(() => {
             setTime(new Date().toISOString())
         }, 1000)
+
+        return () => {
+            clearInterval(timer)
+        }
     }, [])
 
     return <div className="dashbroad__user">

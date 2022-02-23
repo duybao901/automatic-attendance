@@ -1,0 +1,28 @@
+@import "../../stylesSass/variables";
+@import "../../stylesSass/mixin";
+
+.course__form {
+    & .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+        & label {
+            @include labelStyle;
+        }
+        & input {
+            @include inputStyle;
+        }
+        & select {
+            @include inputStyle;
+        }
+        &--row {
+            justify-content: space-between;
+            flex-direction: row;
+            & .form-group__row {
+                display: flex;
+                flex-direction: column;                
+                width: 48%;
+            }
+        }
+    }
+}

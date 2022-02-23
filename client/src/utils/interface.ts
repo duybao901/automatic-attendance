@@ -43,3 +43,23 @@ export interface UserProfile {
     cfPassword?: string
     avatar?: string | Blob
 }
+
+export interface Course {
+    courseCode?: string
+    createdAt?: Date
+    credit?: number
+    name?: string
+    semester?: string
+    teacher?: User
+    updatedAt?: Date
+    yearEnd?: string
+    yearStart?: string
+    __v?: number
+    _id?: string
+}
+
+export interface ErrorCourse {
+    errorName?: string
+    errorCourseCode?: string
+    errorCredit?: string
+}

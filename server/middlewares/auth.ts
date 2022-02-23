@@ -27,14 +27,11 @@ export const authAdmin = async (req: RequestUser, res: Response, next: NextFunct
     try {
         if (!req.user) {
             return res.status(400).json({ msg: "Ivalid Authentication." })
-        }
-      
-
+        }      
         // Check role
         if (req.user.role !== "admin") return res.status(400).json({ msg: "You are not admin." });
 
         next()
-
     } catch (error: any) {
         return res.status(500).json({ msg: error.message })
     }
