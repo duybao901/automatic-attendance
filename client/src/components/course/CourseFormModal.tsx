@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import "./CourseFormModal.scss"
-import { FormSubmit, InputChange, RootStore } from '../../utils/interface';
+import { FormSubmit, InputChange, RootStore, ErrorCourse } from '../../utils/interface';
 import { Course } from '../../utils/interface'
 import { useDispatch, useSelector } from 'react-redux'
 import { createCourse } from '../../store/actions/courseActions'
@@ -18,6 +18,7 @@ import DateAdapter from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import TextField from '@mui/material/TextField';
+import { validCreateCourse } from '../../utils/valid';
 
 interface CourseFormModalProps {
     open: boolean
@@ -62,8 +63,9 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen }
     const dispatch = useDispatch();
     const { auth } = useSelector((state: RootStore) => state)
 
-    const initialErrorCourse = {
-
+    const initialErrorCourse: ErrorCourse = {
+        errorName: "",
+        errorCourseCode: "",
     }
 
     const initialCourse: Course = {
@@ -78,10 +80,26 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen }
     const classes = useStyles()
     const [course, setCourse] = useState<Course>(initialCourse);
     const [loading, setLoading] = useState<boolean>(false)
+    const [errorCourse, setErrorCourse] = useState<ErrorCourse>(initialErrorCourse)
 
     const { name, courseCode, credit, semester, yearStart, yearEnd } = course;
 
     const handleChange = (e: InputChange | SelectChangeEvent) => {
+
+        if (e.target.name === "name") {
+            setErrorCourse({
+                ...errorCourse,
+                errorName: ''
+            })
+        }
+
+        if (e.target.name === "courseCode") {
+            setErrorCourse({
+                ...errorCourse,
+                errorCourseCode: ''
+            })
+        }
+
         setCourse({
             ...course,
             [e.target.name]: e.target.value
@@ -103,18 +121,29 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen }
     };
 
     const handleSubmit = async (e: FormSubmit) => {
-        setLoading(true);
+
         e.preventDefault();
-        await dispatch(createCourse(course, auth))
-        setLoading(false)
-        setCourse(initialCourse)
+
+        let errorCourse: ErrorCourse = {};
+        errorCourse = validCreateCourse(course);
+
+        // Check error
+        if (Object.keys(errorCourse).length > 0) {
+            setErrorCourse(errorCourse);
+            return;
+        } else {
+            // Submit form to back-end
+            setLoading(true);
+            await dispatch(createCourse(course, auth))
+            setLoading(false)
+            setCourse(initialCourse)
+        }
     }
 
     const handleCloseModal = () => {
         hanldeSetOpen(!open)
         setCourse(initialCourse)
     }
-
 
     return <Modal
         open={open}
@@ -128,10 +157,16 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen }
                 <div className="form-group">
                     <label htmlFor="name">Tên khoá học *</label>
                     <input type="text" id="name" name="name" value={name} onChange={handleChange} />
+                    {
+                        errorCourse?.errorName && <small className="text-error">{errorCourse?.errorName}</small>
+                    }
                 </div>
                 <div className="form-group">
                     <label htmlFor="courseCode">Mã học phần *</label>
                     <input type="text" id="courseCode" name="courseCode" value={courseCode} onChange={handleChange} />
+                    {
+                        errorCourse?.errorCourseCode && <small className="text-error">{errorCourse?.errorCourseCode}</small>
+                    }
                 </div>
                 <div className="form-group">
                     <label htmlFor="credit">Số tín chỉ *</label>
@@ -182,17 +217,18 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen }
                 <div className='modal__control'>
                     <div>
                         <Box mr={1}>
-                            <PrimaryTooltip title='Huỷ tạo'>
-                                <Button variant='contained' onClick={handleCloseModal} color='error' className={classes.Button}><p style={{ textTransform: "capitalize" }}>Huỷ</p></Button>
+                            <PrimaryTooltip title='Làm mới'>
+                                <Button variant='contained' onClick={() => setCourse(initialCourse)} color='success' className={classes.Button}><p style={{ textTransform: "capitalize" }}>Làm mới</p></Button>
                             </PrimaryTooltip>
                         </Box>
                     </div>
                     <Box display="flex">
                         <Box mr={1}>
-                            <PrimaryTooltip title='Làm mới'>
-                                <Button variant='contained' onClick={() => setCourse(initialCourse)} color='success' className={classes.Button}><p style={{ textTransform: "capitalize" }}>Làm mới</p></Button>
+                            <PrimaryTooltip title='Huỷ tạo'>
+                                <Button variant='contained' onClick={handleCloseModal} color='error' className={classes.Button}><p style={{ textTransform: "capitalize" }}>Huỷ</p></Button>
                             </PrimaryTooltip>
                         </Box>
+
                         <Box>
                             <PrimaryTooltip title="Tạo khoá học">
                                 <Button type="submit" variant='contained' className={classes.Button}>{loading ? <Loading type='small' /> : <p style={{ textTransform: "capitalize" }}>Tạo</p>}</Button>

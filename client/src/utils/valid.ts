@@ -1,4 +1,4 @@
-import { UserRegister, UserLogin, UserProfile } from "../utils/interface"
+import { UserRegister, UserLogin, UserProfile, Course, ErrorCourse } from "../utils/interface"
 export const validRegister = (userRegister: UserRegister | UserProfile) => {
     const errors: any = {};
 
@@ -57,9 +57,6 @@ export const validUpdatePassword = (userUpdate: UserProfile) => {
 
     const errors: any = {};
 
-   
-
-
     const { password, cfPassword } = userUpdate
     if (password) {
         if (password.trim().length < 6) {
@@ -79,4 +76,26 @@ export const validUpdatePassword = (userUpdate: UserProfile) => {
 export const validEmail = (email: string) => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+}
+
+export const validCreateCourse = (course: Course) => {
+    const errors: ErrorCourse = {};
+
+    if (course.name === '') {
+        errors.errorName = "Tên môn học không được để trống"
+    } else {
+        if (typeof course.name !== "undefined" && course.name?.length < 5) {
+            errors.errorName = "Tên khoá học có ít nhất 10 ký tự"
+        } else {
+            if (typeof course.name !== "undefined" && course.name?.length > 200) {
+                errors.errorName = "Tên môn học dài nhất 200 ký tự"
+            }
+        }
+    }
+
+    if (course.courseCode === '') {
+        errors.errorCourseCode  = "Mã học phần không được để trống"
+    }
+
+    return errors;
 }

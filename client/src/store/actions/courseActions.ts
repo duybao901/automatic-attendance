@@ -1,6 +1,6 @@
 import { Dispatch } from 'react'
 import { Course } from '../../utils/interface'
-import { CREATE_COURSE, GET_COURSES, CourseType, LOADING_COURSE } from '../types/courseTypes'
+import { CREATE_COURSE, GET_COURSES, CourseType, LOADING_COURSE, CHANGE_PAGE } from '../types/courseTypes'
 import { ALERT, AlertType } from '../types/alertTypes'
 import { AuthPayload } from '../types/authTypes'
 import { getAPI, postAPI } from '../../utils/fetchApi'
@@ -31,4 +31,8 @@ export const createCourse = (course: Course, auth: AuthPayload) => async (dispat
         dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
     }
 
+}
+
+export const changePageCourse = (page: number) => async (dispatch: Dispatch<CourseType | AlertType>) => {
+    dispatch({ type: CHANGE_PAGE, payload: { page } });
 }

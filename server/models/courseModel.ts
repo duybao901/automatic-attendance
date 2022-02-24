@@ -6,8 +6,8 @@ const CourseScheme = new mongoose.Schema({
         type: String,
         default: "",
         required: true,
-        minlength: [10, "Tên khoá học có ít nhất 10 ký tự"],
-        maxlength: [200, "Tên khoá học dài nhất 200 ký tự"],
+        minlength: [5, "Tên môn học có ít nhất 10 ký tự"],
+        maxlength: [200, "Tên môn học dài nhất 200 ký tự"],
         trim: true
     },
     // Giao vien chu nhiem
@@ -25,7 +25,7 @@ const CourseScheme = new mongoose.Schema({
         type: String
     },
     // So tin chi
-    credits: {
+    credit: {
         type: Number,
         require: true
     },

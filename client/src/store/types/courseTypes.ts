@@ -2,14 +2,15 @@ import { Course } from '../../utils/interface'
 export const GET_COURSES = "GET_COURSES"
 export const LOADING_COURSE = "LOADING_COURSE"
 export const CREATE_COURSE = "CREATE_COURSE"
+export const CHANGE_PAGE = 'CHANGE_PAGE'
 
 export interface CoursePayload {
     courses?: Course[]
     loading?: boolean
     page?: number
     coursesLength?: number | 0
-    result?: Course[] 
-    limit?: number 
+    result?: Course[]
+    limit?: number
 }
 
 export interface GetCourses {
@@ -29,4 +30,11 @@ export interface CreateCourse {
     }
 }
 
-export type CourseType = GetCourses | LoadingCourses | CreateCourse
+export interface ChangePage {
+    type: typeof CHANGE_PAGE
+    payload: {
+        page: number
+    }
+}
+
+export type CourseType = GetCourses | LoadingCourses | CreateCourse | ChangePage

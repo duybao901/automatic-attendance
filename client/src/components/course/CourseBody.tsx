@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import "./CourseBody.scss"
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { RootStore } from '../../utils/interface'
 import dayjs from 'dayjs'
 import PaginationComponent from '../globals/pagination/Pagination'
+import { changePageCourse } from '../../store/actions/courseActions'
 // MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -71,12 +72,12 @@ const useStyles = makeStyles({
 
 const CourseBody = () => {
 
+    const dispatch = useDispatch()
     const classes = useStyles()
     const { course, auth } = useSelector((state: RootStore) => state)
     const [searchByName, setSearchByName] = useState<string>('')
     const [searchByCode, setSearchByCode] = useState<string>('')
     const [searchByNameTeacher, setSearchByNameTeacher] = useState<string>('')
-    const [page, setPage] = React.useState(1);
 
     const [open, setOpen] = React.useState<boolean>(false);
 
@@ -84,8 +85,8 @@ const CourseBody = () => {
         setOpen(true);
     };
 
-    const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-        console.log(value)
+    const handleChangePage = (event: React.ChangeEvent<unknown>, page: number) => {
+        dispatch(changePageCourse(page))
     };
 
     return (
