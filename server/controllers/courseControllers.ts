@@ -5,10 +5,10 @@ import { RequestUser } from '../config/interface'
 class CourseController {
     async createCourse(req: RequestUser, res: Response) {
         try {
-            const { name, credits, yearStart, yearEnd, courseCode, semester } = req.body;
+            const { name, credit, yearStart, yearEnd, courseCode, semester } = req.body;
 
             const newCourse = new Course({
-                name, semester, credits, yearStart, yearEnd, courseCode,
+                name, semester, credit, yearStart, yearEnd, courseCode,
                 teacher: req.user?._id
             })
 
@@ -31,6 +31,19 @@ class CourseController {
             const courses = await Course.find({}).sort("-createdAt")
                 .populate("teacher")
             return res.json({ courses, length: courses.length })
+
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
+
+    async deleteCourse(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+
+            await Course.findByIdAndDelete(id);
+
+            return res.json({msg:"Xoá môn học thành công"});
 
         } catch (error: any) {
             return res.status(500).json({ msg: error.message })

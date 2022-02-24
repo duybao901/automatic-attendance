@@ -4,7 +4,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { RootStore } from '../../utils/interface'
 import dayjs from 'dayjs'
 import PaginationComponent from '../globals/pagination/Pagination'
-import { changePageCourse } from '../../store/actions/courseActions'
+import { changePageCourse, deleteCourse } from '../../store/actions/courseActions'
+import Loading from '../globals/loading/Loading'
 // MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -19,6 +20,11 @@ import { makeStyles } from '@mui/styles';
 import PrimaryTooltip from '../globals/tool-tip/Tooltip'
 import CourseFormModal from './CourseFormModal'
 import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -78,8 +84,9 @@ const CourseBody = () => {
     const [searchByName, setSearchByName] = useState<string>('')
     const [searchByCode, setSearchByCode] = useState<string>('')
     const [searchByNameTeacher, setSearchByNameTeacher] = useState<string>('')
-
-    const [open, setOpen] = React.useState<boolean>(false);
+    const [loadingDeleteCourse, setLoadingDeleteCourse] = useState<string>('');
+    const [open, setOpen] = useState<boolean>(false);
+    const [openDialog, setOpenDialog] = useState<any>({});
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -87,6 +94,25 @@ const CourseBody = () => {
 
     const handleChangePage = (event: React.ChangeEvent<unknown>, page: number) => {
         dispatch(changePageCourse(page))
+    };
+
+    const hanldeDeleteCourse = async (course_id: string) => {
+        setLoadingDeleteCourse(course_id);
+        await dispatch(deleteCourse(course_id, auth))
+        setLoadingDeleteCourse("")
+    }
+
+    const handleClickOpenDialog = (course_id: string) => {
+        setOpenDialog({
+            [`setOpen-${course_id}`]: true
+        });
+
+    };
+
+    const handleCloseDialog = (course_id: string) => {
+        setOpenDialog({
+            [`setOpen-${course_id}`]: false
+        });
     };
 
     return (
@@ -129,16 +155,22 @@ const CourseBody = () => {
                             <TableCell align="left" className={classes.TableCellHead}>Học kì</TableCell>
                             <TableCell align="left" className={classes.TableCellHead}>Năm học</TableCell>
                             <TableCell align="left" className={classes.TableCellHead}>Ngày tạo</TableCell>
-                            <TableCell align="left" className={classes.TableCellHead}></TableCell>
+                            <TableCell align="left" className={classes.TableCellHead}>Hành động</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-
+                        {/* Loading */}
                         <TableRow>
                             {
                                 course.loading && <TableCell> <h3 style={{ fontSize: "14px", padding: '10px', color: "#473fce" }}>Loading...</h3></TableCell>
                             }
                         </TableRow>
+                        <TableRow>
+                            {
+                                (course.coursesLength === 0 && course.loading !== true) && <TableCell scope="row"> <h3 style={{ fontSize: "14px", padding: '10px', color: "#473fce" }}>Chưa có môn học nào được thêm</h3></TableCell>
+                            }
+                        </TableRow>
+
                         {
                             course.result?.map(course => {
                                 return <TableRow
@@ -159,7 +191,8 @@ const CourseBody = () => {
                                         <div>
                                             <ButtonGroup variant="contained" aria-label="outlined primary button group">
                                                 <PrimaryTooltip title="Chi tiết môn học" className={classes.Tooltip}>
-                                                    <Button className={classes.Button} color="info"><i style={{ fontSize: "2rem" }} className='bx bx-info-circle' ></i></Button>
+                                                    <Button className={classes.Button} color="info"><i style={{ fontSize: "2rem" }}
+                                                        className='bx bx-info-circle' ></i></Button>
                                                 </PrimaryTooltip>
                                                 {
                                                     // admin hoac teacher tao thi moi co the chinh sua hoac xoa
@@ -168,8 +201,33 @@ const CourseBody = () => {
                                                             <Button className={classes.Button} ><i className='bx bxs-edit-alt' style={{ fontSize: "2rem" }}></i></Button>
                                                         </PrimaryTooltip>
                                                         <PrimaryTooltip title="Xoá">
-                                                            <Button className={classes.Button} color="error"><i style={{ fontSize: "2rem" }} className='bx bx-x'></i></Button>
+                                                            <Button onClick={() => handleClickOpenDialog(course?._id as string)} className={classes.Button} color="error">  <i style={{ fontSize: "2rem" }} className='bx bx-x'></i></Button>
                                                         </PrimaryTooltip>
+                                                        {/* Dialog confirm delete course */}
+                                                        <Dialog
+                                                            open={openDialog ? openDialog[`setOpen-${course._id as string}`] ? openDialog[`setOpen-${course._id as string}`] : false : false}
+                                                            onClose={handleCloseDialog}
+                                                            aria-labelledby="alert-dialog-title"
+                                                            aria-describedby="alert-dialog-description"
+                                                        >
+                                                            <h3 className='modal__heading' style={{ margin: "16px" }}>
+                                                                Bạn có chắc muốn xoá môn học này!
+                                                            </h3>
+                                                            <DialogActions>
+                                                                <Button onClick={() => handleCloseDialog(course._id as string)} color='error'>
+                                                                    <p style={{ textTransform: "capitalize", fontSize: '1.3rem' }}>
+                                                                        Huỷ xoá
+                                                                    </p>
+                                                                </Button>
+                                                                <Button onClick={() => hanldeDeleteCourse(course._id as string)} className={classes.Button}>
+                                                                    {loadingDeleteCourse === course._id ? <Loading type='small' /> :
+                                                                        <p style={{ textTransform: "capitalize", fontSize: '1.3rem' }}>
+                                                                            Đồng ý
+                                                                        </p>}
+
+                                                                </Button>
+                                                            </DialogActions>
+                                                        </Dialog>
                                                     </React.Fragment>
                                                 }
                                             </ButtonGroup>
@@ -182,12 +240,14 @@ const CourseBody = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Box display='flex' justifyContent="flex-end" bgcolor="#fff" padding="16px">
-                <PaginationComponent variant='outlined' shape='rounded' onChange={handleChangePage} className={classes.Pagination} total={course.coursesLength ? course.coursesLength : 0}></PaginationComponent>
-            </Box>
+            {
+                course.coursesLength !== 0 && <Box display='flex' justifyContent="flex-end" bgcolor="#fff" padding="16px">
+                    <PaginationComponent variant='outlined' shape='rounded' onChange={handleChangePage} className={classes.Pagination} total={course.coursesLength ? course.coursesLength : 0}></PaginationComponent>
+                </Box>
+            }
             {/* Dialog create course */}
             <CourseFormModal open={open} hanldeSetOpen={setOpen} />
-        </div>
+        </div >
     )
 }
 

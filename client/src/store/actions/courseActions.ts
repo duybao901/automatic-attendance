@@ -1,9 +1,9 @@
 import { Dispatch } from 'react'
 import { Course } from '../../utils/interface'
-import { CREATE_COURSE, GET_COURSES, CourseType, LOADING_COURSE, CHANGE_PAGE } from '../types/courseTypes'
+import { CREATE_COURSE, GET_COURSES, CourseType, LOADING_COURSE, CHANGE_PAGE, DELETE_COURSE } from '../types/courseTypes'
 import { ALERT, AlertType } from '../types/alertTypes'
 import { AuthPayload } from '../types/authTypes'
-import { getAPI, postAPI } from '../../utils/fetchApi'
+import { deleteAPI, getAPI, postAPI } from '../../utils/fetchApi'
 
 export const getCourses = (auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
     if (!auth.access_token) return;
@@ -35,4 +35,16 @@ export const createCourse = (course: Course, auth: AuthPayload) => async (dispat
 
 export const changePageCourse = (page: number) => async (dispatch: Dispatch<CourseType | AlertType>) => {
     dispatch({ type: CHANGE_PAGE, payload: { page } });
+}
+
+export const deleteCourse = (course_id: string, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
+    if (!auth.access_token) return;
+
+    try {
+        const res = await deleteAPI(`course/${course_id}`, auth.access_token);
+        dispatch({ type: DELETE_COURSE, payload: { course_id } })
+        dispatch({ type: ALERT, payload: { success: res.data.msg } });
+    } catch (error: any) {
+        dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+    }
 }

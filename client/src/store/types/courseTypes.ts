@@ -3,6 +3,7 @@ export const GET_COURSES = "GET_COURSES"
 export const LOADING_COURSE = "LOADING_COURSE"
 export const CREATE_COURSE = "CREATE_COURSE"
 export const CHANGE_PAGE = 'CHANGE_PAGE'
+export const DELETE_COURSE = "DELETE_COURSE"
 
 export interface CoursePayload {
     courses?: Course[]
@@ -37,4 +38,11 @@ export interface ChangePage {
     }
 }
 
-export type CourseType = GetCourses | LoadingCourses | CreateCourse | ChangePage
+export interface DeleteCourse {
+    type: typeof DELETE_COURSE
+    payload: {
+        course_id: string
+    }
+}
+
+export type CourseType = GetCourses | LoadingCourses | CreateCourse | ChangePage | DeleteCourse

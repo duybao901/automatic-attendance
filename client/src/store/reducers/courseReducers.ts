@@ -1,4 +1,4 @@
-import { GET_COURSES, CoursePayload, CourseType, LOADING_COURSE, CREATE_COURSE, CHANGE_PAGE } from '../types/courseTypes'
+import { GET_COURSES, CoursePayload, CourseType, LOADING_COURSE, CREATE_COURSE, CHANGE_PAGE, DELETE_COURSE } from '../types/courseTypes'
 
 const initialState: CoursePayload = {
     courses: [],
@@ -43,6 +43,21 @@ const courseReducer = (state: CoursePayload = initialState, action: CourseType):
                 ...state,
                 page: action.payload.page,
                 result: state.courses?.slice((action.payload.page - 1) * ((state.limit) ? state.limit : 5), (action.payload.page as number) * (state.limit ? state.limit : 5))
+            }
+        }
+
+        case DELETE_COURSE: {
+            return {
+                ...state,
+                coursesLength: state.coursesLength && state.coursesLength - 1,
+                courses: state.courses?.filter(course => {
+                    return course._id !== action.payload.course_id
+                }),
+                result: state.courses?.filter(course => {
+                    return course._id !== action.payload.course_id
+                }).slice(
+                    ((state.page ? state.page : 1) - 1) * ((state.limit) ? state.limit : 5),
+                    ((state.page ? state.page : 1) * (state.limit ? state.limit : 5)))
             }
         }
 
