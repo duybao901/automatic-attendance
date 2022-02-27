@@ -11,7 +11,8 @@ import {
     SORT_BY_COURSE_NAME,
     SEARCH_BY_COURSE_NAME,
     SEARCH_BY_COURSE_CODE,
-    SEARCH_BY_COURSE_TEACHER
+    SEARCH_BY_COURSE_TEACHER,
+    UPDATE_COURSE
 } from '../types/courseTypes'
 
 const initialState: CoursePayload = {
@@ -73,7 +74,6 @@ const arrayFilter = (id: string, array: Course[]): Course[] => {
 }
 
 const arraySearch = (searching: SearchingCourse, array: Course[]): Course[] => {
-    console.log(array)
     const newArray: Course[] = array.filter(course => {
         if (searching.searchByCourseName !== "" && typeof searching.searchByCourseName === "string") {
             if (course.name?.toLocaleLowerCase().includes(searching.searchByCourseName.toLocaleLowerCase())) {
@@ -100,6 +100,16 @@ const arraySearch = (searching: SearchingCourse, array: Course[]): Course[] => {
         }
     })
 
+    return newArray
+}
+
+const arrayUpdate = (course: Course, array: Course[]): Course[] => {
+    const newArray: Course[] = array.map(item => {
+        if (item._id === course._id) {
+            return course
+        }
+        return item
+    })
     return newArray
 }
 
@@ -228,7 +238,6 @@ const courseReducer = (state: CoursePayload = initialState, action: CourseType):
                 result: arraySlice(initialState?.page as number, state.limit as number, newCourse as Course[])
             }
         }
-
         case SEARCH_BY_COURSE_CODE: {
 
             if (state.searching) {
@@ -270,7 +279,6 @@ const courseReducer = (state: CoursePayload = initialState, action: CourseType):
                 result: arraySlice(initialState?.page as number, state.limit as number, newCourse as Course[])
             }
         }
-
         case SEARCH_BY_COURSE_TEACHER: {
 
             if (state.searching) {
@@ -281,7 +289,7 @@ const courseReducer = (state: CoursePayload = initialState, action: CourseType):
 
                 if (action.payload.courseTeacher === "" &&
                     state.searching.searchByCourseCode === ""
-                    && state.searching.searchByCourseTeacher === "") {
+                    && state.searching.searchByCourseName === "") {
                     return {
                         ...state,
                         searching,
@@ -311,6 +319,21 @@ const courseReducer = (state: CoursePayload = initialState, action: CourseType):
                 coursesSearch: newCourse,
                 page: initialState?.page as number,
                 result: arraySlice(initialState?.page as number, state.limit as number, newCourse as Course[])
+            }
+        }
+        case UPDATE_COURSE: {
+
+            const newCourse = arrayUpdate(action.payload.course, state.courses as Course[]);
+
+            // Kiem tra co dang search khong
+            const courses = state.searching && state.searching.onSearch ?
+                arrayUpdate(action.payload.course, state.coursesSearch as Course[]) :
+                newCourse as Course[]
+            return {
+                ...state,
+                courses: state.courses && sortBy(state.sorting as SortingCourse, newCourse),
+                result: arraySlice(state.page as number, state.limit as number, sortBy(state?.sorting as SortingCourse, courses)),
+                coursesSearch: [...courses]
             }
         }
 

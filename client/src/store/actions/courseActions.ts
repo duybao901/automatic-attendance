@@ -9,11 +9,12 @@ import {
     SEARCH_BY_COURSE_NAME,
     SEARCH_BY_COURSE_CODE,
     SEARCH_BY_COURSE_TEACHER,
+    UPDATE_COURSE,
 }
     from '../types/courseTypes'
 import { ALERT, AlertType } from '../types/alertTypes'
 import { AuthPayload } from '../types/authTypes'
-import { deleteAPI, getAPI, postAPI } from '../../utils/fetchApi'
+import { deleteAPI, getAPI, postAPI, putAPI } from '../../utils/fetchApi'
 
 export const getCourses = (auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
     if (!auth.access_token) return;
@@ -43,6 +44,19 @@ export const createCourse = (course: Course, auth: AuthPayload) => async (dispat
 
 }
 
+export const updateCourse = (course: Course, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
+    if (!auth.access_token) return;
+    console.log(course)
+    const { name, courseCode, credit, yearStart, yearEnd, semester } = course;
+    try {
+        const res = await putAPI(`update_course/${course._id}`, { name, courseCode, credit, yearStart, yearEnd, semester }, auth.access_token);
+        dispatch({ type: UPDATE_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } })
+        dispatch({ type: ALERT, payload: { success: res.data.msg } })
+    } catch (error: any) {
+        dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+    }
+}
+
 export const changePageCourse = (page: number) => async (dispatch: Dispatch<CourseType | AlertType>) => {
     dispatch({ type: CHANGE_PAGE, payload: { page } });
 }
@@ -58,7 +72,7 @@ export const deleteCourse = (course_id: string, auth: AuthPayload) => async (dis
         dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
     }
 }
-
+// Sort
 export const sortByDate = (sort: "asc" | "desc") => async (dispatch: Dispatch<CourseType>) => {
     dispatch({ type: SORT_BY_DATE, payload: { sort } });
 }
@@ -80,4 +94,5 @@ export const searchByCourseCode = (search: string) => async (dispatch: Dispatch<
 export const searchByCourseTeacher = (search: string) => async (dispatch: Dispatch<CourseType>) => {
     dispatch({ type: SEARCH_BY_COURSE_TEACHER, payload: { courseTeacher: search } });
 }
+
 

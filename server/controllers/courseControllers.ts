@@ -49,6 +49,22 @@ class CourseController {
             return res.status(500).json({ msg: error.message })
         }
     }
+
+    async updateCourse(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const { name, credit, yearStart, yearEnd, courseCode, semester } = req.body;
+
+            const course = await Course.findByIdAndUpdate(id, {
+                name, semester, credit, yearStart, yearEnd, courseCode,
+            }, { new: true });
+
+            return res.json({ msg: "Cập nhật môn học thành công", course: { ...course._doc } })
+
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
 }
 
 export default new CourseController;

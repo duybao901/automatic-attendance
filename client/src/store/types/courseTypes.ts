@@ -9,6 +9,7 @@ export const SEARCH_BY_COURSE_CODE = "SEARCH_BY_COURSE_CODE"
 export const SEARCH_BY_COURSE_TEACHER = "SEARCH_BY_COURSE_TEACHER"
 export const SORT_BY_DATE = "SORT_BY_DATE"
 export const SORT_BY_COURSE_NAME = "SORT_BY_COURSE_NAME"
+export const UPDATE_COURSE = "UPDATE_COURSE"
 
 export interface CoursePayload {
     courses?: Course[]
@@ -89,8 +90,15 @@ export interface searcgByCourseTeacher {
     }
 }
 
+export interface updateCourse {
+    type: typeof UPDATE_COURSE,
+    payload: {
+        course: Course
+    }
+}
+
 export type CourseType =
     GetCourses | LoadingCourses | CreateCourse |
     ChangePage | DeleteCourse | SorseByDate |
     SorseByCourseName | searchByCourseName |
-    searchByCourseCode | searcgByCourseTeacher
+    searchByCourseCode | searcgByCourseTeacher | updateCourse

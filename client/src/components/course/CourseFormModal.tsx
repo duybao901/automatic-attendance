@@ -1,9 +1,9 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import "./CourseFormModal.scss"
 import { FormSubmit, InputChange, RootStore, ErrorCourse } from '../../utils/interface';
 import { Course } from '../../utils/interface'
 import { useDispatch, useSelector } from 'react-redux'
-import { createCourse } from '../../store/actions/courseActions'
+import { createCourse, updateCourse } from '../../store/actions/courseActions'
 import Loading from '../globals/loading/Loading';
 // MUI
 import Box from '@mui/material/Box';
@@ -23,6 +23,9 @@ import { validCreateCourse } from '../../utils/valid';
 interface CourseFormModalProps {
     open: boolean
     hanldeSetOpen: Dispatch<SetStateAction<boolean>>
+    onEdit?: Course | null
+    setOnEdit: Dispatch<SetStateAction<Course | null>>
+
 }
 
 const useStyles = makeStyles({
@@ -58,7 +61,9 @@ const useStyles = makeStyles({
 });
 
 
-const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen }) => {
+const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, onEdit, setOnEdit }) => {
+
+
 
     const dispatch = useDispatch();
     const { auth } = useSelector((state: RootStore) => state)
@@ -123,27 +128,44 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen }
     const handleSubmit = async (e: FormSubmit) => {
 
         e.preventDefault();
-
-        let errorCourse: ErrorCourse = {};
-        errorCourse = validCreateCourse(course);
-
-        // Check error
-        if (Object.keys(errorCourse).length > 0) {
-            setErrorCourse(errorCourse);
-            return;
-        } else {
-            // Submit form to back-end
-            setLoading(true);
-            await dispatch(createCourse(course, auth))
+        setLoading(true);
+        if (onEdit) {
+            await dispatch(updateCourse(course, auth))
             setLoading(false)
-            setCourse(initialCourse)
+        } else {
+            let errorCourse: ErrorCourse = {};
+            errorCourse = validCreateCourse(course);
+
+            // Check error
+            if (Object.keys(errorCourse).length > 0) {
+                setErrorCourse(errorCourse);
+                return;
+            } else {
+                // Submit form to back-end
+
+                await dispatch(createCourse(course, auth))
+                setLoading(false)
+                setCourse(initialCourse)
+            }
         }
+
     }
 
     const handleCloseModal = () => {
         hanldeSetOpen(!open)
         setCourse(initialCourse)
+        setOnEdit(null)
     }
+
+    // dat gia tri dang cap nhat
+    useEffect(() => {
+        if (onEdit) {
+            setCourse(onEdit)
+        } else {
+            setCourse(initialCourse)
+        }
+    }, [onEdit])
+
 
     return <Modal
         open={open}
@@ -216,22 +238,24 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen }
 
                 <div className='modal__control'>
                     <div>
-                        <Box mr={1}>
-                            <PrimaryTooltip title='Làm mới'>
-                                <Button variant='contained' onClick={() => setCourse(initialCourse)} color='success' className={classes.Button}><p style={{ textTransform: "capitalize" }}>Làm mới</p></Button>
-                            </PrimaryTooltip>
-                        </Box>
+                        {
+                            !onEdit && <Box mr={1}>
+                                <PrimaryTooltip title='Làm mới'>
+                                    <Button variant='contained' onClick={() => setCourse(initialCourse)} color='success' className={classes.Button}><p style={{ textTransform: "capitalize" }}>Làm mới</p></Button>
+                                </PrimaryTooltip>
+                            </Box>
+                        }
                     </div>
                     <Box display="flex">
                         <Box mr={1}>
                             <PrimaryTooltip title='Huỷ tạo'>
-                                <Button variant='contained' onClick={handleCloseModal} color='error' className={classes.Button}><p style={{ textTransform: "capitalize" }}>Huỷ</p></Button>
+                                <Button variant='contained' onClick={handleCloseModal} color='error' className={classes.Button}><p style={{ textTransform: "capitalize" }}>{onEdit ? "Huỷ cập nhật" : "Huỷ"}</p></Button>
                             </PrimaryTooltip>
                         </Box>
 
                         <Box>
                             <PrimaryTooltip title="Tạo khoá học">
-                                <Button type="submit" variant='contained' className={classes.Button}>{loading ? <Loading type='small' /> : <p style={{ textTransform: "capitalize" }}>Tạo</p>}</Button>
+                                <Button type="submit" variant='contained' className={classes.Button}>{loading ? <Loading type='small' /> : <p style={{ textTransform: "capitalize" }}>{onEdit ? "Cập nhật" : "Tạo"}</p>}</Button>
                             </PrimaryTooltip>
                         </Box>
                     </Box>

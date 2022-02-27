@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import "./CourseBody.scss"
 import { useSelector, useDispatch } from 'react-redux'
-import { InputChange, RootStore } from '../../utils/interface'
+import { InputChange, RootStore, Course } from '../../utils/interface'
 import dayjs from 'dayjs'
 import PaginationComponent from '../globals/pagination/Pagination'
 import { changePageCourse, deleteCourse, sortByCourseName, sortByDate, searchByCourseName, searchByCourseCode, searchByCourseTeacher } from '../../store/actions/courseActions'
@@ -86,9 +86,10 @@ const CourseBody = () => {
     const [openDialog, setOpenDialog] = useState<any>({});
     const [sordByDate, setSortByDate] = useState<"asc" | "desc">("desc");
     const [sordByCourseName, setSortByCourseName] = useState<"asc" | "desc">("asc");
+    const [onEdit, setOnEdit] = useState<Course | null>({});
 
-
-    const handleClickOpen = () => {
+    const handleClickOpen = (course: Course | null) => {
+        setOnEdit(course)
         setOpen(true);
     };
 
@@ -121,7 +122,6 @@ const CourseBody = () => {
     }
 
     const hanldeSortByDate = (sort: 'asc' | 'desc') => {
-        console.log(sort)
         setSortByDate(sort);
         dispatch(sortByDate(sort));
     }
@@ -161,7 +161,7 @@ const CourseBody = () => {
                 <div className="course__control-right">
                     <PrimaryTooltip title="Thêm môn học">
                         <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                            <Button color="primary" className={classes.ButtonAdd} onClick={handleClickOpen}>
+                            <Button color="primary" className={classes.ButtonAdd} onClick={() => handleClickOpen(null)}>
                                 <i className='bx bx-plus'></i>
                                 Thêm môn học
                             </Button>
@@ -171,6 +171,7 @@ const CourseBody = () => {
             </div>
             <TableContainer component={Paper} className={classes.TableContainer}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    {/* Table Head */}
                     <TableHead>
                         <TableRow>
                             <TableCell align="center" className={classes.TableCellHead}>STT</TableCell>
@@ -217,6 +218,8 @@ const CourseBody = () => {
                             <TableCell align="left" className={classes.TableCellHead}>Hành động</TableCell>
                         </TableRow>
                     </TableHead>
+
+                    {/* Table Body */}
                     <TableBody>
                         {/* Loading */}
                         <TableRow>
@@ -233,7 +236,6 @@ const CourseBody = () => {
 
                             }
                         </TableRow>
-
                         <TableRow>
                             {
                                 (courses?.coursesSearch && courses.coursesSearch.length === 0 && courses.loading !== true && courses.searching?.onSearch === true)
@@ -243,7 +245,6 @@ const CourseBody = () => {
 
                             }
                         </TableRow>
-
                         {
                             courses.result?.map((course, index) => {
                                 return <TableRow
@@ -272,7 +273,7 @@ const CourseBody = () => {
                                                     // admin hoac teacher tao thi moi co the chinh sua hoac xoa
                                                     (auth.user?.role === 'admin' || auth.user?._id === course.teacher?._id) && <React.Fragment>
                                                         <PrimaryTooltip title="Chỉnh sửa">
-                                                            <Button className={classes.Button} ><i className='bx bxs-edit-alt' style={{ fontSize: "2rem" }}></i></Button>
+                                                            <Button onClick={() => handleClickOpen(course)} className={classes.Button} ><i className='bx bxs-edit-alt' style={{ fontSize: "2rem" }}></i></Button>
                                                         </PrimaryTooltip>
                                                         <PrimaryTooltip title="Xoá">
                                                             <Button onClick={() => handleClickOpenDialog(course?._id as string)} className={classes.Button} color="error">  <i style={{ fontSize: "2rem" }} className='bx bx-x'></i></Button>
@@ -320,7 +321,7 @@ const CourseBody = () => {
                 </Box>
             }
             {/* Dialog create course */}
-            <CourseFormModal open={open} hanldeSetOpen={setOpen} />
+            <CourseFormModal open={open} hanldeSetOpen={setOpen} onEdit={onEdit} setOnEdit={setOnEdit} />
         </div >
     )
 }
