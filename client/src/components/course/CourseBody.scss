@@ -3,6 +3,9 @@
 
 .course__body {
     padding: 20px;
+    & .course-name{
+        min-width: 200px !important;
+    }
     & .course__control {
         display: flex;
         justify-content: space-between;

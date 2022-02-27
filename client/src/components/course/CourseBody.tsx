@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import "./CourseBody.scss"
 import { useSelector, useDispatch } from 'react-redux'
-import { RootStore } from '../../utils/interface'
+import { InputChange, RootStore } from '../../utils/interface'
 import dayjs from 'dayjs'
 import PaginationComponent from '../globals/pagination/Pagination'
-import { changePageCourse, deleteCourse } from '../../store/actions/courseActions'
+import { changePageCourse, deleteCourse, sortByCourseName, sortByDate, searchByCourseName, searchByCourseCode, searchByCourseTeacher } from '../../store/actions/courseActions'
 import Loading from '../globals/loading/Loading'
 // MUI
 import Table from '@mui/material/Table';
@@ -22,9 +22,6 @@ import CourseFormModal from './CourseFormModal'
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -80,13 +77,16 @@ const CourseBody = () => {
 
     const dispatch = useDispatch()
     const classes = useStyles()
-    const { course, auth } = useSelector((state: RootStore) => state)
+    const { course: courses, auth } = useSelector((state: RootStore) => state)
     const [searchByName, setSearchByName] = useState<string>('')
     const [searchByCode, setSearchByCode] = useState<string>('')
-    const [searchByNameTeacher, setSearchByNameTeacher] = useState<string>('')
+    const [searchByNameTeacher, setCourseByNameTeacher] = useState<string>('')
     const [loadingDeleteCourse, setLoadingDeleteCourse] = useState<string>('');
     const [open, setOpen] = useState<boolean>(false);
     const [openDialog, setOpenDialog] = useState<any>({});
+    const [sordByDate, setSortByDate] = useState<"asc" | "desc">("desc");
+    const [sordByCourseName, setSortByCourseName] = useState<"asc" | "desc">("asc");
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -115,20 +115,46 @@ const CourseBody = () => {
         });
     };
 
+    const handleSortByCourseName = (sort: 'asc' | 'desc') => {
+        setSortByCourseName(sort);
+        dispatch(sortByCourseName(sort));
+    }
+
+    const hanldeSortByDate = (sort: 'asc' | 'desc') => {
+        console.log(sort)
+        setSortByDate(sort);
+        dispatch(sortByDate(sort));
+    }
+
+    const handleSearchByCourseName = (e: InputChange) => {
+        setSearchByName(e.target.value)
+        dispatch(searchByCourseName(e.target.value as string))
+    }
+
+    const handleSearchByCourseCode = (e: InputChange) => {
+        setSearchByCode(e.target.value)
+        dispatch(searchByCourseCode(e.target.value as string))
+    }
+
+    const handleSearchByCourseTeacher = (e: InputChange) => {
+        setCourseByNameTeacher(e.target.value)
+        dispatch(searchByCourseTeacher(e.target.value as string))
+    }
+
     return (
         <div className="dashbroad__body course__body">
             <div className="course__control">
                 <form>
                     <div className="form-group">
-                        <input placeholder="Tìm kiếm theo tên môn học..." type="text" onChange={(e) => setSearchByName(e.target.value)} value={searchByName} />
+                        <input placeholder="Tìm kiếm theo tên môn học..." type="text" onChange={handleSearchByCourseName} value={searchByName} />
                         <i className='bx bx-search'></i>
                     </div>
                     <div className="form-group">
-                        <input placeholder="Tìm kiếm theo mã học phần..." type="text" onChange={(e) => setSearchByCode(e.target.value)} value={searchByCode} />
+                        <input placeholder="Tìm kiếm theo mã học phần..." type="text" onChange={handleSearchByCourseCode} value={searchByCode} />
                         <i className='bx bx-search'></i>
                     </div>
                     <div className="form-group">
-                        <input placeholder="Tìm kiếm theo giáo viên..." type="text" onChange={(e) => setSearchByNameTeacher(e.target.value)} value={searchByNameTeacher} />
+                        <input placeholder="Tìm kiếm theo giáo viên..." type="text" onChange={handleSearchByCourseTeacher} value={searchByNameTeacher} />
                         <i className='bx bx-search'></i>
                     </div>
                 </form>
@@ -147,14 +173,47 @@ const CourseBody = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
+                            <TableCell align="center" className={classes.TableCellHead}>STT</TableCell>
                             <TableCell className={classes.TableCellHead}>ID Khoá học</TableCell>
-                            <TableCell align="left" className={classes.TableCellHead}>Tên khoá học</TableCell>
-                            <TableCell align="left" className={classes.TableCellHead}>Mã học phần</TableCell>
-                            <TableCell align="left" className={classes.TableCellHead}>Tín chỉ</TableCell>
+                            <TableCell align="left" className={classes.TableCellHead}>
+                                <p style={{ display: "flex", alignItems: 'center' }}>
+                                    {
+                                        sordByCourseName === "asc" ? <i
+                                            onClick={() => handleSortByCourseName("desc")}
+                                            style={{ fontSize: "2rem", marginRight: '5px', cursor: "pointer" }}
+                                            className='bx bx-sort-a-z'></i>
+                                            :
+                                            <i
+                                                onClick={() => handleSortByCourseName("asc")}
+                                                className='bx bx-sort-z-a'
+                                                style={{ fontSize: "2rem", marginRight: '5px', cursor: "pointer" }}
+                                            ></i>
+                                    }
+                                    Tên khoá học
+                                </p>
+                            </TableCell>
+                            <TableCell align="center" className={classes.TableCellHead}>Mã học phần</TableCell>
+                            <TableCell align="center" className={classes.TableCellHead}>Tín chỉ</TableCell>
                             <TableCell align="left" className={classes.TableCellHead}>Giáo viên</TableCell>
                             <TableCell align="left" className={classes.TableCellHead}>Học kì</TableCell>
                             <TableCell align="left" className={classes.TableCellHead}>Năm học</TableCell>
-                            <TableCell align="left" className={classes.TableCellHead}>Ngày tạo</TableCell>
+                            <TableCell align="left" className={classes.TableCellHead} style={{ minWidth: "120px" }}>
+                                <p style={{ display: "flex", alignItems: 'center' }}>
+                                    {
+                                        sordByDate === "desc" ? <i
+                                            onClick={() => hanldeSortByDate("asc")}
+                                            style={{ fontSize: "2rem", marginRight: '5px', cursor: "pointer" }}
+                                            className='bx bx-sort-down'></i>
+                                            :
+                                            <i
+                                                onClick={() => hanldeSortByDate("desc")}
+                                                className='bx bx-sort-up'
+                                                style={{ fontSize: "2rem", marginRight: '5px', cursor: "pointer" }}
+                                            ></i>
+                                    }
+                                    Ngày tạo
+                                </p>
+                            </TableCell>
                             <TableCell align="left" className={classes.TableCellHead}>Hành động</TableCell>
                         </TableRow>
                     </TableHead>
@@ -162,28 +221,43 @@ const CourseBody = () => {
                         {/* Loading */}
                         <TableRow>
                             {
-                                course.loading && <TableCell> <h3 style={{ fontSize: "14px", padding: '10px', color: "#473fce" }}>Loading...</h3></TableCell>
+                                courses.loading && <TableCell> <h3 style={{ fontSize: "14px", padding: '10px', color: "#473fce" }}>Loading...</h3></TableCell>
                             }
                         </TableRow>
                         <TableRow>
                             {
-                                (course.coursesLength === 0 && course.loading !== true) && <TableCell scope="row"> <h3 style={{ fontSize: "14px", padding: '10px', color: "#473fce" }}>Chưa có môn học nào được thêm</h3></TableCell>
+                                (courses.coursesLength === 0 && courses.loading !== true && courses.searching?.onSearch === false)
+                                && <TableCell scope="row">
+                                    <h3 style={{ fontSize: "14px", padding: '10px', color: "#473fce" }}>Chưa có môn học nào được thêm</h3>
+                                </TableCell>
+
+                            }
+                        </TableRow>
+
+                        <TableRow>
+                            {
+                                (courses?.coursesSearch && courses.coursesSearch.length === 0 && courses.loading !== true && courses.searching?.onSearch === true)
+                                && <TableCell scope="row">
+                                    <h3 style={{ fontSize: "14px", padding: '10px', color: "#473fce" }}>Không tìm thấy môn học hợp lệ</h3>
+                                </TableCell>
+
                             }
                         </TableRow>
 
                         {
-                            course.result?.map(course => {
+                            courses.result?.map((course, index) => {
                                 return <TableRow
                                     key={course._id}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
+                                    <TableCell className={classes.TableCellBody} align='center' component="th" scope="row">{(courses.page && courses.limit) && ((courses.page - 1) * courses.limit) + index + 1}</TableCell>
                                     <TableCell className={classes.TableCellBodyId} component="th" scope="row">{course._id}</TableCell>
                                     <TableCell className={`${classes.TableCellBody} course-name`} align="left">{course.name}</TableCell>
                                     <TableCell className={classes.TableCellBody} align="center" style={{ textTransform: "uppercase" }}>{course.courseCode}</TableCell>
                                     <TableCell className={classes.TableCellBody} align="center">{course.credit}</TableCell>
                                     <TableCell className={classes.TableCellBody} align="left"><h3>{course.teacher?.name}</h3> ({course.teacher?.account})</TableCell>
                                     <TableCell className={classes.TableCellBody} align="center">{course.semester}</TableCell>
-                                    <TableCell className={classes.TableCellBody} align="left">
+                                    <TableCell className={classes.TableCellBody} align="left" style={{ width: "200px" }}>
                                         {dayjs(course.yearStart).format("DD/MM/YYYY")} - {dayjs(course.yearEnd).format("DD/MM/YYYY")}
                                     </TableCell>
                                     <TableCell className={classes.TableCellBody} align="left">{dayjs(course.createdAt).format("DD/MM/YYYY")}</TableCell>
@@ -241,8 +315,8 @@ const CourseBody = () => {
                 </Table>
             </TableContainer>
             {
-                course.coursesLength !== 0 && <Box display='flex' justifyContent="flex-end" bgcolor="#fff" padding="16px">
-                    <PaginationComponent variant='outlined' shape='rounded' onChange={handleChangePage} className={classes.Pagination} total={course.coursesLength ? course.coursesLength : 0}></PaginationComponent>
+                courses.coursesLength !== 0 && <Box display='flex' justifyContent="flex-end" bgcolor="#fff" padding="16px">
+                    <PaginationComponent variant='outlined' shape='rounded' onChange={handleChangePage} className={classes.Pagination} total={courses.coursesLength ? courses.coursesLength : 0}></PaginationComponent>
                 </Box>
             }
             {/* Dialog create course */}

@@ -27,7 +27,7 @@ function App() {
 
     useEffect(() => {
         dispatch(getCourses(auth))
-    }, [dispatch,auth])
+    }, [dispatch, auth])
 
     return <div className="App">
         {/* Alert */}
@@ -53,13 +53,15 @@ function App() {
                 <div className={`main ${sidebar.open ? "" : "pd-left"}`}>
 
                     {auth.access_token && <DashBroadHeader />}
-                    <Switch>
-                        <Route path="/" exact component={auth.access_token ? Home : Login}></Route>
-                        <Route path='/sign-up' component={Register} exact />
+                    <div className={auth.access_token ? "pd-top" : ""}>
+                        <Switch>
+                            <Route path="/" exact component={auth.access_token ? Home : Login}></Route>
+                            <Route path='/sign-up' component={Register} exact />
 
-                        <PrivateRouter path="/:page" exact component={PageRender}></PrivateRouter>
-                        <PrivateRouter path="/:page/:slug" exact component={PageRender}></PrivateRouter>
-                    </Switch>
+                            <PrivateRouter path="/:page" exact component={PageRender}></PrivateRouter>
+                            <PrivateRouter path="/:page/:slug" exact component={PageRender}></PrivateRouter>
+                        </Switch>
+                    </div>
                 </div>
             </Router>
         </div>

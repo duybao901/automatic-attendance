@@ -1,17 +1,26 @@
-import { Course } from '../../utils/interface'
+import { Course, SortingCourse, SearchingCourse } from '../../utils/interface'
 export const GET_COURSES = "GET_COURSES"
 export const LOADING_COURSE = "LOADING_COURSE"
 export const CREATE_COURSE = "CREATE_COURSE"
 export const CHANGE_PAGE = 'CHANGE_PAGE'
 export const DELETE_COURSE = "DELETE_COURSE"
+export const SEARCH_BY_COURSE_NAME = "SEARCH_BY_COURSE_NAME"
+export const SEARCH_BY_COURSE_CODE = "SEARCH_BY_COURSE_CODE"
+export const SEARCH_BY_COURSE_TEACHER = "SEARCH_BY_COURSE_TEACHER"
+export const SORT_BY_DATE = "SORT_BY_DATE"
+export const SORT_BY_COURSE_NAME = "SORT_BY_COURSE_NAME"
 
 export interface CoursePayload {
     courses?: Course[]
+    coursesSearch?: Course[]
     loading?: boolean
     page?: number
     coursesLength?: number | 0
     result?: Course[]
-    limit?: number
+    limit?: number,
+    sorting?: SortingCourse
+    searching?: SearchingCourse
+
 }
 
 export interface GetCourses {
@@ -45,4 +54,43 @@ export interface DeleteCourse {
     }
 }
 
-export type CourseType = GetCourses | LoadingCourses | CreateCourse | ChangePage | DeleteCourse
+export interface SorseByDate {
+    type: typeof SORT_BY_DATE,
+    payload: {
+        sort: "asc" | "desc"
+    }
+}
+
+export interface SorseByCourseName {
+    type: typeof SORT_BY_COURSE_NAME,
+    payload: {
+        sort: "asc" | "desc"
+    }
+}
+
+export interface searchByCourseName {
+    type: typeof SEARCH_BY_COURSE_NAME,
+    payload: {
+        courseName: string
+    }
+}
+
+export interface searchByCourseCode {
+    type: typeof SEARCH_BY_COURSE_CODE,
+    payload: {
+        courseCode: string
+    }
+}
+
+export interface searcgByCourseTeacher {
+    type: typeof SEARCH_BY_COURSE_TEACHER,
+    payload: {
+        courseTeacher: string
+    }
+}
+
+export type CourseType =
+    GetCourses | LoadingCourses | CreateCourse |
+    ChangePage | DeleteCourse | SorseByDate |
+    SorseByCourseName | searchByCourseName |
+    searchByCourseCode | searcgByCourseTeacher

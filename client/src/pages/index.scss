@@ -9,6 +9,9 @@
         height: $height-top-header;
         box-shadow: $box-shadow-1;
         margin-bottom: 2px;
+        position: fixed;
+        width: 100%;
+        background-color: $color-white;
         & i {
             color: rgb(100, 116, 139);
         }
@@ -22,7 +25,7 @@
         box-shadow: $box-shadow-1;
         margin-bottom: 2px;
         background-color: $color-white;
-        justify-content: space-between;
+        justify-content: space-between;        
         &-infor {
             display: flex;
             align-items: center;

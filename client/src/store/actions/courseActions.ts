@@ -1,6 +1,16 @@
 import { Dispatch } from 'react'
 import { Course } from '../../utils/interface'
-import { CREATE_COURSE, GET_COURSES, CourseType, LOADING_COURSE, CHANGE_PAGE, DELETE_COURSE } from '../types/courseTypes'
+import {
+    CREATE_COURSE,
+    GET_COURSES, CourseType,
+    LOADING_COURSE, CHANGE_PAGE,
+    DELETE_COURSE, SORT_BY_DATE,
+    SORT_BY_COURSE_NAME,
+    SEARCH_BY_COURSE_NAME,
+    SEARCH_BY_COURSE_CODE,
+    SEARCH_BY_COURSE_TEACHER,
+}
+    from '../types/courseTypes'
 import { ALERT, AlertType } from '../types/alertTypes'
 import { AuthPayload } from '../types/authTypes'
 import { deleteAPI, getAPI, postAPI } from '../../utils/fetchApi'
@@ -48,3 +58,26 @@ export const deleteCourse = (course_id: string, auth: AuthPayload) => async (dis
         dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
     }
 }
+
+export const sortByDate = (sort: "asc" | "desc") => async (dispatch: Dispatch<CourseType>) => {
+    dispatch({ type: SORT_BY_DATE, payload: { sort } });
+}
+
+export const sortByCourseName = (sort: "asc" | "desc") => async (dispatch: Dispatch<CourseType>) => {
+    dispatch({ type: SORT_BY_COURSE_NAME, payload: { sort } })
+}
+
+// Search
+export const searchByCourseName = (search: string) => async (dispatch: Dispatch<CourseType>) => {
+    dispatch({ type: SEARCH_BY_COURSE_NAME, payload: { courseName: search } });
+}
+
+export const searchByCourseCode = (search: string) => async (dispatch: Dispatch<CourseType>) => {
+    dispatch({ type: SEARCH_BY_COURSE_CODE, payload: { courseCode: search } });
+}
+
+
+export const searchByCourseTeacher = (search: string) => async (dispatch: Dispatch<CourseType>) => {
+    dispatch({ type: SEARCH_BY_COURSE_TEACHER, payload: { courseTeacher: search } });
+}
+

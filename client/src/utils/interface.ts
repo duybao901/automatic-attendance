@@ -63,3 +63,16 @@ export interface ErrorCourse {
     errorCourseCode?: string
     errorCredit?: string
 }
+
+export interface SortingCourse {
+    onSort: 'course_name' | 'course_date',
+    sortBy: "name" | "courseCode" | "credit" | "yearStart" | "yearEnd" | "semester" | "date",
+    sort: "asc" | "desc"
+}
+
+export interface SearchingCourse {
+    searchByCourseName?: string
+    searchByCourseCode?: string
+    searchByCourseTeacher?: string
+    onSearch?: true | false
+}
