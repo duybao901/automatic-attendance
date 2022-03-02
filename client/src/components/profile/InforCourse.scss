@@ -84,9 +84,8 @@
         }
     }
     @include MediaQuery(SM) {
-     
         &-list {
-            &-item{
+            &-item {
                 width: calc(100% - 20px);
             }
         }

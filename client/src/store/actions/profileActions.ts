@@ -1,9 +1,11 @@
 import { Dispatch } from "react";
 import { ALERT, AlertType } from '../types/alertTypes'
 import { AUTH, AuthPayload, AuthType } from '../types/authTypes'
-import { GET_USER_COURSE, ProfileType } from '../types/profileTypes'
+import { EDIT_USER_COURSE, GET_USER_COURSE, LOADING_USER_COURSE, ProfileType } from '../types/profileTypes'
 import { checkImageUpload, uploadImage } from '../../utils/imageHelper'
 import { putAPI, getAPI } from "../../utils/fetchApi";
+// import { Course } from "../../utils/interface";
+
 
 export const updateProfile = (name: string, file: File, auth: AuthPayload) => async (dispatch: Dispatch<AlertType | AuthType>) => {
     if (!auth.access_token || !auth.user) return
@@ -63,10 +65,17 @@ export const resetPassword = (password: string, auth: AuthPayload) => async (dis
 export const getUserCourse = (auth: AuthPayload, userId: string) => async (dispatch: Dispatch<ProfileType | AlertType>) => {
     if (!auth.access_token) return;
     try {
+        dispatch({ type: LOADING_USER_COURSE, payload: { loading: true } })
         const res = await getAPI(`user_course/${userId}`, auth.access_token)
         dispatch({ type: GET_USER_COURSE, payload: { courses: res.data.courses, result: res.data.result } })
+        dispatch({ type: LOADING_USER_COURSE, payload: { loading: false } })
+
     } catch (error: any) {
+        dispatch({ type: LOADING_USER_COURSE, payload: { loading: false } })
         return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
     }
 }
 
+export const editUserCourse = (course: any) => async (dispatch: Dispatch<ProfileType | AlertType>) => {
+    dispatch({ type: EDIT_USER_COURSE, payload: { course } })
+}

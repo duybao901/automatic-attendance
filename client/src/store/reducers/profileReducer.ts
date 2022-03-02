@@ -36,6 +36,26 @@ const profileReducer = (state: ProfilePayload = initalState, action: ProfileType
             }
         }
 
+        case types.EDIT_USER_COURSE: {
+            return {
+                ...state,
+                userCourse: state.userCourse && state.userCourse.map((course: Course) => {
+                    return course._id === action.payload.course._id ? action.payload.course : course
+                })
+            }
+        }
+
+        case types.DELETE_USER_COURSE: {
+            return {
+                ...state,
+                userCourse: state.userCourse && state.userCourse.filter((course: Course) => {
+                    return course._id !== action.payload.course_id
+                }),
+                result: state.result as number - 1
+
+            }
+        }
+
         default:
             return state;
     }

@@ -15,6 +15,7 @@ import {
 import { ALERT, AlertType } from '../types/alertTypes'
 import { AuthPayload } from '../types/authTypes'
 import { deleteAPI, getAPI, postAPI, putAPI } from '../../utils/fetchApi'
+import { DELETE_USER_COURSE, EDIT_USER_COURSE, ProfileType } from '../types/profileTypes'
 
 export const getCourses = (auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
     if (!auth.access_token) return;
@@ -44,13 +45,14 @@ export const createCourse = (course: Course, auth: AuthPayload) => async (dispat
 
 }
 
-export const updateCourse = (course: Course, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
+export const updateCourse = (course: Course, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | ProfileType>) => {
     if (!auth.access_token) return;
     console.log(course)
     const { name, courseCode, credit, yearStart, yearEnd, semester } = course;
     try {
         const res = await putAPI(`update_course/${course._id}`, { name, courseCode, credit, yearStart, yearEnd, semester }, auth.access_token);
         dispatch({ type: UPDATE_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } })
+        dispatch({ type: EDIT_USER_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } });
         dispatch({ type: ALERT, payload: { success: res.data.msg } })
     } catch (error: any) {
         dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
@@ -61,12 +63,13 @@ export const changePageCourse = (page: number) => async (dispatch: Dispatch<Cour
     dispatch({ type: CHANGE_PAGE, payload: { page } });
 }
 
-export const deleteCourse = (course_id: string, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
+export const deleteCourse = (course_id: string, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | ProfileType>) => {
     if (!auth.access_token) return;
 
     try {
         const res = await deleteAPI(`course/${course_id}`, auth.access_token);
         dispatch({ type: DELETE_COURSE, payload: { course_id } })
+        dispatch({ type: DELETE_USER_COURSE, payload: { course_id } })
         dispatch({ type: ALERT, payload: { success: res.data.msg } });
     } catch (error: any) {
         dispatch({ type: ALERT, payload: { error: error.response.data.msg } })

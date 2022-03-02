@@ -63,8 +63,6 @@ const useStyles = makeStyles({
 
 const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, onEdit, setOnEdit }) => {
 
-
-
     const dispatch = useDispatch();
     const { auth } = useSelector((state: RootStore) => state)
 
@@ -128,27 +126,30 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
     const handleSubmit = async (e: FormSubmit) => {
 
         e.preventDefault();
-        setLoading(true);
-        if (onEdit) {
-            await dispatch(updateCourse(course, auth))
-            handleCloseModal();
-            setLoading(false)
-        } else {
-            let errorCourse: ErrorCourse = {};
-            errorCourse = validCreateCourse(course);
 
-            // Check error
-            if (Object.keys(errorCourse).length > 0) {
-                setErrorCourse(errorCourse);
-                return;
+
+        let errorCourse: ErrorCourse = {};
+        errorCourse = validCreateCourse(course);
+
+        // Check error
+        if (Object.keys(errorCourse).length > 0) {
+            setErrorCourse(errorCourse);
+            return;
+        } else {
+            setLoading(true);
+            if (onEdit) {
+                // Submit form to update course
+                await dispatch(updateCourse(course, auth))
+                handleCloseModal();
+                setLoading(false)
             } else {
-                // Submit form to back-end
+                // Submit form create course
                 await dispatch(createCourse(course, auth))
                 setLoading(false)
                 setCourse(initialCourse)
+
             }
         }
-
     }
 
     const handleCloseModal = () => {

@@ -2,6 +2,8 @@ import { User, Course } from '../../utils/interface'
 export const GET_USER_COURSE = 'GET_USER_COURSE'
 export const LOADING_USER_COURSE = 'LOADING_USER_COURSE'
 export const UPDATE_USER_COURSE = 'UPDATE_USER_COURSE'
+export const EDIT_USER_COURSE = 'EDIT_USER_COURSE'
+export const DELETE_USER_COURSE = 'DELETE_USER_COURSE'
 
 export interface ProfilePayload {
     userInfor?: User
@@ -34,4 +36,18 @@ export interface UpdateUserCourse {
     }
 }
 
-export type ProfileType = GetUserCourse | LoadingUserCourse | UpdateUserCourse
+export interface EditUserCourse {
+    type: typeof EDIT_USER_COURSE,
+    payload: {
+        course: Course
+    }
+}
+
+export interface DeleteUserCourse  {
+    type: typeof DELETE_USER_COURSE,
+    payload: {
+        course_id: string
+    }
+}
+
+export type ProfileType = GetUserCourse | LoadingUserCourse | UpdateUserCourse | EditUserCourse | DeleteUserCourse

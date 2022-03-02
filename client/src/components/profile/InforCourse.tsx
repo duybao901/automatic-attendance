@@ -1,19 +1,15 @@
-import React, { Dispatch, useEffect } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import "./InforCourse.scss"
-import { User, RootStore } from '../../utils/interface'
+import { RootStore, Course } from '../../utils/interface'
 import { useSelector } from 'react-redux'
 import { getUserCourse } from '../../store/actions/profileActions'
 import { AuthPayload } from '../../store/types/authTypes';
-
+import { deleteCourse } from '../../store/actions/courseActions'
+import CourseFormModal from '../course/CourseFormModal';
+import MenuList from './MenuList';
 // MUI
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
-import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { makeStyles } from '@mui/styles';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import InfoIcon from '@mui/icons-material/Info';
+
 interface InforCourseProps {
   auth: AuthPayload
   id: string
@@ -29,7 +25,7 @@ const useStyle = makeStyles({
     fontFamily: "Inter !important",
     fontWeight: "500 !important",
     color: "#1e293b",
-    height:"40px !important",
+    height: "40px !important",
   },
   MenuItemDelete: {
     // color: "crimson !important"
@@ -40,21 +36,24 @@ const useStyle = makeStyles({
   },
   MenuIconDelete: {
     color: "crimson"
-  }
+  },
+  Button: {
+    fontSize: "1rem !important",
+    fontWeight: "600 !important",
+    height: "36px",
+    padding: "4px !important",
+
+  },
 })
 
 const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
 
   const classes = useStyle()
   const { profile } = useSelector((state: RootStore) => state)
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [openForm, setOpenForm] = useState<boolean>(false)
+  const [onEdit, setOnEdit] = useState<Course | null>({});
+
+
 
   useEffect(() => {
     if (auth.access_token) {
@@ -62,64 +61,55 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
     }
   }, [auth.user?._id, auth])
 
+  const handleEditCourse = (course: Course) => {
+    setOpenForm(true);
+    setOnEdit(course);
+
+  }
+
   return <div className="profile__course">
-    <div className="profile__course-list">
-      {
-        profile.userCourse && profile?.userCourse.map((course, index) => {
-          return <div className="profile__course-list-item" key={index}>
-            <div className="item__heading">
-              <h2 className='item__course-code'>
-                {course.courseCode}
-              </h2>
-              <IconButton
-                id="basic-button"
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-              >
-                <MoreVertIcon />
-              </IconButton>
-              <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                  'aria-labelledby': 'basic-button',
-                }}
-                className={classes.Menu}
-              >
-                <MenuItem className={classes.MenuItem} onClick={handleClose}>
-                  <InfoIcon className={classes.MenuIcon} /> Chi tiết
-                </MenuItem>
-                <MenuItem className={classes.MenuItem} onClick={handleClose}>
-                  <EditIcon className={classes.MenuIcon} /> Chỉnh sửa
-                </MenuItem >
-                <MenuItem className={`${classes.MenuItem} ${classes.MenuItemDelete}`} onClick={handleClose}>
-                  <DeleteIcon className={`${classes.MenuIcon} ${classes.MenuIconDelete}`} /> Xoá
-                </MenuItem>
-              </Menu>
-            </div>
-            <div className='item__course-student'>
-              <h3>
-                {
-                  course.students ? course.students.length : 0
-                }
-              </h3>
-              <span>
-                học viên
-              </span>
-            </div>
-            <h3 className="item__course-name">
-              {
-                course.name
-              }
-            </h3>
-          </div>
-        })
-      }
-    </div>
+
+    {
+      profile.loading === false && profile.result === 0 && <h2 style={{ padding: '10px 20px', fontSize: "1.4rem" }} className='loading-text'>
+        Bạn chưa có khóa học nào !
+      </h2>
+    }
+    {
+      profile.loading ? <h3 className="loading-text">
+        Loading...
+      </h3> :
+        <div className="profile__course-list">
+          {
+            profile.userCourse && profile?.userCourse.map((course, index) => {
+              return <div className="profile__course-list-item" key={index}>
+                {/* Form Course */}
+                <CourseFormModal open={openForm} hanldeSetOpen={setOpenForm} setOnEdit={setOnEdit} onEdit={onEdit} />
+                <div className="item__heading">
+                  <h2 className='item__course-code'>
+                    {course.courseCode}
+                  </h2>
+                  <MenuList course={course} classes={classes} handleEditCourse={handleEditCourse} />
+                </div>
+                <div className='item__course-student'>
+                  <h3>
+                    {
+                      course.students ? course.students.length : 0
+                    }
+                  </h3>
+                  <span>
+                    học viên
+                  </span>
+                </div>
+                <h3 className="item__course-name">
+                  {
+                    course.name
+                  }
+                </h3>
+              </div>
+            })
+          }
+        </div>
+    }
   </div>;
 };
 
