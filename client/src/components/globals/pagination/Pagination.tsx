@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Pagination from '@mui/material/Pagination';
 
 interface PaginationComponentProps {
+    page: number
     onChange: (event: React.ChangeEvent<unknown>, value: number) => void
     className?: string
     total: number
@@ -9,17 +10,16 @@ interface PaginationComponentProps {
     shape: "rounded" | "circular"
 }
 
-const PaginationComponent: React.FC<PaginationComponentProps> = ({ onChange, className, total, variant, shape }) => {
+const PaginationComponent: React.FC<PaginationComponentProps> = ({ onChange, page, className, total, variant, shape }) => {
 
     const [count, setCount] = useState<number>(0)
-
     useEffect(() => {
         let count = total < 5 ? 1 : (total % 5) === 0 ? Math.floor(total / 5) : Math.floor((total / 5) + 1)
         setCount(count)
     }, [total])
 
     return (
-        <Pagination onChange={onChange} className={className} count={count} variant={variant} shape={shape} />
+        <Pagination page={page} onChange={onChange} className={className} count={count} variant={variant} shape={shape} />
     )
 }
 

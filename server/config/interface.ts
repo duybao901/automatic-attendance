@@ -1,4 +1,5 @@
 import { Request } from 'express'
+import { Document } from 'mongoose'
 export interface UserLogin {
     account: string;
     password: string;
@@ -24,4 +25,16 @@ export interface DecodeToken {
 
 export interface RequestUser extends Request {
     user?: User
+}
+
+export interface ICourse extends Document {
+    _id: string
+    name: string
+    semester: string
+    yearStart: string
+    yearEnd: string
+    credit: number
+    courseCode: string
+    students: any[]
+    _doc: Document<ICourse>
 }

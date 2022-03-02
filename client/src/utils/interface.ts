@@ -54,6 +54,7 @@ export interface Course {
     updatedAt?: Date
     yearEnd?: string
     yearStart?: string
+    students?: any[]
     __v?: number
     _id?: string
 }

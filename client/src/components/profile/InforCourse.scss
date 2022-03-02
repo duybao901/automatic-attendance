@@ -1,0 +1,98 @@
+@import "../../stylesSass/variables";
+@import "../../stylesSass/mixin";
+.profile__course {
+    width: 50%;
+    &-list {
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        margin-left: -20px;
+        padding-left: 20px;
+        &-item {
+            width: calc(50% - 20px);
+            height: 200px;
+            background-color: $color-white;
+            box-shadow: $box-shadow-1;
+            margin-left: 20px;
+            margin-bottom: 25px;
+            border-radius: 20px;
+            overflow: hidden;
+            padding: 10px 20px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s linear;
+            &:hover {
+                box-shadow: $box-shadow-2;
+            }
+            cursor: pointer;
+            & .item__heading {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            & .item__course {
+                &-code {
+                    font-size: 1.6rem;
+                }
+                &-student {
+                    width: 100%;
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                    margin-top: -40px;
+                    h3 {
+                        font-size: 6.5rem;
+                        font-weight: 800;
+                        color: $color-primary;
+                    }
+                    span {
+                        font-size: 2rem;
+                        font-weight: 600;
+                        text-transform: capitalize;
+                        color: $color-primary;
+                    }
+                }
+                &-name {
+                    padding: 0 20px;
+                    margin-bottom: 10px;
+                    text-align: center;
+                    font-size: 1.6rem;
+                    font-weight: 500;
+                    text-transform: capitalize;
+                    color: $color-text;
+                    word-wrap: break-word;
+                    display: block;
+                    display: -webkit-box;
+                    max-width: 400px;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+    }
+    @include MediaQuery(MD) {
+        & {
+            width: 100%;
+        }
+        &-list {
+            margin-top: 20px;
+            padding-left: 0px !important;
+        }
+    }
+    @include MediaQuery(SM) {
+     
+        &-list {
+            &-item{
+                width: calc(100% - 20px);
+            }
+        }
+    }
+}
+
+.css-1poimk-MuiPaper-root-MuiMenu-paper-MuiPaper-root-MuiPopover-paper {
+    box-shadow: $box-shadow-1 !important;
+}

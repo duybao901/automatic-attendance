@@ -131,6 +131,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
         setLoading(true);
         if (onEdit) {
             await dispatch(updateCourse(course, auth))
+            handleCloseModal();
             setLoading(false)
         } else {
             let errorCourse: ErrorCourse = {};
@@ -142,7 +143,6 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                 return;
             } else {
                 // Submit form to back-end
-
                 await dispatch(createCourse(course, auth))
                 setLoading(false)
                 setCourse(initialCourse)

@@ -12,6 +12,7 @@
         position: fixed;
         width: 100%;
         background-color: $color-white;
+        z-index: 99;
         & i {
             color: rgb(100, 116, 139);
         }

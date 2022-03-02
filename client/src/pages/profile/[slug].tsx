@@ -4,7 +4,7 @@ import DashBroadUser from '../../components/dashbroad/DashBroadUser';
 import Infor from '../../components/profile/Infor';
 import { RootStore, Params } from '../../utils/interface'
 import { useParams } from 'react-router-dom'
-import Course from '../../components/profile/Course';
+import InforCourse from '../../components/profile/InforCourse';
 
 const Profile = () => {
 
@@ -16,7 +16,7 @@ const Profile = () => {
         <DashBroadUser auth={auth} />
         <div className="profile__container">
             <Infor id={slug} auth={auth} dispatch={dispatch} />
-            <Course />
+            <InforCourse id={slug} auth={auth} dispatch={dispatch}/>
         </div>
     </div>;
 };

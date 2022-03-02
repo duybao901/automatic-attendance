@@ -1,48 +1,38 @@
-import { ProfilePayload, ProfileType } from '../types/profileTypes'
+import { ProfilePayload, ProfileType, UPDATE_USER_COURSE } from '../types/profileTypes'
 import * as types from '../types/profileTypes'
+import { Course } from '../../utils/interface'
 
 const initalState: ProfilePayload = {
-    ids: [],
-    users: [],
+    userCourse: [],
+    page: 1,
     loading: false,
-    course: []
+    stopScrol: false,
+    result: 0
 }
 
-export const profileReducer = (state: ProfilePayload = initalState, action: ProfileType): ProfilePayload => {
+const profileReducer = (state: ProfilePayload = initalState, action: ProfileType): ProfilePayload => {
     switch (action.type) {
 
-        case types.LOADING_PROFILE: {
+        // Lay cac mon hoc cua user
+        case types.GET_USER_COURSE: {
             return {
                 ...state,
-                loading: action.payload
+                userCourse: [...action.payload.courses],
+                result: action.payload.result
             }
         }
 
-        case types.GET_ID: {
-            if (typeof state.ids === "undefined") {
-                return {
-                    ...state,
-                    ids: [action.payload.id]
-                }
-            } else {
-                return {
-                    ...state,
-                    ids: [...state.ids, action.payload.id]
-                }
+        case types.LOADING_USER_COURSE: {
+            return {
+                ...state,
+                loading: action.payload.loading
             }
         }
 
-        case types.GET_PROFILE_USER: {
-            if (typeof state.users === "undefined") {
-                return {
-                    ...state,
-                    users: [action.payload.user]
-                }
-            } else {
-                return {
-                    ...state,
-                    users: [...state.users, action.payload.user]
-                }
+        case types.UPDATE_USER_COURSE: {
+            return {
+                ...state,
+                userCourse: [...state.userCourse as Course[], ...action.payload.newCourse as Course[]]
             }
         }
 
@@ -50,3 +40,5 @@ export const profileReducer = (state: ProfilePayload = initalState, action: Prof
             return state;
     }
 }
+
+export default profileReducer;

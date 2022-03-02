@@ -10,6 +10,7 @@ $color-dander: #dc2626;
 
 $color-text: #1e293b;
 $color-text-secondary: rgb(148, 163, 184);
+
 $color-text-hint: rgb(148, 163, 184);
 $color-text-hint-hover: #eaedf1;
 $color-text-hint-hover-active: rgb(222, 224, 226);
@@ -25,6 +26,7 @@ $XL: 1169px;
 
 $width-sidebar: 280px;
 $box-shadow-1: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+$box-shadow-2: 0 2px 6px 0 rgb(0 0 0 / 0.15), 0 2px 4px -2px rgb(0 0 0 / 0.15);
 $height-top-header: 60px;
 $height-top-user: 150px;
 $height-body: calc(100vh - $height-top-user - $height-top-header - 2px - 2px);

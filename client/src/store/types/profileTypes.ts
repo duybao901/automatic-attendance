@@ -1,33 +1,37 @@
-import { User } from '../../utils/interface'
-export const GET_PROFILE_USER = "GET_PROFILE_USER"
-export const LOADING_PROFILE = "LOADING_PROFILE"
-export const GET_ID = "GET_ID"
-
+import { User, Course } from '../../utils/interface'
+export const GET_USER_COURSE = 'GET_USER_COURSE'
+export const LOADING_USER_COURSE = 'LOADING_USER_COURSE'
+export const UPDATE_USER_COURSE = 'UPDATE_USER_COURSE'
 
 export interface ProfilePayload {
-    ids?: string[] 
+    userInfor?: User
+    userCourse?: Course[]
+    page?: number
     loading?: boolean
-    users?: User[]
-    course?: any[]
+    result?: number
+    stopScrol?: false
 }
 
-export interface GetProfileUser {
-    type: typeof GET_PROFILE_USER,
+export interface GetUserCourse {
+    type: typeof GET_USER_COURSE
     payload: {
-        user: User
+        courses: Course[]
+        result: number
     }
 }
 
-export interface GetId {
-    type: typeof GET_ID
+export interface LoadingUserCourse {
+    type: typeof LOADING_USER_COURSE
     payload: {
-        id: string
+        loading: boolean
     }
 }
 
-export interface LoadingProfile {
-    type: typeof LOADING_PROFILE
-    payload: boolean
+export interface UpdateUserCourse {
+    type: typeof UPDATE_USER_COURSE,
+    payload: {
+        newCourse: Course[]
+    }
 }
 
-export type ProfileType = GetProfileUser | GetId | LoadingProfile
+export type ProfileType = GetUserCourse | LoadingUserCourse | UpdateUserCourse

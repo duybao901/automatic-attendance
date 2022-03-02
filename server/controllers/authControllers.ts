@@ -90,7 +90,7 @@ class AuthController {
             if (!decode) return res.status(400).json({ msg: "Please login now." });
 
 
-            const user = await Users.findById(decode.id);
+            const user = await Users.findById(decode.id)
             if (!user) return res.status(400).json({ msg: "This account is not exist." })
 
             const access_token = generateAccessToken({ id: user._id });
