@@ -10,6 +10,11 @@ const initalState: ProfilePayload = {
     limit: 4,
     loading: false,
     result: 0,
+    searching: {
+        searchByCourseCode: "",
+        searchByCourseName: "",
+        onSearch: false
+    },
     stopLoadMore: false
 }
 
@@ -75,70 +80,72 @@ const profileReducer = (state: ProfilePayload = initalState, action: ProfileType
 
         case types.SEARCH_BY_USER_COURSE_NAME: {
 
-            if (state.searching) {
-                const searching: SearchingCourse = {
-                    ...state.searching,
-                    onSearch: false
+            const { searchByCourseCode } = state.searching as SearchingCourse
+
+            let searching: SearchingCourse = {
+                ...state.searching,
+                onSearch:
+                    false
+            }
+            if (action.payload.search === "" && searchByCourseCode === "") {
+                return {
+                    ...state,
+                    searching: {
+                        ...searching,
+                        searchByCourseName: "",
+                        onSearch: false
+                    },
+                    userCourseSearch: [],
                 }
-                if (action.payload.search === "" &&
-                    state.searching.searchByCourseCode === "") {
-                    return {
-                        ...state,
-                        searching: {
-                            ...searching,
-                            searchByCourseName: "",
-                        },
-                        userCourseSearch: [],
-                        
-                    }
+            } else {
+                searching = {
+                    ...state.searching,
+                    onSearch: true,
+                }
+                const newCourse = arraySearch(searching, state?.userCourse as Course[])
+
+                return {
+                    ...state,
+                    searching,
+                    userCourseSearch: newCourse,
                 }
             }
 
-            const searching: SearchingCourse = {
-                ...state.searching,
-                onSearch: true,
-                searchByCourseName: action.payload.search,
-            }
-            const newCourse = arraySearch(searching, state?.userCourse as Course[])
-                     
-            return {
-                ...state,
-                searching,
-                userCourseSearch: newCourse,               
-            }
         }
 
         case types.SEARCH_BY_USER_COURSE_CODE: {
-            
-            if (state.searching) {
-                const searching: SearchingCourse = {
-                    ...state.searching,
-                    onSearch: false
-                }
-                if (action.payload.search === "" &&
-                    state.searching.searchByCourseName === "") {
-                    return {
-                        ...state,
-                        searching: {
-                            ...searching,
-                            searchByCourseCode: "",
-                        },
-                        userCourseSearch: [],
-                    }
-                }
+
+            const { searchByCourseName } = state.searching as SearchingCourse
+
+            let searching: SearchingCourse = {
+                ...state.searching,
+                onSearch: false
             }
 
-            const searching: SearchingCourse = {
-                ...state.searching,
-                onSearch: true,
-                searchByCourseCode: action.payload.search,
-            }
-            const newCourse = arraySearch(searching, state?.userCourse as Course[])
-                     
-            return {
-                ...state,
-                searching,
-                userCourseSearch: newCourse,               
+            if (action.payload.search === "" && searchByCourseName === "") {
+                return {
+                    ...state,
+                    searching: {
+                        ...searching,
+                        searchByCourseCode: "",
+                        onSearch: false
+                    },
+                    userCourseSearch: [],
+                }
+            } else {
+
+                searching = {
+                    ...state.searching,
+                    onSearch: true,
+                    searchByCourseCode: action.payload.search,
+                }
+                const newCourse = arraySearch(searching, state?.userCourse as Course[])
+
+                return {
+                    ...state,
+                    searching,
+                    userCourseSearch: newCourse,
+                }
             }
         }
 

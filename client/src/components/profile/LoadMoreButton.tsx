@@ -7,6 +7,7 @@ interface LoadMoreButtonProps {
     result?: number
     handleLoadMore: () => any
     stopLoadMore: boolean
+    onSearch?: boolean
 }
 
 const LoadMoreButton: React.FC<LoadMoreButtonProps> = ({ result, total, handleLoadMore, stopLoadMore }) => {
