@@ -1,7 +1,14 @@
 import { Dispatch } from "react";
 import { ALERT, AlertType } from '../types/alertTypes'
 import { AUTH, AuthPayload, AuthType } from '../types/authTypes'
-import { EDIT_USER_COURSE, GET_USER_COURSE, LOADING_USER_COURSE, ProfileType } from '../types/profileTypes'
+import {
+    EDIT_USER_COURSE,
+    GET_USER_COURSE,
+    LOADING_USER_COURSE,
+    SEARCH_BY_USER_COURSE_NAME,
+    SEARCH_BY_USER_COURSE_CODE,
+    ProfileType
+} from '../types/profileTypes'
 import { checkImageUpload, uploadImage } from '../../utils/imageHelper'
 import { putAPI, getAPI } from "../../utils/fetchApi";
 // import { Course } from "../../utils/interface";
@@ -67,7 +74,10 @@ export const getUserCourse = (auth: AuthPayload, userId: string) => async (dispa
     try {
         dispatch({ type: LOADING_USER_COURSE, payload: { loading: true } })
         const res = await getAPI(`user_course/${userId}`, auth.access_token)
-        dispatch({ type: GET_USER_COURSE, payload: { courses: res.data.courses, result: res.data.result } })
+
+        const { courses, total, result } = res.data
+
+        dispatch({ type: GET_USER_COURSE, payload: { courses, total, result } })
         dispatch({ type: LOADING_USER_COURSE, payload: { loading: false } })
 
     } catch (error: any) {
@@ -78,4 +88,12 @@ export const getUserCourse = (auth: AuthPayload, userId: string) => async (dispa
 
 export const editUserCourse = (course: any) => async (dispatch: Dispatch<ProfileType | AlertType>) => {
     dispatch({ type: EDIT_USER_COURSE, payload: { course } })
+}
+
+export const searchByCourseName = (search: string) => (dispatch: Dispatch<ProfileType>) => {
+    dispatch({ type: SEARCH_BY_USER_COURSE_NAME, payload: { search } })
+}
+
+export const searchByCourseCode = (search: string) => (dispatch: Dispatch<ProfileType>) => {
+    dispatch({ type: SEARCH_BY_USER_COURSE_CODE, payload: { search } })
 }

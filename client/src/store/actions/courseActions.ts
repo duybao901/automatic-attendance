@@ -15,7 +15,7 @@ import {
 import { ALERT, AlertType } from '../types/alertTypes'
 import { AuthPayload } from '../types/authTypes'
 import { deleteAPI, getAPI, postAPI, putAPI } from '../../utils/fetchApi'
-import { DELETE_USER_COURSE, EDIT_USER_COURSE, ProfileType } from '../types/profileTypes'
+import { DELETE_USER_COURSE, EDIT_USER_COURSE, CREATE_USER_COURSE, ProfileType } from '../types/profileTypes'
 
 export const getCourses = (auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
     if (!auth.access_token) return;
@@ -31,12 +31,13 @@ export const getCourses = (auth: AuthPayload) => async (dispatch: Dispatch<Cours
     }
 }
 
-export const createCourse = (course: Course, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
+export const createCourse = (course: Course, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | ProfileType>) => {
     if (!auth.access_token) return;
     const { name, courseCode, credit, yearStart, yearEnd, semester } = course;
     try {
         const res = await postAPI('create_course', { name, courseCode, credit, yearStart, yearEnd, semester }, auth.access_token);
         dispatch({ type: CREATE_COURSE, payload: { course: { ...res.data.newCourse, teacher: auth.user } } })
+        dispatch({ type: CREATE_USER_COURSE, payload: { course: { ...res.data.newCourse, teacher: auth.user } } })
         dispatch({ type: ALERT, payload: { success: res.data.msg } })
 
     } catch (error: any) {

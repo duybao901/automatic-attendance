@@ -17,8 +17,7 @@ class APIfeatures {
     paginating() {
         const page = this.queryString.page * 1 || 1
         const limit = this.queryString.limit * 1 || 4
-        const skip = (page - 1) * limit
-
+        const skip = (page - 1) * limit       
         this.query = this.query.skip(skip).limit(limit)
         return this.query
     }
@@ -105,13 +104,13 @@ class CourseController {
             const { id } = req.params;
             const queryString = req.query;
             const query = new APIfeatures(Course.find({ teacher: id }), queryString).paginating()
-
             const courses = await query.sort("-createdAt").populate("teacher")
-
+            const length = await Course.find({ teacher: id }).countDocuments()
             return res.json({
                 msg: "Lấy danh sách môn học thành công",
                 courses,
-                result: courses.length
+                result: courses.length,
+                total: length
             })
 
         } catch (error: any) {

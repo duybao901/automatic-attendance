@@ -73,7 +73,7 @@ const arrayFilter = (id: string, array: Course[]): Course[] => {
     return newArray
 }
 
-const arraySearch = (searching: SearchingCourse, array: Course[]): Course[] => {
+export const arraySearch = (searching: SearchingCourse, array: Course[]): Course[] => {
     const newArray: Course[] = array.filter(course => {
         if (searching.searchByCourseName !== "" && typeof searching.searchByCourseName === "string") {
             if (course.name?.toLocaleLowerCase().includes(searching.searchByCourseName.toLocaleLowerCase())) {

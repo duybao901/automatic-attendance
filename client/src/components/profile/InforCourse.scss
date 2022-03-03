@@ -2,6 +2,7 @@
 @import "../../stylesSass/mixin";
 .profile__course {
     width: 50%;
+
     &-list {
         display: flex;
         align-items: flex-start;
@@ -14,7 +15,7 @@
             background-color: $color-white;
             box-shadow: $box-shadow-1;
             margin-left: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border-radius: 20px;
             overflow: hidden;
             padding: 10px 20px;
@@ -33,6 +34,7 @@
             & .item__course {
                 &-code {
                     font-size: 1.6rem;
+                    color: $color-text;
                 }
                 &-student {
                     width: 100%;
@@ -55,6 +57,7 @@
                     }
                 }
                 &-name {
+                    color: $color-text;
                     padding: 0 20px;
                     margin-bottom: 10px;
                     text-align: center;
@@ -74,6 +77,52 @@
             }
         }
     }
+
+    &-control {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px;
+        min-height: 65px;
+        background-color: $color-white;
+        border-radius: 5px;
+        box-shadow: $box-shadow-1;
+        margin-left: 20px;
+        margin-bottom: 20px;
+        &-search {
+            & form {
+                display: flex;
+                & .form-group {
+                    display: flex;
+                    align-items: center;
+                    height: 36px;
+                    margin-right: 20px;
+                    position: relative;
+                    width: 180px;
+                    & input {
+                        position: absolute;
+                        z-index: 9;
+                        width: 100%;
+                        margin-right: 5px;
+                        @include inputStyle;
+                        min-height: 36px;
+                        padding-right: 25px !important;
+                        padding-left: 10px;
+                        font-size: 1.4rem;
+                    }
+                    & i {
+                        font-size: 1.8rem;
+                        color: $color-text-secondary;
+                        position: absolute;
+                        z-index: 10;
+                        right: 5px;
+                    }
+                }
+            }
+        }
+    }
+
+    // Reponsive
     @include MediaQuery(MD) {
         & {
             width: 100%;

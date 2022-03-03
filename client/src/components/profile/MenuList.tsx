@@ -81,11 +81,9 @@ const MenuList: React.FC<MenuProps> = ({ classes, handleEditCourse, course }) =>
                 <MenuItem onClick={() => editCourse()} className={classes.MenuItem}>
                     <EditIcon className={classes.MenuIcon} /> Chỉnh sửa
                 </MenuItem >
-                <React.Fragment>
-                    <MenuItem className={`${classes.MenuItem} ${classes.MenuItemDelete}`} onClick={() => handleClickOpenDialog(course._id as string)}>
-                        <DeleteIcon className={`${classes.MenuIcon} ${classes.MenuIconDelete}`} /> Xoá
-                    </MenuItem>
-                </React.Fragment>
+                <MenuItem className={`${classes.MenuItem} ${classes.MenuItemDelete}`} onClick={() => handleClickOpenDialog(course._id as string)}>
+                    <DeleteIcon className={`${classes.MenuIcon} ${classes.MenuIconDelete}`} /> Xoá
+                </MenuItem>
             </Menu>
             <Dialog
                 open={openDialog ? openDialog[`setOpen-${course._id as string}`] ? openDialog[`setOpen-${course._id as string}`] : false : false}
@@ -97,7 +95,7 @@ const MenuList: React.FC<MenuProps> = ({ classes, handleEditCourse, course }) =>
                     Bạn có chắc muốn xoá môn học này!
                 </h3>
                 <DialogActions>
-                    <Button onClick={() => handleCloseDialog(course._id as string)} color='error'>
+                    <Button variant='contained' onClick={() => handleCloseDialog(course._id as string)} color='error'>
                         <p style={{ textTransform: "capitalize", fontSize: '1.3rem' }}>
                             Huỷ xoá
                         </p>
