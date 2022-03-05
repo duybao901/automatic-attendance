@@ -94,8 +94,11 @@ export const validCreateCourse = (course: Course) => {
     }
 
     if (course.courseCode === '') {
-        errors.errorCourseCode  = "Mã học phần không được để trống"
+        errors.errorCourseCode = "Mã học phần không được để trống"
     }
 
+    if (course.description && course.description?.length > 500) {
+        errors.errorDescription = "Mô tả môn học dài nhất 500 ký tự"
+    }
     return errors;
 }

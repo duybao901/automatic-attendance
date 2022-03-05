@@ -96,6 +96,7 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
   }
 
   const handleClickOpenFormAddCourse = (course: Course | null) => {
+    console.log('1')
     setOnEdit(course)
     setOpenForm(true);
   };
@@ -103,8 +104,6 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
   const renderCourse = (course: Course[]) => {
     return course.map((course, index) => {
       return <div className="profile__course-list-item" key={index}>
-        {/* Form Course */}
-        <CourseFormModal open={openForm} hanldeSetOpen={setOpenForm} setOnEdit={setOnEdit} onEdit={onEdit} />
         <div className="item__heading">
           <h2 className='item__course-code'>
             {course.courseCode}
@@ -144,7 +143,7 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
     }
   }
 
-  return <div className="profile__course">
+  return <div className="profile__course ">
     <div className="profile__course-control">
       <div className="profile__course-control-search">
         <form>
@@ -175,10 +174,11 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
         Bạn chưa có khóa học nào !
       </h2>
     }
-
+    {/* Form Course */}
+    <CourseFormModal open={openForm} hanldeSetOpen={setOpenForm} setOnEdit={setOnEdit} onEdit={onEdit} />
 
     {
-      profile.loading ? <h3 className="loading-text">
+      profile.loading ? <h3 style={{ marginLeft: '20px' }} className="loading-text">
         Loading...
       </h3> :
         <div className="profile__course-list">

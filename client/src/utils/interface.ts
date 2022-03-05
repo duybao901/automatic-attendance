@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react'
 import rootReducer from '../store/reducers/index'
 
-export type InputChange = ChangeEvent<HTMLInputElement>
+export type InputChange = ChangeEvent<HTMLInputElement | HTMLTextAreaElement >
 export type FormSubmit = ChangeEvent<HTMLFormElement>
 
 export type RootStore = ReturnType<typeof rootReducer>;
@@ -55,6 +55,7 @@ export interface Course {
     yearEnd?: string
     yearStart?: string
     students?: any[]
+    description?: string
     __v?: number
     _id?: string
 }
@@ -63,6 +64,7 @@ export interface ErrorCourse {
     errorName?: string
     errorCourseCode?: string
     errorCredit?: string
+    errorDescription?: string
 }
 
 export interface SortingCourse {

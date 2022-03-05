@@ -131,11 +131,29 @@
             margin-top: 20px;
             padding-left: 0px !important;
         }
+        &-control {
+            margin-top: 20px;
+            margin-left: 0px;
+        }
     }
     @include MediaQuery(SM) {
         &-list {
             &-item {
                 width: calc(100% - 20px);
+            }
+        }
+        &-control {
+            flex-direction: column;
+            &-search {
+                width: 100%;
+                & form {
+                    width: 100%;
+                    flex-direction: column;
+                    & .form-group {
+                        margin-bottom: 20px;
+                        width: 100%;
+                    }
+                }
             }
         }
     }

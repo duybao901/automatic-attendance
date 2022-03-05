@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import "./CourseBody.scss"
+import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { InputChange, RootStore, Course } from '../../utils/interface'
 import dayjs from 'dayjs'
@@ -256,7 +257,7 @@ const CourseBody = () => {
                                     <TableCell className={`${classes.TableCellBody} course-name`} align="left">{course.name}</TableCell>
                                     <TableCell className={classes.TableCellBody} align="center" style={{ textTransform: "uppercase" }}>{course.courseCode}</TableCell>
                                     <TableCell className={classes.TableCellBody} align="center">{course.credit}</TableCell>
-                                    <TableCell className={classes.TableCellBody} align="left"><h3 style={{fontSize:"1.4rem",fontWeight:"600"}}>{course.teacher?.name}</h3> ({course.teacher?.account})</TableCell>
+                                    <TableCell className={classes.TableCellBody} align="left"><h3 style={{ fontSize: "1.4rem", fontWeight: "600" }}>{course.teacher?.name}</h3> ({course.teacher?.account})</TableCell>
                                     <TableCell className={classes.TableCellBody} align="center">{course.semester}</TableCell>
                                     <TableCell className={classes.TableCellBody} align="left" style={{ width: "200px" }}>
                                         {dayjs(course.yearStart).format("DD/MM/YYYY")} - {dayjs(course.yearEnd).format("DD/MM/YYYY")}
@@ -266,8 +267,13 @@ const CourseBody = () => {
                                         <div>
                                             <ButtonGroup variant="contained" aria-label="outlined primary button group">
                                                 <PrimaryTooltip title="Chi tiết môn học" className={classes.Tooltip}>
-                                                    <Button className={classes.Button} color="info"><i style={{ fontSize: "2rem" }}
-                                                        className='bx bx-expand-vertical' ></i></Button>
+
+                                                    <Button className={classes.Button} color="info">
+                                                        <Link to={`/course/${course._id}`} style={{ textDecoration: "none",color:'#fff',marginTop:"4px" }}>
+                                                            <i style={{ fontSize: "2rem" }}
+                                                                className='bx bx-expand-vertical' ></i>
+                                                        </Link>
+                                                    </Button>
                                                 </PrimaryTooltip>
                                                 {
                                                     // admin hoac teacher tao thi moi co the chinh sua hoac xoa
@@ -308,7 +314,6 @@ const CourseBody = () => {
                                             </ButtonGroup>
                                         </div>
                                     </TableCell>
-
                                 </TableRow>
                             })
                         }

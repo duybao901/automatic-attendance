@@ -78,6 +78,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
         semester: "1",
         yearStart: new Date().toISOString(),
         yearEnd: new Date().toISOString(),
+        description: ""
     }
 
     const classes = useStyles()
@@ -85,7 +86,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
     const [loading, setLoading] = useState<boolean>(false)
     const [errorCourse, setErrorCourse] = useState<ErrorCourse>(initialErrorCourse)
 
-    const { name, courseCode, credit, semester, yearStart, yearEnd } = course;
+    const { name, courseCode, credit, semester, yearStart, yearEnd, description } = course;
 
     const handleChange = (e: InputChange | SelectChangeEvent) => {
 
@@ -103,6 +104,14 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
             })
         }
 
+        if (e.target.name === "description") {
+            setErrorCourse({
+                ...errorCourse,
+                errorDescription: ''
+            })
+        }
+
+    
         setCourse({
             ...course,
             [e.target.name]: e.target.value
@@ -173,6 +182,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
         onClose={() => hanldeSetOpen(!open)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        className="course__form-modal"
     >
         <Box sx={modelStyle}>
             <h2 className="modal__heading">Tạo khoá học</h2>
@@ -234,7 +244,20 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                             />
                         </LocalizationProvider>
                     </div>
-
+                </div>
+                <div className="form-group">
+                    <label htmlFor="name">Mô tả môn học *</label>
+                    <textarea id='description' name="description" value={description} onChange={handleChange} rows={3} />
+                    <span style={{marginTop:"6px",fontSize:"1.2rem"}}>
+                        {
+                            course.description?.length
+                        }
+                        /
+                        500
+                    </span>
+                    {
+                        errorCourse?.errorDescription && <small className="text-error">{errorCourse?.errorDescription}</small>
+                    }
                 </div>
 
                 <div className='modal__control'>

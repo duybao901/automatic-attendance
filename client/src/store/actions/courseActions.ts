@@ -33,9 +33,9 @@ export const getCourses = (auth: AuthPayload) => async (dispatch: Dispatch<Cours
 
 export const createCourse = (course: Course, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | ProfileType>) => {
     if (!auth.access_token) return;
-    const { name, courseCode, credit, yearStart, yearEnd, semester } = course;
+    const { name, courseCode, credit, yearStart, yearEnd, semester, description } = course;
     try {
-        const res = await postAPI('create_course', { name, courseCode, credit, yearStart, yearEnd, semester }, auth.access_token);
+        const res = await postAPI('create_course', { name, courseCode, credit, yearStart, yearEnd, semester, description }, auth.access_token);
         dispatch({ type: CREATE_COURSE, payload: { course: { ...res.data.newCourse, teacher: auth.user } } })
         dispatch({ type: CREATE_USER_COURSE, payload: { course: { ...res.data.newCourse, teacher: auth.user } } })
         dispatch({ type: ALERT, payload: { success: res.data.msg } })

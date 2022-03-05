@@ -41,7 +41,14 @@ const CourseScheme = new mongoose.Schema({
             type: mongoose.Types.ObjectId,
             default: []
         }
-    ]
+    ],
+    // Mo ta mon hoc
+    description: {
+        type: String,
+        default: '',
+        maxlength: [500, "Mô tả môn học dài nhất 500 ký tự"],
+        trim: true
+    }
 }, {
     timestamps: true
 })

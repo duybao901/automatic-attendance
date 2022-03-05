@@ -17,7 +17,7 @@ class APIfeatures {
     paginating() {
         const page = this.queryString.page * 1 || 1
         const limit = this.queryString.limit * 1 || 4
-        const skip = (page - 1) * limit       
+        const skip = (page - 1) * limit
         this.query = this.query.skip(skip).limit(limit)
         return this.query
     }
@@ -26,11 +26,11 @@ class APIfeatures {
 class CourseController {
     async createCourse(req: RequestUser, res: Response) {
         try {
-            const { name, credit, yearStart, yearEnd, courseCode, semester } = req.body;
+            const { name, credit, yearStart, yearEnd, courseCode, semester, description } = req.body;
 
             // Tao mon hoc moi
             const newCourse = new Course({
-                name, semester, credit, yearStart, yearEnd, courseCode,
+                name, semester, credit, yearStart, yearEnd, courseCode, description,
                 teacher: req.user?._id
             })
 

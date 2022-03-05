@@ -31,6 +31,7 @@ const MenuList: React.FC<MenuProps> = ({ classes, handleEditCourse, course }) =>
     const [loadingDeleteCourse, setLoadingDeleteCourse] = useState<string>('');
 
     const editCourse = () => {
+        console.log('a')
         handleEditCourse(course)
         setAnchorEl(null);
     }
@@ -42,7 +43,7 @@ const MenuList: React.FC<MenuProps> = ({ classes, handleEditCourse, course }) =>
     }
 
     const handleClickOpenDialog = (course_id: string) => {
-        setAnchorEl(null);
+        setAnchorEl(null);        
         setOpenDialog({
             [`setOpen-${course_id}`]: true
         });
