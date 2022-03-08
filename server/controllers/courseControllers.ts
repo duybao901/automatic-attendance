@@ -1,6 +1,8 @@
+import mongoose from 'mongoose'
 import { Request, Response } from 'express'
 import Course from "../models/courseModel";
 import Users from '../models/userModel';
+import Students from '../models/studentModel';
 import { RequestUser } from '../config/interface'
 
 
@@ -70,6 +72,21 @@ class CourseController {
         }
     }
 
+    async getcourseDetail(req: RequestUser, res: Response) {
+        try {
+            const { id } = req.params;
+            const course = await Course.findById(id).populate("teacher", ["name", "email", "avatar", "role", 'account'])
+            if (!course) return res.status(404).json({ msg: "Không tìm thấy khoá học" })
+
+            return res.json({ course })
+
+        } catch (error: any) {
+            if (error.valueType === "string")
+                return res.status(500).json({ msg: "ID buổi học không hợp lệ" })
+            return res.status(500).json({ msg: error.message })
+        }
+    }
+
     async deleteCourse(req: Request, res: Response) {
         try {
             const { id } = req.params;
@@ -86,10 +103,10 @@ class CourseController {
     async updateCourse(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const { name, credit, yearStart, yearEnd, courseCode, semester } = req.body;
+            const { name, credit, yearStart, yearEnd, courseCode, semester, description } = req.body;
 
             const course = await Course.findByIdAndUpdate(id, {
-                name, semester, credit, yearStart, yearEnd, courseCode,
+                name, semester, credit, yearStart, yearEnd, courseCode, description,
             }, { new: true });
 
             return res.json({ msg: "Cập nhật môn học thành công", course: { ...course?._doc } })
@@ -112,6 +129,129 @@ class CourseController {
                 result: courses.length,
                 total: length
             })
+
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
+
+    async addOneStudent(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const { student } = req.body;
+
+            const course = await Course.findById(id);
+
+            if (!course) {
+                return res.status(404).json({ msg: "Không tìm thấy môn học" })
+            }
+
+
+            let newStudent = new Students({
+                student
+            })
+
+            newStudent = await newStudent.save();
+
+            await Course.findByIdAndUpdate(id, {
+                students: course.students.push(newStudent)
+            })
+
+            return res.json({ msg: "Thêm sinh viên thành công", newStudent })
+
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
+
+    async addManyStudents(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const { students } = req.body;
+
+            const course = await Course.findById(id);
+
+            if (!course) {
+                return res.status(404).json({ msg: "Không tìm thấy môn học" })
+            }
+
+            const studentsArrayObject = students.map((student: any) => {
+                return {
+                    name: student.name,
+                    studentCode: student.studentCode,
+                }
+            })
+
+            const studentArray = await Students.insertMany(studentsArrayObject);
+
+            await Course.findByIdAndUpdate(id, {
+                students: course.students.concat(studentArray)
+            })
+
+            return res.json({ msg: "Thêm sinh viên thành công", studentArray })
+
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
+
+    async deleteStudent(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const { student } = req.body;
+
+            const course = await Course.findById(id);
+
+            if (!course) {
+                return res.status(404).json({ msg: "Không tìm thấy môn học" })
+            }
+
+            await Students.findByIdAndDelete(student);
+
+            await Course.findByIdAndUpdate(id, {
+                students: course.students.filter((student: any) => student._id.toString() !== student)
+            })
+
+            return res.json({ msg: "Xoá sinh viên thành công" })
+
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
+    async updateStudent(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const { student } = req.body;
+
+            const course = await Course.findById(id);
+
+            if (!course) {
+                return res.status(404).json({ msg: "Không tìm thấy môn học" })
+            }
+
+            await Students.findByIdAndUpdate(student._id, {
+                name: student.name,
+                studentCode: student.studentCode,
+                address: student.address,
+                birthday: student.birthday,
+            })
+
+
+            await Course.updateOne(
+                {
+                    _id: id, 'students._id': new mongoose.Types.ObjectId(`${student._id}`)
+                },
+                {
+                    $set: {
+                        'students.$.name': student.name,
+                        'students.$.birthDay': student.birthDay,
+                        'students.$.address': student.address,
+                    },
+                },
+            );
+
+
+            return res.json({ msg: "Cập nhật sinh viên thành công" })
 
         } catch (error: any) {
             return res.status(500).json({ msg: error.message })

@@ -1,5 +1,6 @@
 import React from 'react';
 import "./Loading.scss"
+
 interface LoadingProps {
   type?: "small" | "medium";
 }

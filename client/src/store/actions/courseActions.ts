@@ -49,9 +49,9 @@ export const createCourse = (course: Course, auth: AuthPayload) => async (dispat
 export const updateCourse = (course: Course, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | ProfileType>) => {
     if (!auth.access_token) return;
     console.log(course)
-    const { name, courseCode, credit, yearStart, yearEnd, semester } = course;
+    const { name, courseCode, credit, yearStart, yearEnd, semester, description } = course;
     try {
-        const res = await putAPI(`update_course/${course._id}`, { name, courseCode, credit, yearStart, yearEnd, semester }, auth.access_token);
+        const res = await putAPI(`update_course/${course._id}`, { name, courseCode, credit, yearStart, yearEnd, semester,description }, auth.access_token);
         dispatch({ type: UPDATE_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } })
         dispatch({ type: EDIT_USER_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } });
         dispatch({ type: ALERT, payload: { success: res.data.msg } })

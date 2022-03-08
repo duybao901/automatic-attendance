@@ -26,7 +26,7 @@ const LoadMoreButton: React.FC<LoadMoreButtonProps> = ({ result, total, handleLo
     return (
         <div className="loadmore btn-primary" onClick={() => loadMore()}>
             {
-                isLoading ? <Loading /> : <p>Xem thêm</p>
+                isLoading ? <Loading type='small' /> : <p>Xem thêm</p>
             }
         </div>
     )

@@ -2,6 +2,7 @@ import React, { useState, SetStateAction, Dispatch } from 'react'
 import { Course, RootStore } from '../../utils/interface';
 import { deleteCourse } from '../../store/actions/courseActions';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom'
 // MUI
 import Menu from '@mui/material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
@@ -43,7 +44,7 @@ const MenuList: React.FC<MenuProps> = ({ classes, handleEditCourse, course }) =>
     }
 
     const handleClickOpenDialog = (course_id: string) => {
-        setAnchorEl(null);        
+        setAnchorEl(null);
         setOpenDialog({
             [`setOpen-${course_id}`]: true
         });
@@ -76,9 +77,11 @@ const MenuList: React.FC<MenuProps> = ({ classes, handleEditCourse, course }) =>
                 }}
                 className={classes.Menu}
             >
-                <MenuItem className={classes.MenuItem} onClick={() => setAnchorEl(null)}>
-                    <InfoIcon className={classes.MenuIcon} /> Chi tiết
-                </MenuItem>
+                <Link to={`/course/${course._id}`} style={{ textDecoration: 'none', color: 'currentcolor' }}>
+                    <MenuItem className={classes.MenuItem} onClick={() => setAnchorEl(null)}>
+                        <InfoIcon className={classes.MenuIcon} /> Chi tiết
+                    </MenuItem>
+                </Link>
                 <MenuItem onClick={() => editCourse()} className={classes.MenuItem}>
                     <EditIcon className={classes.MenuIcon} /> Chỉnh sửa
                 </MenuItem >

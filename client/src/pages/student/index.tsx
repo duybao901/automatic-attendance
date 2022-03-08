@@ -9,8 +9,7 @@ const Student = () => {
 
     return (
         <div className='student'>
-            <DashBroadUser auth={auth} />
-             
+            <DashBroadUser auth={auth} />             
         </div>
     )
 }

@@ -243,7 +243,6 @@ const CourseBody = () => {
                                 && <TableCell scope="row">
                                     <h3 style={{ fontSize: "14px", padding: '10px', color: "#473fce" }}>Không tìm thấy môn học hợp lệ</h3>
                                 </TableCell>
-
                             }
                         </TableRow>
                         {

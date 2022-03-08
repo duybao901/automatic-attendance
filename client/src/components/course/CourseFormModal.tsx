@@ -19,13 +19,14 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import TextField from '@mui/material/TextField';
 import { validCreateCourse } from '../../utils/valid';
+import { IconButton } from '@mui/material';
+import ReadExcelModal from '../student/ReadExcelModal';
 
 interface CourseFormModalProps {
     open: boolean
     hanldeSetOpen: Dispatch<SetStateAction<boolean>>
     onEdit?: Course | null
     setOnEdit: Dispatch<SetStateAction<Course | null>>
-
 }
 
 const useStyles = makeStyles({
@@ -85,6 +86,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
     const [course, setCourse] = useState<Course>(initialCourse);
     const [loading, setLoading] = useState<boolean>(false)
     const [errorCourse, setErrorCourse] = useState<ErrorCourse>(initialErrorCourse)
+    const [students, setStudents] = useState<any[]>([]);
 
     const { name, courseCode, credit, semester, yearStart, yearEnd, description } = course;
 
@@ -111,7 +113,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
             })
         }
 
-    
+
         setCourse({
             ...course,
             [e.target.name]: e.target.value
@@ -136,7 +138,6 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
 
         e.preventDefault();
 
-
         let errorCourse: ErrorCourse = {};
         errorCourse = validCreateCourse(course);
 
@@ -145,9 +146,9 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
             setErrorCourse(errorCourse);
             return;
         } else {
-            setLoading(true);
+            setLoading(true)
             if (onEdit) {
-                // Submit form to update course
+                //Submit form to update course
                 await dispatch(updateCourse(course, auth))
                 handleCloseModal();
                 setLoading(false)
@@ -165,6 +166,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
         hanldeSetOpen(!open)
         setCourse(initialCourse)
         setOnEdit(null)
+        setErrorCourse(initialErrorCourse)
     }
 
     // dat gia tri dang cap nhat
@@ -176,6 +178,9 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
         }
     }, [onEdit])
 
+    useEffect(() => {
+        console.log(students)
+    },[students])
 
     return <Modal
         open={open}
@@ -185,7 +190,16 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
         className="course__form-modal"
     >
         <Box sx={modelStyle}>
-            <h2 className="modal__heading">Tạo khoá học</h2>
+            <Box display='flex' justifyContent="space-between">
+                <h2 className="modal__heading">Tạo khoá học</h2>
+                <Box>
+                    <PrimaryTooltip title='Đóng hộp thoại'>
+                        <IconButton size="medium" onClick={handleCloseModal}>
+                            <i className='bx bx-x' style={{ color: "#473fce", fontSize: "2.6rem" }}></i>
+                        </IconButton>
+                    </PrimaryTooltip>
+                </Box>
+            </Box>
             <form className="course__form" onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="name">Tên khoá học *</label>
@@ -196,7 +210,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                 </div>
                 <div className="form-group">
                     <label htmlFor="courseCode">Mã học phần *</label>
-                    <input type="text" id="courseCode" name="courseCode" value={courseCode} onChange={handleChange} />
+                    <input type="text" id="courseCode" name="courseCode" value={courseCode?.trim()} onChange={handleChange} />
                     {
                         errorCourse?.errorCourseCode && <small className="text-error">{errorCourse?.errorCourseCode}</small>
                     }
@@ -218,7 +232,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                         <MenuItem value={1} className={classes.MenuItem}> 1
                         </MenuItem>
                         <MenuItem value={2} className={classes.MenuItem}>2</MenuItem>
-                        <MenuItem value={3} className={classes.MenuItem}>hè</MenuItem>
+                        <MenuItem value={"hè"} className={classes.MenuItem}>hè</MenuItem>
                     </Select>
                 </div>
                 <div className="form-group form-group--row">
@@ -248,7 +262,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                 <div className="form-group">
                     <label htmlFor="name">Mô tả môn học *</label>
                     <textarea id='description' name="description" value={description} onChange={handleChange} rows={3} />
-                    <span style={{marginTop:"6px",fontSize:"1.2rem"}}>
+                    <span style={{ marginTop: "6px", fontSize: "1.2rem" }}>
                         {
                             course.description?.length
                         }
@@ -270,13 +284,8 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                             </Box>
                         }
                     </div>
-                    <Box display="flex">
-                        <Box mr={1}>
-                            <PrimaryTooltip title='Huỷ tạo'>
-                                <Button variant='contained' onClick={handleCloseModal} color='error' className={classes.Button}><p style={{ textTransform: "capitalize" }}>{onEdit ? "Huỷ cập nhật" : "Huỷ"}</p></Button>
-                            </PrimaryTooltip>
-                        </Box>
-
+                    <Box display="flex">                       
+                        <ReadExcelModal handleSetStudent={setStudents}/>
                         <Box>
                             <PrimaryTooltip title="Tạo khoá học">
                                 <Button type="submit" variant='contained' className={classes.Button}>{loading ? <Loading type='small' /> : <p style={{ textTransform: "capitalize" }}>{onEdit ? "Cập nhật" : "Tạo"}</p>}</Button>

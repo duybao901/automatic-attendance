@@ -69,11 +69,11 @@ export const resetPassword = (password: string, auth: AuthPayload) => async (dis
     }
 }
 
-export const getUserCourse = (auth: AuthPayload, userId: string) => async (dispatch: Dispatch<ProfileType | AlertType>) => {
-    if (!auth.access_token) return;
+export const getUserCourse = (token: string, userId: string) => async (dispatch: Dispatch<ProfileType | AlertType>) => {
+    if (!token) return
     try {
         dispatch({ type: LOADING_USER_COURSE, payload: { loading: true } })
-        const res = await getAPI(`user_course/${userId}`, auth.access_token)
+        const res = await getAPI(`user_course/${userId}`, token)
 
         const { courses, total, result } = res.data
 

@@ -1,11 +1,13 @@
 import React from 'react';
-import GlobalLoadingImage from '../../../images/global-loading.gif'
 import "./GlobalLoading.scss"
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 const GlobalLoading = () => {
   return <div className='global-loading'>
     <div className="global-loading__wrapper">
-      <img src={GlobalLoadingImage} alt="loading" />     
-      <p>Loading...</p> 
+      <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box>
     </div>
   </div>;
 };

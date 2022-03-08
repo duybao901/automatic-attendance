@@ -83,6 +83,9 @@
         width: 100%;
         min-height: $height-body;
         background-color: #f1f5f9;
+        &--xl{
+            min-height: $height-body-xl;
+        }
         &-box {
             display: flex;
             flex-wrap: wrap;

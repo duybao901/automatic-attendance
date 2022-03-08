@@ -6,6 +6,10 @@ import { Link, useLocation } from 'react-router-dom'
 import { logout } from '../../../store/actions/authActions'
 import "./SideBar.scss"
 import { TOGGLE } from '../../../store/types/sidebarTypes'
+
+// MUI
+import { IconButton } from '@mui/material';
+import PrimaryTooltip from '../tool-tip/Tooltip';
 const SideBar = () => {
 
     const dispatch = useDispatch();
@@ -30,12 +34,16 @@ const SideBar = () => {
 
     return <div className='side-bar-wrapper'>
         <div className={`side-bar__fade ${sidebar.open === false ? "active" : ""}`} onClick={handleCloseSideBar}></div>
-
         <div className={`side-bar ${sidebar.open ? "side-bar--right" : ""}`}>
             <div className="side-bar__header">
                 <Link to='/'>
                     <img className="side-bar__header-logo" src={Logo} alt='logo'></img>
                 </Link>
+                <PrimaryTooltip title="Đóng">
+                    <IconButton size="large" onClick={handleCloseSideBar}>
+                        <i className='bx bx-x' style={{color:"#fff", fontSize:"3rem"}}></i>
+                    </IconButton>
+                </PrimaryTooltip>
             </div>
             <div className='side-bar__infor'>
                 <img src={auth.user ? auth.user.avatar : ""} alt="user-avatar">

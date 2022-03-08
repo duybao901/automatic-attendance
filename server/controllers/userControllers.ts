@@ -35,13 +35,13 @@ class UserController {
     }
 
     async updateUser(req: RequestUser, res: Response) {
-        if (!req.user) return res.status(400).json({ msg: "Invalid Authentication" })
+        if (!req.user) return res.status(400).json({ msg: "Xác thực không hợp lệ" })
         try {
             const { name, avatar } = req.body;
 
             await Users.findByIdAndUpdate(req.user?._id, { name, avatar });
 
-            return res.json({ msg: "Update name or avatar success" })
+            return res.json({ msg: "Cập nhật thông tin thành công" })
 
         } catch (error: any) {
             return res.status(500).json({ msg: error.message })
@@ -49,7 +49,7 @@ class UserController {
     }
 
     async resetPassword(req: RequestUser, res: Response) {
-        if (!req.user) return res.status(400).json({ msg: "Invalid Authentication" })
+        if (!req.user) return res.status(400).json({ msg: "Xác thực không hợp lệ" })
         try {
             const { password } = req.body;
             const passwordHash = await bcrypt.hash(password, 12);
@@ -58,7 +58,7 @@ class UserController {
                 password: passwordHash
             })
 
-            return res.json({ msg: "Update password success." })
+            return res.json({ msg: "Cập nhật mật khẩu thành công." })
 
 
         } catch (error: any) {

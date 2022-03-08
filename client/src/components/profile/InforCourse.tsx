@@ -75,10 +75,10 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
   const [searchByCourseCode, setSearchByCourseCode] = useState<string>("");
 
   useEffect(() => {
-    if (auth.access_token) {
-      dispatch(getUserCourse(auth, id))
+    if (auth.access_token && id) {
+      dispatch(getUserCourse(auth.access_token, id))
     }
-  }, [auth.user?._id, auth])
+  }, [auth.access_token, dispatch, id])
 
   const handleEditCourse = (course: Course) => {
     setOpenForm(true);
@@ -179,7 +179,7 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
 
     {
       profile.loading ? <h3 style={{ marginLeft: '20px' }} className="loading-text">
-        Loading...
+        Đang lấy môn học...
       </h3> :
         <div className="profile__course-list">
           {
