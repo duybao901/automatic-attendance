@@ -10,6 +10,7 @@ import {
     ProfileType
 } from '../types/profileTypes'
 import { checkImageUpload, uploadImage } from '../../utils/imageHelper'
+import { Course } from '../../utils/interface'
 import { putAPI, getAPI } from "../../utils/fetchApi";
 // import { Course } from "../../utils/interface";
 

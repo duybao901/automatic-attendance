@@ -57,14 +57,18 @@ export interface EditUserCourse {
 export interface DeleteUserCourse {
     type: typeof DELETE_USER_COURSE,
     payload: {
-        course_id: string
+        courses: Course[]
+        result: number
+        total: number
     }
 }
 
 export interface CreateUserCourse {
     type: typeof CREATE_USER_COURSE,
     payload: {
-        course: Course
+        courses: Course[]
+        result: number
+        total: number
     }
 }
 
@@ -82,7 +86,7 @@ export interface SearchByCourseCode {
     }
 }
 
-export type ProfileType = 
-GetUserCourse | LoadingUserCourse | UpdateUserCourse | 
-EditUserCourse | DeleteUserCourse | CreateUserCourse | 
-SearchByCourseName | SearchByCourseCode
+export type ProfileType =
+    GetUserCourse | LoadingUserCourse | UpdateUserCourse |
+    EditUserCourse | DeleteUserCourse | CreateUserCourse |
+    SearchByCourseName | SearchByCourseCode

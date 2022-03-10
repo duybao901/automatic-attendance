@@ -65,7 +65,7 @@ const useStyles = makeStyles({
 const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, onEdit, setOnEdit }) => {
 
     const dispatch = useDispatch();
-    const { auth } = useSelector((state: RootStore) => state)
+    const { auth, profile } = useSelector((state: RootStore) => state)
 
     const initialErrorCourse: ErrorCourse = {
         errorName: "",
@@ -154,10 +154,10 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                 setLoading(false)
             } else {
                 // Submit form create course
-                await dispatch(createCourse(course, auth))
+                await dispatch(createCourse({ ...course, students }, auth, profile))
                 setLoading(false)
                 setCourse(initialCourse)
-
+                setStudents([])
             }
         }
     }
@@ -177,10 +177,6 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
             setCourse(initialCourse)
         }
     }, [onEdit])
-
-    useEffect(() => {
-        console.log(students)
-    },[students])
 
     return <Modal
         open={open}
@@ -284,8 +280,12 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                             </Box>
                         }
                     </div>
-                    <Box display="flex">                       
-                        <ReadExcelModal handleSetStudent={setStudents}/>
+                    <Box display="flex">
+                        {
+                            !onEdit && <Box display="flex" alignItems="center">
+                                <span className="loading-text" style={{ marginRight: "10px" }}>{students.length} sinh viên</span><ReadExcelModal handleSetStudent={setStudents} />
+                            </Box>
+                        }
                         <Box>
                             <PrimaryTooltip title="Tạo khoá học">
                                 <Button type="submit" variant='contained' className={classes.Button}>{loading ? <Loading type='small' /> : <p style={{ textTransform: "capitalize" }}>{onEdit ? "Cập nhật" : "Tạo"}</p>}</Button>

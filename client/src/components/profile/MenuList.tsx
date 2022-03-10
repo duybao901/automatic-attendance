@@ -25,7 +25,7 @@ const MenuList: React.FC<MenuProps> = ({ classes, handleEditCourse, course }) =>
 
 
     const dispatch = useDispatch()
-    const { auth } = useSelector((state: RootStore) => state)
+    const { auth, profile } = useSelector((state: RootStore) => state)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const [openDialog, setOpenDialog] = useState<any>({});
@@ -39,7 +39,7 @@ const MenuList: React.FC<MenuProps> = ({ classes, handleEditCourse, course }) =>
 
     const hanldeDeleteCourse = async (course_id: string) => {
         setLoadingDeleteCourse(course_id);
-        await dispatch(deleteCourse(course_id, auth))
+        await dispatch(deleteCourse(course_id, auth, profile))
         setLoadingDeleteCourse("")
     }
 
@@ -106,7 +106,11 @@ const MenuList: React.FC<MenuProps> = ({ classes, handleEditCourse, course }) =>
                     </Button>
                     <Button variant='contained' onClick={() => hanldeDeleteCourse(course._id as string)} className={classes.Button}>
                         {
-                            loadingDeleteCourse === course._id ? <Loading type='small' /> :
+                            loadingDeleteCourse === course._id ?
+                                <>
+                                    <Loading type='small' />
+                                    <span style={{ marginLeft: "2px", textTransform: 'capitalize', display: 'block' }}>đang xoá...</span>
+                                </> :
                                 <p style={{ textTransform: "capitalize", fontSize: '1.3rem' }}>
                                     Đồng ý
                                 </p>

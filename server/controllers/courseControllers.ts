@@ -28,11 +28,21 @@ class APIfeatures {
 class CourseController {
     async createCourse(req: RequestUser, res: Response) {
         try {
-            const { name, credit, yearStart, yearEnd, courseCode, semester, description } = req.body;
+            const { name, credit, yearStart, yearEnd, courseCode, semester, description, students } = req.body;
 
+            const studentsArrayObject = students.map((student: any) => {
+                return {
+                    name: student.studentName,
+                    studentCode: student.studentCode,
+                    gender: student.gender
+                }
+            })
+
+            const studentArray = await Students.insertMany(studentsArrayObject);
+            
             // Tao mon hoc moi
             const newCourse = new Course({
-                name, semester, credit, yearStart, yearEnd, courseCode, description,
+                name, semester, credit, yearStart, yearEnd, courseCode, description, students: studentArray,
                 teacher: req.user?._id
             })
 
@@ -47,7 +57,6 @@ class CourseController {
                 }, {
                 new: true
             })
-
 
             return res.json({
                 msg: "Tạo khoá học thành công", newCourse: {
@@ -218,6 +227,7 @@ class CourseController {
             return res.status(500).json({ msg: error.message })
         }
     }
+
     async updateStudent(req: Request, res: Response) {
         try {
             const { id } = req.params;

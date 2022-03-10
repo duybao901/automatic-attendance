@@ -96,7 +96,6 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
   }
 
   const handleClickOpenFormAddCourse = (course: Course | null) => {
-    console.log('1')
     setOnEdit(course)
     setOpenForm(true);
   };
@@ -132,7 +131,6 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
   const handleLoadMore = async () => {
     if (auth.user && profile.limit && profile.userCourse && profile.page) {
       const res = await getAPI(`user_course/${auth.user._id}/?limit=${profile.limit}&page=${profile.page + 1}`, auth.access_token)
-
       const newUserCourse = {
         page: (res.data.result + profile.result) / profile.limit > profile.page ? profile.page + 1 : profile.page,
         newCourse: [...profile.userCourse, ...res.data.courses],

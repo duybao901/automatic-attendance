@@ -27,7 +27,8 @@ const profileReducer = (state: ProfilePayload = initalState, action: ProfileType
                 ...state,
                 userCourse: [...action.payload.courses],
                 result: action.payload.result,
-                totalCourse: action.payload.total
+                totalCourse: action.payload.total,
+                stopLoadMore: action.payload.result === action.payload.total ? true : false
             }
         }
 
@@ -43,6 +44,7 @@ const profileReducer = (state: ProfilePayload = initalState, action: ProfileType
                 ...state,
                 userCourse: [...action.payload.newCourse],
                 page: action.payload.page,
+                totalCourse: action.payload.newCourse.length,
                 result: state.result && action.payload.result + state.result as number,
                 stopLoadMore: action.payload.stopLoadMore
             }
@@ -60,21 +62,20 @@ const profileReducer = (state: ProfilePayload = initalState, action: ProfileType
         case types.DELETE_USER_COURSE: {
             return {
                 ...state,
-                userCourse: state.userCourse && state.userCourse.filter((course: Course) => {
-                    return course._id !== action.payload.course_id
-                }),
-                totalCourse: state.totalCourse as number - 1,
-                result: state.result as number - 1,
+                userCourse: [...action.payload.courses],
+                result: action.payload.result,
+                totalCourse: action.payload.total,
+                stopLoadMore: action.payload.result === action.payload.total ? true : false
             }
         }
 
         case types.CREATE_USER_COURSE: {
             return {
                 ...state,
-                userCourse: state.userCourse && [action.payload.course, ...state.userCourse],
-                totalCourse: state.totalCourse as number + 1,
-                result: state.result as number - 1,
-
+                userCourse: [...action.payload.courses],
+                result: action.payload.result,
+                totalCourse: action.payload.total,
+                stopLoadMore: action.payload.result === action.payload.total ? true : false
             }
         }
 

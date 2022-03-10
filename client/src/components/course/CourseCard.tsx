@@ -9,6 +9,7 @@ import Logo from '../../images/logo.png'
 // MUI
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import StudentTable from '../student/StudentTable'
 
 interface CourseCardProps {
     course: Course
@@ -17,8 +18,6 @@ interface CourseCardProps {
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ course, auth, loading }) => {
-
-
 
     return (
         <div className='course__card'>
@@ -83,13 +82,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, auth, loading }) => {
                             {course.description}
                         </p>
                     </div>
-                    <div className="course__card-desc">
+                    <div className="course__card-student">
                         <h3>
                             Sinh viên
                         </h3>
-                        {
-                            course.students?.length === 0 && <p>Không có sinh viên</p>
-                        }
+                       <StudentTable students={course.students} />
                     </div>
                 </>
             }

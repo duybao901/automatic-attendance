@@ -56,6 +56,14 @@ const useStyles = makeStyles({
         padding: "4px !important",
 
     },
+    ButtonInfor: {
+        padding: "0px !important",
+        "& > a": {
+            display: 'flex',
+            alignItems: "center",
+            justifyContent: "center"
+        }
+    },
     ButtonAdd: {
         fontSize: "1.2rem !important",
         fontWeight: "600 !important",
@@ -78,7 +86,7 @@ const CourseBody = () => {
 
     const dispatch = useDispatch()
     const classes = useStyles()
-    const { course: courses, auth } = useSelector((state: RootStore) => state)
+    const { course: courses, auth ,profile} = useSelector((state: RootStore) => state)
     const [searchByName, setSearchByName] = useState<string>('')
     const [searchByCode, setSearchByCode] = useState<string>('')
     const [searchByNameTeacher, setCourseByNameTeacher] = useState<string>('')
@@ -100,7 +108,7 @@ const CourseBody = () => {
 
     const hanldeDeleteCourse = async (course_id: string) => {
         setLoadingDeleteCourse(course_id);
-        await dispatch(deleteCourse(course_id, auth))
+        await dispatch(deleteCourse(course_id, auth, profile))
         setLoadingDeleteCourse("")
     }
 
@@ -265,12 +273,15 @@ const CourseBody = () => {
                                     <TableCell className={classes.TableCellBody} align="left">
                                         <div>
                                             <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                                                <PrimaryTooltip title="Chi tiết môn học" className={classes.Tooltip}>
+                                                <PrimaryTooltip title="Chi tiết  môn học" className={classes.Tooltip}>
 
-                                                    <Button className={classes.Button} color="info">
-                                                        <Link to={`/course/${course._id}`} style={{ textDecoration: "none",color:'#fff',marginTop:"4px" }}>
+
+
+                                                    <Button className={`${classes.Button} ${classes.ButtonInfor}`} color="info" >
+                                                        <Link to={`/course/${course._id}`} style={{ textDecoration: "none", color: '#fff', width: "100%", height: "100%" }}>
                                                             <i style={{ fontSize: "2rem" }}
-                                                                className='bx bx-expand-vertical' ></i>
+                                                                className='bx bx-expand-vertical' >
+                                                            </i>
                                                         </Link>
                                                     </Button>
                                                 </PrimaryTooltip>

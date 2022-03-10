@@ -34,7 +34,7 @@ const CourseDetal = () => {
     const history = useHistory()
     const dispatch = useDispatch()
     const { slug }: Params = useParams()
-    const { auth } = useSelector((state: RootStore) => state)
+    const { auth, profile } = useSelector((state: RootStore) => state)
     const [course, setCourse] = useState<Course>({})
     const [loading, setLoading] = useState<boolean>(false)
     const [open, setOpen] = useState<boolean>(false)
@@ -69,12 +69,12 @@ const CourseDetal = () => {
 
     const hanldeDeleteCourse = async (id: string) => {
         setLoadingDeleteCourse(true);
-        await dispatch(deleteCourse(id, auth))
+        await dispatch(deleteCourse(id, auth, profile))
         setLoadingDeleteCourse(false);
         return history.push('/')
     }
 
-    if(!auth.user || !auth.access_token) return;
+    if (!auth.user || !auth.access_token) return "";
 
     return (
         <div className='course-detail'>
