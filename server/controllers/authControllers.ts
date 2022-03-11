@@ -32,10 +32,12 @@ class AuthController {
             return res.json({
                 msg: "Đăng kí thành công ! Đợi admin duyệt tài khoản của bạn.",
             });
+
         } catch (error: any) {
             return res.status(500).json({ msg: error.message });
         }
     }
+
 
     // Đăng nhập
     async login(req: Request, res: Response) {

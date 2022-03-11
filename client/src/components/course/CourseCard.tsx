@@ -22,8 +22,8 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, auth, loading }) => {
     return (
         <div className='course__card'>
             {
-                loading ? <Box sx={{ display: 'flex' }} paddingLeft="65px">
-                    <CircularProgress /> <p className="loading-text">Loading...</p>
+                loading ? <Box display='flex' alignItems='center' paddingLeft="65px" >
+                    <CircularProgress size={30} /> <p className="loading-text" style={{ marginLeft: "5px" }}>Đang tải môn học...</p>
                 </Box> : <>
                     <div className="course__card-header">
                         <div className="header__infor">
@@ -86,7 +86,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, auth, loading }) => {
                         <h3>
                             Sinh viên
                         </h3>
-                       <StudentTable students={course.students} />
+                        {
+                            course.students && course.students.length === 0 ? <p className="loading-text">Lớp học chưa có sinh viên</p> : <StudentTable students={course.students} />
+                        }
                     </div>
                 </>
             }

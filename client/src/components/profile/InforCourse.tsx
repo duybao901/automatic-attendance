@@ -18,6 +18,8 @@ import MenuList from './MenuList';
 import PrimaryTooltip from '../globals/tool-tip/Tooltip'
 import { ButtonGroup } from '@mui/material'
 import { Button } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 interface InforCourseProps {
   auth: AuthPayload
@@ -176,9 +178,9 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
     <CourseFormModal open={openForm} hanldeSetOpen={setOpenForm} setOnEdit={setOnEdit} onEdit={onEdit} />
 
     {
-      profile.loading ? <h3 style={{ marginLeft: '20px' }} className="loading-text">
-        Đang lấy môn học...
-      </h3> :
+      profile.loading ? <Box display='flex' alignItems='center' paddingLeft="35px" >
+        <CircularProgress size={30} /> <p className="loading-text" style={{ marginLeft: "5px" }}>Đang tải môn học...</p>
+      </Box> :
         <div className="profile__course-list">
           {
             (profile.userCourse && profile.userCourseSearch && profile.searching) && profile.searching.onSearch === true ?

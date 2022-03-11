@@ -148,10 +148,10 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
         } else {
             setLoading(true)
             if (onEdit) {
-                //Submit form to update course
-                await dispatch(updateCourse(course, auth))
+                await dispatch(updateCourse({ ...course, students }, auth))
                 handleCloseModal();
                 setLoading(false)
+                setStudents([])
             } else {
                 // Submit form create course
                 await dispatch(createCourse({ ...course, students }, auth, profile))
@@ -282,7 +282,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                     </div>
                     <Box display="flex">
                         {
-                            !onEdit && <Box display="flex" alignItems="center">
+                            <Box display="flex" alignItems="center">
                                 <span className="loading-text" style={{ marginRight: "10px" }}>{students.length} sinh viên</span><ReadExcelModal handleSetStudent={setStudents} />
                             </Box>
                         }

@@ -8,3 +8,4 @@ router.get("/refresh_token", AuthController.refreshToken);
 router.get("/logout", AuthController.logout);
 
 export default router;
+

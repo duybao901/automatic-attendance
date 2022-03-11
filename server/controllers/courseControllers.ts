@@ -39,7 +39,7 @@ class CourseController {
             })
 
             const studentArray = await Students.insertMany(studentsArrayObject);
-            
+
             // Tao mon hoc moi
             const newCourse = new Course({
                 name, semester, credit, yearStart, yearEnd, courseCode, description, students: studentArray,
@@ -112,10 +112,23 @@ class CourseController {
     async updateCourse(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const { name, credit, yearStart, yearEnd, courseCode, semester, description } = req.body;
+            const { name, credit, yearStart, yearEnd, courseCode, semester, description, students } = req.body;
 
-            const course = await Course.findByIdAndUpdate(id, {
-                name, semester, credit, yearStart, yearEnd, courseCode, description,
+            let course = await Course.findById(id);
+            if (!course) return res.status(404).json({ msg: "Không tìm thấy môn học" })
+
+            const studentsArrayObject = students.map((student: any) => {
+                return {
+                    name: student.studentName,
+                    studentCode: student.studentCode,
+                    gender: student.gender
+                }
+            })
+
+
+            const studentArray = await Students.insertMany(studentsArrayObject);
+            course = await Course.findByIdAndUpdate(id, {
+                name, semester, credit, yearStart, yearEnd, courseCode, description, students: course.students.concat(studentArray)
             }, { new: true });
 
             return res.json({ msg: "Cập nhật môn học thành công", course: { ...course?._doc } })

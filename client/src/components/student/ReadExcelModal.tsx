@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react'
 import { modelStyle } from '../../utils/model-style'
 import "./ReadExcelModal.scss"
 import * as XLSX from 'xlsx'
+import { Course } from '../../utils/interface'
 // MUI 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -25,16 +26,20 @@ const useStyles = makeStyles({
 
 interface ReadExcelModalProps {
     handleSetStudent?: React.Dispatch<React.SetStateAction<any[]>>
+    onEdit?: Course | null
+    setOnEdit?: React.Dispatch<React.SetStateAction<Course | null>>
 }
 
-const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => {
+const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent, onEdit, setOnEdit }) => {
+
+    console.log(onEdit)
 
     const classes = useStyles()
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const [students, setStudents] = useState<any[]>([])
-    const [file,setFile] = useState<File>();
-    const refInput = useRef()  as React.MutableRefObject<HTMLInputElement>;
+    const [file, setFile] = useState<File>();
+    const refInput = useRef() as React.MutableRefObject<HTMLInputElement>;
 
     // Dong form va reset lai file
     const handleClose = () => {
@@ -54,7 +59,7 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
             fileReader.readAsArrayBuffer(file)
 
             fileReader.onload = async (e) => {
-          
+
                 if (e.target) {
                     const bufferArray = e.target.result;
 
@@ -86,7 +91,7 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
     }
 
     const hanldeAddStudent = () => {
-        if(!file){
+        if (!file) {
             alert("Vui lòng chọn file excel")
             return;
         }
