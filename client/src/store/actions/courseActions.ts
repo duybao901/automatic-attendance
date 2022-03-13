@@ -52,7 +52,6 @@ export const createCourse = (course: Course, auth: AuthPayload, profile: Profile
 
 export const updateCourse = (course: Course, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | ProfileType | DetailCourseType>) => {
     if (!auth.access_token) return;
-    console.log(course)
     const { name, courseCode, credit, yearStart, yearEnd, semester, description, students } = course;
     try {
         const res = await putAPI(`update_course/${course._id}`, { name, courseCode, credit, yearStart, yearEnd, semester, description, students }, auth.access_token);
@@ -113,6 +112,20 @@ export const updateStudent = (student: Student, auth: AuthPayload) => async (dis
             return _student && _student._id === student._id ? student : _student
         })
         dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...res.data.newStudent.course, students: newStudent, teacher: auth.user } } })
+        dispatch({ type: ALERT, payload: { success: res.data.msg } })
+    } catch (error: any) {
+        return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+    }
+}
+
+export const deleteStudent = (student_id: string, auth: AuthPayload, students: Student[], course: Course) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
+    if (!auth.access_token && !auth.user) return;
+    try {
+        const res = await deleteAPI(`student/${student_id}`, auth.access_token);
+
+        const newStudents = students?.filter(student => student._id !== student_id)
+        const data = { ...course, students: newStudents }
+        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...data, teacher: auth.user } } })
         dispatch({ type: ALERT, payload: { success: res.data.msg } })
     } catch (error: any) {
         return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })

@@ -2,6 +2,7 @@ import { Course } from '../../utils/interface'
 export const GET_DETAIL_COURSE = 'GET_DETAIL_COURSE';
 export const UPDATE_DETAIL_COURSE = 'UPDATE_DETAIL_COURSE';
 
+
 export interface DetailCoursePayload {
     courses: Course[];
 }

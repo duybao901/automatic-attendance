@@ -91,7 +91,8 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, auth, loading }) => {
                             </div>
                         </div>
                         {
-                            course.students && course.students.length === 0 ? <p className="loading-text">Lớp học chưa có sinh viên</p> : <StudentTable students={course.students} />
+                            course.students && course.students.length === 0 ? <p className="loading-text">Lớp học chưa có sinh viên</p> :
+                                <StudentTable course={course} students={course.students} />
                         }
                     </div>
                 </>

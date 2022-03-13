@@ -30,13 +30,6 @@ interface CourseFormModalProps {
 }
 
 const useStyles = makeStyles({
-    Dialog: {
-        width: "400px"
-    },
-    DialogTitle: {
-        fontSize: "2rem !important",
-        fontWeight: "600"
-    },
     Button: {
         fontSize: "1.3rem !important",
         fontWeight: "600 !important",

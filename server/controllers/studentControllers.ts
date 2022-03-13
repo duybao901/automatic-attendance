@@ -8,7 +8,7 @@ class StudentControlles {
         try {
             const { id } = req.params
             const { name, studentCode, gender, phone } = req.body
-           
+
             let student = await Students.findById(id).populate('course')
 
             if (!student)
@@ -46,8 +46,25 @@ class StudentControlles {
         try {
             const { id } = req.params
             const student = await Students.findByIdAndDelete(id)
+
+            if (!student)
+                return res.status(500).json({ msg: "Không tìm thấy học sinh" })
+
+            // Update cho course
+            if (student.course) {
+                await Course.updateOne(
+                    { _id: new mongoose.Types.ObjectId(student.course._id as string) },
+                    {
+                        $pull: {
+                            "students": {
+                                "_id": new mongoose.Types.ObjectId(id)
+                            }
+                        }
+                    }
+                )
+            }
             res.json({
-                status: 'Xóa sinh viên thành công',
+                msg: 'Xóa sinh viên thành công',
                 student: student
             })
         } catch (error: any) {

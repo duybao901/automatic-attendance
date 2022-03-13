@@ -48,6 +48,7 @@ const CourseDetal = () => {
             await dispatch(getDetailCourse(detailCourse, slug, auth))
             setLoading(false)
         }
+
         getCourseDetail()
 
         detailCourse.courses.forEach(course => {
@@ -55,6 +56,14 @@ const CourseDetal = () => {
                 setCourse(course)
             }
         })
+
+        // Unmounted
+        return () => {
+            setCourse({})
+            setOnEdit(null)
+            setOpen(false)
+            
+        }
     }, [slug, detailCourse, auth])
 
     const handleClickOpen = (course: Course | null) => {
