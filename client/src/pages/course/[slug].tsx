@@ -62,9 +62,9 @@ const CourseDetal = () => {
             setCourse({})
             setOnEdit(null)
             setOpen(false)
-            
+
         }
-    }, [slug, detailCourse, auth])
+    }, [slug, detailCourse, auth, dispatch])
 
     const handleClickOpen = (course: Course | null) => {
         setOnEdit(course)

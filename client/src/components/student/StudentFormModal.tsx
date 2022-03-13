@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { RootStore, FormSubmit, InputChange, Student } from '../../utils/interface'
+import { RootStore, FormSubmit, InputChange, Student, ErrorStudent } from '../../utils/interface'
 import { modelStyle } from '../../utils/model-style'
 import Loading from '../../components/globals/loading/Loading'
 import "./StudentFormModal.scss"
 import { updateStudent } from '../../store/actions/courseActions'
 import { useDispatch, useSelector } from 'react-redux'
+import { validUpdateStudent } from '../../utils/valid'
 
 // MUI
 import Box from '@mui/material/Box';
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
 
 const StudentFormModal: React.FC<StudentFormModalProps> = ({ open, hanldeSetOpen, onEdit, setOnEdit }) => {
 
-    const { auth, detailCourse } = useSelector((state: RootStore) => state);
+    const { auth } = useSelector((state: RootStore) => state);
     const dispatch = useDispatch()
     const classes = useStyles()
 
@@ -47,14 +48,23 @@ const StudentFormModal: React.FC<StudentFormModalProps> = ({ open, hanldeSetOpen
         phone: "",
     }
 
+    const initialErrorStudent: ErrorStudent = {
+        errorName: "",
+        errorStudentCode: "",
+        errorGender: "",
+        errorPhone: ""
+    }
+
     const [student, setStudent] = useState<Student>(initialStudent)
     const [loading, setLoading] = useState<boolean>(false);
+    const [errorStudent, setErrorStudent] = useState<ErrorStudent>(initialErrorStudent)
 
     const { name, studentCode, gender, phone } = student;
 
     const handleClose = () => {
         hanldeSetOpen(false)
         setOnEdit(null)
+        setErrorStudent(initialErrorStudent)
     }
 
     // Handle change
@@ -63,15 +73,37 @@ const StudentFormModal: React.FC<StudentFormModalProps> = ({ open, hanldeSetOpen
             ...student,
             [e.target.name]: e.target.value
         })
+
+        if (e.target.name === "name") {
+            setErrorStudent({
+                ...errorStudent,
+                errorName: ""
+            })
+        }
+
+        if (e.target.name === "studentCode") {
+            setErrorStudent({
+                ...errorStudent,
+                errorStudentCode: ""
+            })
+        }
+
     }
 
     // Submit Form to edit student
     const handleSubmit = async (e: FormSubmit) => {
         e.preventDefault()
 
-        setLoading(true)
-        await dispatch(updateStudent(student, auth))
-        setLoading(false)
+        const errors = validUpdateStudent(student)
+
+        if (Object.keys(errors).length > 0) {
+            setErrorStudent(errors)
+        } else {
+            setLoading(true)
+            await dispatch(updateStudent(student, auth))
+            setLoading(false)
+        }
+
     }
 
     useEffect(() => {
@@ -104,10 +136,16 @@ const StudentFormModal: React.FC<StudentFormModalProps> = ({ open, hanldeSetOpen
                     <div className="form__group">
                         <label htmlFor="name">Họ và tên</label>
                         <input type="text" name="name" id="name" value={name} onChange={hanldeChange} />
+                        {
+                            errorStudent?.errorName && <small className="text-error">{errorStudent?.errorName}</small>
+                        }
                     </div>
                     <div className="form__group">
                         <label htmlFor="name">Mã số sinh viên</label>
                         <input type="text" name="studentCode" id="studentCode" value={studentCode} onChange={hanldeChange} />
+                        {
+                            errorStudent?.errorStudentCode && <small className="text-error">{errorStudent?.errorStudentCode}</small>
+                        }
                     </div>
                     <div className="form__group">
                         <label htmlFor="name">Giới tính</label>

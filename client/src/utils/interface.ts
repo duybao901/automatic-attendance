@@ -87,3 +87,10 @@ export interface Student {
     gender?: string
     phone?: string
 }
+
+export interface ErrorStudent {
+    errorName?: string
+    errorStudentCode?: string
+    errorGender?: string
+    errorPhone?: string
+}

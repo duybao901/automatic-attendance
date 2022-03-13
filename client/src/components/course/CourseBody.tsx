@@ -311,7 +311,7 @@ const CourseBody = () => {
                                                                     </p>
                                                                 </Button>
                                                                 <Button onClick={() => hanldeDeleteCourse(course._id as string)} className={classes.Button}>
-                                                                    {loadingDeleteCourse === course._id ? <Loading type='small' /> :
+                                                                    {loadingDeleteCourse === course._id ?  <><Loading type='small' /> <p style={{ textTransform: "initial", marginLeft: "10px" }}>Đang xoá...</p></> :
                                                                         <p style={{ textTransform: "capitalize", fontSize: '1.3rem' }}>
                                                                             Đồng ý
                                                                         </p>}

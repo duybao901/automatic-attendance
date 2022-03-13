@@ -151,6 +151,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                 setLoading(false)
                 setCourse(initialCourse)
                 setStudents([])
+                handleCloseModal();
             }
         }
     }
@@ -173,7 +174,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
 
     return <Modal
         open={open}
-        onClose={() => hanldeSetOpen(!open)}
+        onClose={handleCloseModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         className="course__form-modal"
@@ -281,7 +282,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                         }
                         <Box>
                             <PrimaryTooltip title="Tạo khoá học">
-                                <Button type="submit" variant='contained' className={classes.Button}>{loading ? <Loading type='small' /> : <p style={{ textTransform: "capitalize" }}>{onEdit ? "Cập nhật" : "Tạo"}</p>}</Button>
+                                <Button type="submit" variant='contained' className={classes.Button}>{loading ? <><Loading type='small' /> <p style={{ textTransform: "initial", marginLeft: "10px" }}>Đang tạo...</p></> : <p style={{ textTransform: "capitalize" }}>{onEdit ? "Cập nhật" : "Tạo"}</p>}</Button>
                             </PrimaryTooltip>
                         </Box>
                     </Box>

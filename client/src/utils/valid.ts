@@ -1,4 +1,4 @@
-import { UserRegister, UserLogin, UserProfile, Course, ErrorCourse } from "../utils/interface"
+import { UserRegister, UserLogin, UserProfile, Course, ErrorCourse, Student, ErrorStudent } from "../utils/interface"
 export const validRegister = (userRegister: UserRegister | UserProfile) => {
     const errors: any = {};
 
@@ -101,4 +101,40 @@ export const validCreateCourse = (course: Course) => {
         errors.errorDescription = "Mô tả môn học dài nhất 500 ký tự"
     }
     return errors;
+}
+
+
+export const validUpdateStudent = (student: Student) => {
+    const errors: ErrorStudent = {};
+
+    if (student.name === '') {
+        errors.errorName = "Tên sinh viên không được để trống"
+    } else {
+        if (typeof student.name !== "undefined" && student.name?.length < 5) {
+            errors.errorName = "Tên sinh viên có ít nhất 10 ký tự"
+        } else {
+            if (typeof student.name !== "undefined" && student.name?.length > 50) {
+                errors.errorName = "Tên sinh viên dài nhất 50 ký tự"
+            }
+        }
+    }
+
+    if (student.studentCode === '') {
+        errors.errorStudentCode = "Mã số sinh viên không được để trống"
+    } else {
+        if (typeof student.studentCode !== "undefined" && student.studentCode?.length < 5) {
+            errors.errorStudentCode = "Mã số sinh viên có ít nhất 10 ký tự"
+        } else {
+            if (typeof student.studentCode !== "undefined" && student.studentCode?.length > 10) {
+                errors.errorStudentCode = "Mã số viên dài nhất 10 ký tự"
+            }
+        }
+    }
+
+    if (student.gender === '') {
+        errors.errorGender = "Mã số sinh viên không được để trống"
+    }
+
+    return errors;
+
 }
