@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { IStudent } from '../config/interface'
 
 const StudentScheme = new mongoose.Schema({
     // Ho ten sinh vien
@@ -19,15 +20,15 @@ const StudentScheme = new mongoose.Schema({
         type: String,
         default: "male", // 1: male, 2:female
     },
-    birthDay: {
-        type: String,
+    phone: {
+        type: Number
     },
-    address: {
-        type: String,
-        trim: true
-    }    
+    course: {
+        type: mongoose.Types.ObjectId,
+        ref: "course"
+    }
 }, {
     timestamps: true
 })
 
-export default mongoose.model('student', StudentScheme)
+export default mongoose.model<IStudent>('student', StudentScheme)

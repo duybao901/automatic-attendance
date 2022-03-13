@@ -5,7 +5,6 @@ import dayjs from 'dayjs'
 import "./CourseCard.scss"
 import Logo from '../../images/logo.png'
 
-
 // MUI
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -83,9 +82,14 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, auth, loading }) => {
                         </p>
                     </div>
                     <div className="course__card-student">
-                        <h3>
-                            Sinh viên
-                        </h3>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: "center" }}>
+                            <h3>
+                                Sinh viên
+                            </h3>
+                            <div style={{ fontSize: "1.4rem", color: "#473fce", fontWeight: "600" }}>
+                                Tổng số: {course.students && course.students.length}
+                            </div>
+                        </div>
                         {
                             course.students && course.students.length === 0 ? <p className="loading-text">Lớp học chưa có sinh viên</p> : <StudentTable students={course.students} />
                         }

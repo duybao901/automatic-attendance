@@ -38,3 +38,12 @@ export interface ICourse extends Document {
     students: any[]
     _doc: Document<ICourse>
 }
+
+export interface IStudent extends Document {
+    _id?: string
+    name?: string
+    studentCode?: string
+    gender?: string
+    phone?: number
+    course?: ICourse
+}

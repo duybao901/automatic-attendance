@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { modelStyle } from '../../utils/model-style'
 import "./ReadExcelModal.scss"
 import * as XLSX from 'xlsx'
-import { Course } from '../../utils/interface'
+import { Course, Student } from '../../utils/interface'
 // MUI 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -19,25 +19,23 @@ const useStyles = makeStyles({
         fontSize: "1.3rem !important",
         fontWeight: "600 !important",
         height: "36px",
-        padding: "2px !important",
+        padding: "10px !important",
 
     },
 });
 
 interface ReadExcelModalProps {
-    handleSetStudent?: React.Dispatch<React.SetStateAction<any[]>>
+    handleSetStudent?: React.Dispatch<React.SetStateAction<Student[]>>
     onEdit?: Course | null
     setOnEdit?: React.Dispatch<React.SetStateAction<Course | null>>
 }
 
-const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent, onEdit, setOnEdit }) => {
-
-    console.log(onEdit)
+const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => {
 
     const classes = useStyles()
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
-    const [students, setStudents] = useState<any[]>([])
+    const [students, setStudents] = useState<Student[]>([])
     const [file, setFile] = useState<File>();
     const refInput = useRef() as React.MutableRefObject<HTMLInputElement>;
 
@@ -73,10 +71,10 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent, onEdi
                     // Chuyển thành array để xử lý
                     const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
                     if (data) {
-                        const newData = data.slice(7,).map((item: any) => {
+                        let newData: Student[] = data.slice(7,).map((item: any) => {
                             return {
                                 studentCode: item[1] ? item[1].trim() : "",
-                                studentName: item[2] ? item[2].trim() : '',
+                                name: item[2] ? item[2].trim() : '',
                                 gender: item[5] ? item[5] : 'male'
                             }
                         })

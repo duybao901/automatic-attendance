@@ -3,8 +3,8 @@ import "./LoadMoreButton.scss"
 import Loading from '../globals/loading/Loading'
 
 interface LoadMoreButtonProps {
-    total?: number
-    result?: number
+    total: number
+    result: number
     handleLoadMore: () => any
     stopLoadMore: boolean
     onSearch?: boolean
@@ -20,9 +20,9 @@ const LoadMoreButton: React.FC<LoadMoreButtonProps> = ({ result, total, handleLo
         setIsLoading(false)
     }
 
-    if (result && total && stopLoadMore) {
-        if (result >= total || stopLoadMore) return <></>;
-    }
+
+    if (result >= total || stopLoadMore) return <></>;
+
     return (
         <div className="loadmore btn-primary" onClick={() => loadMore()}>
             {

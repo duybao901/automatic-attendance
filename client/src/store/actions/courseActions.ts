@@ -1,5 +1,5 @@
 import { Dispatch } from 'react'
-import { Course } from '../../utils/interface'
+import { Course, Student } from '../../utils/interface'
 import {
     CREATE_COURSE,
     GET_COURSES, CourseType,
@@ -17,6 +17,8 @@ import { AuthPayload } from '../types/authTypes'
 import { deleteAPI, getAPI, postAPI, putAPI } from '../../utils/fetchApi'
 import { DELETE_USER_COURSE, EDIT_USER_COURSE, CREATE_USER_COURSE, ProfileType, ProfilePayload } from '../types/profileTypes'
 
+// Detail Course
+import { GET_DETAIL_COURSE, DetailCoursePayload, DetailCourseType, UPDATE_DETAIL_COURSE } from '../types/detailCourseTypes'
 
 export const getCourses = (auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
     if (!auth.access_token) return;
@@ -48,7 +50,7 @@ export const createCourse = (course: Course, auth: AuthPayload, profile: Profile
 
 }
 
-export const updateCourse = (course: Course, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | ProfileType>) => {
+export const updateCourse = (course: Course, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | ProfileType | DetailCourseType>) => {
     if (!auth.access_token) return;
     console.log(course)
     const { name, courseCode, credit, yearStart, yearEnd, semester, description, students } = course;
@@ -56,6 +58,7 @@ export const updateCourse = (course: Course, auth: AuthPayload) => async (dispat
         const res = await putAPI(`update_course/${course._id}`, { name, courseCode, credit, yearStart, yearEnd, semester, description, students }, auth.access_token);
         dispatch({ type: UPDATE_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } })
         dispatch({ type: EDIT_USER_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } });
+        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } })
         dispatch({ type: ALERT, payload: { success: res.data.msg } })
     } catch (error: any) {
         dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
@@ -84,7 +87,6 @@ export const deleteCourse = (course_id: string, auth: AuthPayload, profile: Prof
 export const sortByDate = (sort: "asc" | "desc") => async (dispatch: Dispatch<CourseType>) => {
     dispatch({ type: SORT_BY_DATE, payload: { sort } });
 }
-
 export const sortByCourseName = (sort: "asc" | "desc") => async (dispatch: Dispatch<CourseType>) => {
     dispatch({ type: SORT_BY_COURSE_NAME, payload: { sort } })
 }
@@ -93,14 +95,38 @@ export const sortByCourseName = (sort: "asc" | "desc") => async (dispatch: Dispa
 export const searchByCourseName = (search: string) => async (dispatch: Dispatch<CourseType>) => {
     dispatch({ type: SEARCH_BY_COURSE_NAME, payload: { courseName: search } });
 }
-
 export const searchByCourseCode = (search: string) => async (dispatch: Dispatch<CourseType>) => {
     dispatch({ type: SEARCH_BY_COURSE_CODE, payload: { courseCode: search } });
 }
-
-
 export const searchByCourseTeacher = (search: string) => async (dispatch: Dispatch<CourseType>) => {
     dispatch({ type: SEARCH_BY_COURSE_TEACHER, payload: { courseTeacher: search } });
 }
 
 
+//Student
+export const updateStudent = (student: Student, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
+    if (!student && !auth.access_token) return;
+
+    try {
+        const res = await putAPI(`student/${student._id}`, student, auth.access_token);
+        const newStudent = res.data.newStudent.course.students.map((_student: Student) => {
+            return _student && _student._id === student._id ? student : _student
+        })
+        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...res.data.newStudent.course, students: newStudent, teacher: auth.user } } })
+        dispatch({ type: ALERT, payload: { success: res.data.msg } })
+    } catch (error: any) {
+        return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+    }
+}
+
+export const getDetailCourse = (detailCourse: DetailCoursePayload, course_id: string, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
+    // Kiem tra trong mang detailCourse co course_id nay khong    
+    if (detailCourse.courses.every(course => course && course._id !== course_id)) {
+        try {
+            const res = await getAPI(`course/${course_id}`, auth.access_token)
+            dispatch({ type: GET_DETAIL_COURSE, payload: { course: res.data.course } })
+        } catch (error: any) {
+            return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+        }
+    }
+}

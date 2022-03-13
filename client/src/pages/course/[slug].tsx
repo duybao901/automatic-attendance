@@ -5,7 +5,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import CourseCard from '../../components/course/CourseCard'
 import { getAPI } from '../../utils/fetchApi'
 import { ALERT } from '../../store/types/alertTypes'
-import { deleteCourse } from '../../store/actions/courseActions'
+import { deleteCourse, getDetailCourse } from '../../store/actions/courseActions'
 import "./Course.scss"
 import CourseFormModal from '../../components/course/CourseFormModal'
 import Loading from '../../components/globals/loading/Loading'
@@ -34,7 +34,7 @@ const CourseDetal = () => {
     const history = useHistory()
     const dispatch = useDispatch()
     const { slug }: Params = useParams()
-    const { auth, profile } = useSelector((state: RootStore) => state)
+    const { auth, profile, detailCourse } = useSelector((state: RootStore) => state)
     const [course, setCourse] = useState<Course>({})
     const [loading, setLoading] = useState<boolean>(false)
     const [open, setOpen] = useState<boolean>(false)
@@ -43,24 +43,19 @@ const CourseDetal = () => {
     const [loadingDeleteCourse, setLoadingDeleteCourse] = useState<boolean>(false)
 
     useEffect(() => {
-        const getDetailCourse = async () => {
-            try {
-                if (slug && open === false) {
-                    setLoading(true)
-                    const res = await getAPI(`course/${slug}`)
-                    setCourse(res.data.course)
-                    setLoading(false)
-                } else {
-                    setLoading(false)
-                }
-            } catch (error: any) {
-                setLoading(false)
-                dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
-                return history.push('/')
-            }
+        const getCourseDetail = async () => {
+            setLoading(true)
+            await dispatch(getDetailCourse(detailCourse, slug, auth))
+            setLoading(false)
         }
-        getDetailCourse();
-    }, [slug, dispatch, open])
+        getCourseDetail()
+
+        detailCourse.courses.forEach(course => {
+            if (course._id === slug) {
+                setCourse(course)
+            }
+        })
+    }, [slug, detailCourse, auth])
 
     const handleClickOpen = (course: Course | null) => {
         setOnEdit(course)

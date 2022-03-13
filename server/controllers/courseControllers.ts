@@ -30,24 +30,29 @@ class CourseController {
         try {
             const { name, credit, yearStart, yearEnd, courseCode, semester, description, students } = req.body;
 
-            const studentsArrayObject = students.map((student: any) => {
-                return {
-                    name: student.studentName,
-                    studentCode: student.studentCode,
-                    gender: student.gender
-                }
-            })
-
-            const studentArray = await Students.insertMany(studentsArrayObject);
 
             // Tao mon hoc moi
             const newCourse = new Course({
-                name, semester, credit, yearStart, yearEnd, courseCode, description, students: studentArray,
+                name, semester, credit, yearStart, yearEnd, courseCode, description,
                 teacher: req.user?._id
             })
 
             // Luu vao data base
             await newCourse.save();
+
+            const studentsArrayObject = students.map((student: any) => {
+                return {
+                    name: student.name,
+                    studentCode: student.studentCode,
+                    gender: student.gender,
+                    course: newCourse._id
+                }
+            })
+            const studentArray = await Students.insertMany(studentsArrayObject);
+            await Course.findByIdAndUpdate(newCourse._id, {
+                students: studentArray
+            }, { new: true });
+
 
             // Them mon hoc vao model cua user
             await Users.findOneAndUpdate({ _id: req.user?._id },
@@ -100,6 +105,20 @@ class CourseController {
         try {
             const { id } = req.params;
 
+            let course = await Course.findById(id);
+            if (!course) return res.status(404).json({ msg: "Không tìm thấy môn học" })
+
+            const arrayId = course.students.map((student: any) => {
+                return `${new mongoose.Types.ObjectId(student._id)}`
+            })
+
+            // Xoa cac sinh vien co trong lop hoc
+            await Students.deleteMany({
+                _id: {
+                    $in: arrayId
+                }
+            })
+
             await Course.findByIdAndDelete(id);
 
             return res.json({ msg: "Xoá môn học thành công" });
@@ -119,14 +138,15 @@ class CourseController {
 
             const studentsArrayObject = students.map((student: any) => {
                 return {
-                    name: student.studentName,
+                    name: student.name,
                     studentCode: student.studentCode,
-                    gender: student.gender
+                    gender: student.gender,
+                    course: id
                 }
             })
 
-
             const studentArray = await Students.insertMany(studentsArrayObject);
+
             course = await Course.findByIdAndUpdate(id, {
                 name, semester, credit, yearStart, yearEnd, courseCode, description, students: course.students.concat(studentArray)
             }, { new: true });

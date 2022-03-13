@@ -12,7 +12,8 @@ import {
     SEARCH_BY_COURSE_NAME,
     SEARCH_BY_COURSE_CODE,
     SEARCH_BY_COURSE_TEACHER,
-    UPDATE_COURSE
+    UPDATE_COURSE,
+    UPDATE_COURSE_STUDENT
 } from '../types/courseTypes'
 
 const initialState: CoursePayload = {
@@ -335,7 +336,7 @@ const courseReducer = (state: CoursePayload = initialState, action: CourseType):
                 result: arraySlice(state.page as number, state.limit as number, sortBy(state?.sorting as SortingCourse, courses)),
                 coursesSearch: [...courses]
             }
-        }
+        }       
 
         default: return state;
     }

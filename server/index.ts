@@ -27,3 +27,4 @@ app.listen(PORT, () => {
 app.use("/api", routers.authRouter);
 app.use("/api", routers.userRouter);
 app.use("/api", routers.courseRouter);
+app.use('/api', routers.studentRouter);

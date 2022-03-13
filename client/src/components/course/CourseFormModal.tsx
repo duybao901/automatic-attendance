@@ -41,7 +41,7 @@ const useStyles = makeStyles({
         fontSize: "1.3rem !important",
         fontWeight: "600 !important",
         height: "36px",
-        padding: "2px !important",
+        padding: "10px !important",
 
     },
     Select: {
@@ -186,7 +186,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
         className="course__form-modal"
     >
         <Box sx={modelStyle}>
-            <Box display='flex' justifyContent="space-between">
+            <Box display='flex' justifyContent="space-between" alignItems='center' mb={2}>
                 <h2 className="modal__heading">Tạo khoá học</h2>
                 <Box>
                     <PrimaryTooltip title='Đóng hộp thoại'>

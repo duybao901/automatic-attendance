@@ -191,7 +191,7 @@ const InforCourse: React.FC<InforCourseProps> = ({ auth, id, dispatch }) => {
 
     {/* Load more */}
     {
-      !profile.loading && <LoadMoreButton onSearch={profile.searching ? profile.searching.onSearch as boolean : false} stopLoadMore={profile.stopLoadMore as boolean} result={profile.result} total={profile.totalCourse} handleLoadMore={handleLoadMore} />
+      !profile.loading && <LoadMoreButton onSearch={profile.searching ? profile.searching.onSearch as boolean : false} stopLoadMore={profile.stopLoadMore as boolean} result={profile.result ? profile.result : 0} total={profile.totalCourse ? profile.totalCourse : 0} handleLoadMore={handleLoadMore} />
     }
   </div>;
 };

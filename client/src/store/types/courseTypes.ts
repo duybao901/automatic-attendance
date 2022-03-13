@@ -1,4 +1,4 @@
-import { Course, SortingCourse, SearchingCourse } from '../../utils/interface'
+import { Course, Student, SortingCourse, SearchingCourse } from '../../utils/interface'
 export const GET_COURSES = "GET_COURSES"
 export const LOADING_COURSE = "LOADING_COURSE"
 export const CREATE_COURSE = "CREATE_COURSE"
@@ -10,6 +10,8 @@ export const SEARCH_BY_COURSE_TEACHER = "SEARCH_BY_COURSE_TEACHER"
 export const SORT_BY_DATE = "SORT_BY_DATE"
 export const SORT_BY_COURSE_NAME = "SORT_BY_COURSE_NAME"
 export const UPDATE_COURSE = "UPDATE_COURSE"
+// Student
+export const UPDATE_COURSE_STUDENT = "UPDATE_COURSE_STUDENT"
 
 export interface CoursePayload {
     courses?: Course[]
@@ -69,36 +71,37 @@ export interface SorseByCourseName {
     }
 }
 
-export interface searchByCourseName {
+export interface SearchByCourseName {
     type: typeof SEARCH_BY_COURSE_NAME,
     payload: {
         courseName: string
     }
 }
 
-export interface searchByCourseCode {
+export interface SearchByCourseCode {
     type: typeof SEARCH_BY_COURSE_CODE,
     payload: {
         courseCode: string
     }
 }
 
-export interface searcgByCourseTeacher {
+export interface SearcgByCourseTeacher {
     type: typeof SEARCH_BY_COURSE_TEACHER,
     payload: {
         courseTeacher: string
     }
 }
 
-export interface updateCourse {
+export interface UpdateCourse {
     type: typeof UPDATE_COURSE,
     payload: {
         course: Course
     }
 }
 
+
 export type CourseType =
     GetCourses | LoadingCourses | CreateCourse |
     ChangePage | DeleteCourse | SorseByDate |
-    SorseByCourseName | searchByCourseName |
-    searchByCourseCode | searcgByCourseTeacher | updateCourse
+    SorseByCourseName | SearchByCourseName |
+    SearchByCourseCode | SearcgByCourseTeacher | UpdateCourse 
