@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { RootStore, FormSubmit, InputChange, Student, ErrorStudent } from '../../utils/interface'
+import { RootStore, FormSubmit, InputChange, Student, ErrorStudent, Course } from '../../utils/interface'
 import { modelStyle } from '../../utils/model-style'
 import Loading from '../../components/globals/loading/Loading'
 import "./StudentFormModal.scss"
@@ -24,6 +24,7 @@ interface StudentFormModalProps {
     hanldeSetOpen: React.Dispatch<React.SetStateAction<boolean>>
     onEdit?: Student | null
     setOnEdit: React.Dispatch<React.SetStateAction<Student | null>>
+    course?: Course
 }
 
 const useStyles = makeStyles({
@@ -35,7 +36,7 @@ const useStyles = makeStyles({
     },
 });
 
-const StudentFormModal: React.FC<StudentFormModalProps> = ({ open, hanldeSetOpen, onEdit, setOnEdit }) => {
+const StudentFormModal: React.FC<StudentFormModalProps> = ({ open, hanldeSetOpen, onEdit, setOnEdit, course }) => {
 
     const { auth } = useSelector((state: RootStore) => state);
     const dispatch = useDispatch()
@@ -100,7 +101,7 @@ const StudentFormModal: React.FC<StudentFormModalProps> = ({ open, hanldeSetOpen
             setErrorStudent(errors)
         } else {
             setLoading(true)
-            await dispatch(updateStudent(student, auth))
+            await dispatch(updateStudent(student, auth, course as Course))
             setLoading(false)
         }
 

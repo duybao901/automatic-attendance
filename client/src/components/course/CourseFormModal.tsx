@@ -282,7 +282,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                         }
                         <Box>
                             <PrimaryTooltip title="Tạo khoá học">
-                                <Button type="submit" variant='contained' className={classes.Button}>{loading ? <><Loading type='small' /> <p style={{ textTransform: "initial", marginLeft: "10px" }}>Đang tạo...</p></> : <p style={{ textTransform: "capitalize" }}>{onEdit ? "Cập nhật" : "Tạo"}</p>}</Button>
+                                <Button type="submit" variant='contained' className={classes.Button}>{loading ? <><Loading type='small' /> <p style={{ textTransform: "initial", marginLeft: "10px" }}>{onEdit ? "Đang cập nhật..." : "Đang tạo..."}</p></> : <p style={{ textTransform: "capitalize" }}>{onEdit ? "Cập nhật" : "Tạo"}</p>}</Button>
                             </PrimaryTooltip>
                         </Box>
                     </Box>

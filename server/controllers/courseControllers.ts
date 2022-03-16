@@ -49,8 +49,9 @@ class CourseController {
                 }
             })
             const studentArray = await Students.insertMany(studentsArrayObject);
+
             await Course.findByIdAndUpdate(newCourse._id, {
-                students: studentArray
+                students: studentArray.map(student => student._id)
             }, { new: true });
 
 
@@ -78,7 +79,8 @@ class CourseController {
     async getCourses(req: Request, res: Response) {
         try {
             const courses = await Course.find({}).sort("-createdAt")
-                .populate("teacher")
+                .populate("teacher").populate("students")
+
             return res.json({ courses, length: courses.length })
 
         } catch (error: any) {
@@ -89,7 +91,7 @@ class CourseController {
     async getcourseDetail(req: RequestUser, res: Response) {
         try {
             const { id } = req.params;
-            const course = await Course.findById(id).populate("teacher", ["name", "email", "avatar", "role", 'account'])
+            const course = await Course.findById(id).populate("teacher", ["name", "email", "avatar", "role", 'account']).populate("students")
             if (!course) return res.status(404).json({ msg: "Không tìm thấy khoá học" })
 
             return res.json({ course })
@@ -148,10 +150,10 @@ class CourseController {
             const studentArray = await Students.insertMany(studentsArrayObject);
 
             course = await Course.findByIdAndUpdate(id, {
-                name, semester, credit, yearStart, yearEnd, courseCode, description, students: course.students.concat(studentArray)
+                name, semester, credit, yearStart, yearEnd, courseCode, description, students: course.students.concat(studentArray.map(student => student._id))
             }, { new: true });
 
-            return res.json({ msg: "Cập nhật môn học thành công", course: { ...course?._doc } })
+            return res.json({ msg: "Cập nhật môn học thành công", course: { ...course?._doc }, studentArray })
 
         } catch (error: any) {
             return res.status(500).json({ msg: error.message })
@@ -237,69 +239,6 @@ class CourseController {
         }
     }
 
-    async deleteStudent(req: Request, res: Response) {
-        try {
-            const { id } = req.params;
-            const { student } = req.body;
-
-            const course = await Course.findById(id);
-
-            if (!course) {
-                return res.status(404).json({ msg: "Không tìm thấy môn học" })
-            }
-
-            await Students.findByIdAndDelete(student);
-
-            await Course.findByIdAndUpdate(id, {
-                students: course.students.filter((student: any) => student._id.toString() !== student)
-            })
-
-            return res.json({ msg: "Xoá sinh viên thành công" })
-
-        } catch (error: any) {
-            return res.status(500).json({ msg: error.message })
-        }
-    }
-
-    async updateStudent(req: Request, res: Response) {
-        try {
-            const { id } = req.params;
-            const { student } = req.body;
-
-            const course = await Course.findById(id);
-
-            if (!course) {
-                return res.status(404).json({ msg: "Không tìm thấy môn học" })
-            }
-
-            await Students.findByIdAndUpdate(student._id, {
-                name: student.name,
-                studentCode: student.studentCode,
-                address: student.address,
-                birthday: student.birthday,
-            })
-
-
-            await Course.updateOne(
-                {
-                    _id: id, 'students._id': new mongoose.Types.ObjectId(`${student._id}`)
-                },
-                {
-                    $set: {
-                        'students.$.name': student.name,
-                        'students.$.birthDay': student.birthDay,
-                        'students.$.address': student.address,
-                    },
-                },
-            );
-
-
-            return res.json({ msg: "Cập nhật sinh viên thành công" })
-
-        } catch (error: any) {
-            return res.status(500).json({ msg: error.message })
-        }
-    }
 }
 
 export default new CourseController;

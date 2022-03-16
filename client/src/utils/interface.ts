@@ -5,6 +5,7 @@ export type InputChange = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 export type FormSubmit = ChangeEvent<HTMLFormElement>
 
 export type RootStore = ReturnType<typeof rootReducer>;
+
 export interface Params {
     page: string
     slug: string

@@ -55,9 +55,10 @@ export const updateCourse = (course: Course, auth: AuthPayload) => async (dispat
     const { name, courseCode, credit, yearStart, yearEnd, semester, description, students } = course;
     try {
         const res = await putAPI(`update_course/${course._id}`, { name, courseCode, credit, yearStart, yearEnd, semester, description, students }, auth.access_token);
-        dispatch({ type: UPDATE_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } })
+        console.log(res.data.studentArray)
+        dispatch({ type: UPDATE_COURSE, payload: { course: { ...res.data.course, teacher: auth.user, students: res.data.studentArray } } })
         dispatch({ type: EDIT_USER_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } });
-        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } })
+        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...res.data.course, teacher: auth.user, students: res.data.studentArray } } })
         dispatch({ type: ALERT, payload: { success: res.data.msg } })
     } catch (error: any) {
         dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
@@ -103,15 +104,15 @@ export const searchByCourseTeacher = (search: string) => async (dispatch: Dispat
 
 
 //Student
-export const updateStudent = (student: Student, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
+export const updateStudent = (student: Student, auth: AuthPayload, course: Course) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
     if (!student && !auth.access_token) return;
 
     try {
         const res = await putAPI(`student/${student._id}`, student, auth.access_token);
-        const newStudent = res.data.newStudent.course.students.map((_student: Student) => {
+        const newStudent = course.students && course.students.map((_student: Student) => {
             return _student && _student._id === student._id ? student : _student
         })
-        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...res.data.newStudent.course, students: newStudent, teacher: auth.user } } })
+        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...course, students: newStudent, teacher: auth.user } } })
         dispatch({ type: ALERT, payload: { success: res.data.msg } })
     } catch (error: any) {
         return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
@@ -122,7 +123,6 @@ export const deleteStudent = (student_id: string, auth: AuthPayload, students: S
     if (!auth.access_token && !auth.user) return;
     try {
         const res = await deleteAPI(`student/${student_id}`, auth.access_token);
-
         const newStudents = students?.filter(student => student._id !== student_id)
         const data = { ...course, students: newStudents }
         dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...data, teacher: auth.user } } })

@@ -20,10 +20,10 @@ const Home = () => {
                             <h3>Giáo viên</h3>
                         </Link>
                     }
-                    <Link className="box-item" to="/student">
+                    {/* <Link className="box-item" to="/student">
                         <i className='bx bx-id-card'></i>
                         <h3>Sinh viên</h3>
-                    </Link>
+                    </Link> */}
                     <Link className="box-item" to="/identified">
                         <i className='bx bx-user-circle'></i>
                         <h3>Nhận diện</h3>
@@ -36,6 +36,11 @@ const Home = () => {
                         <i className='bx bx-book-open'></i>
                         <h3>Môn học</h3>
                     </Link>
+                    <Link className="box-item" to="/lesson">
+                        <i className='bx bx-chalkboard'></i>
+                        <h3>Buổi học</h3>
+                    </Link>
+
                 </div>
             </div>
         </div>

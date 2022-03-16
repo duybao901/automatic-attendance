@@ -35,10 +35,12 @@ const CourseScheme = new mongoose.Schema({
         type: String,
         default: '',
     },
-    students: {
-        type: Array,
-        default: []
-    },
+    students: [
+        {
+            ref: "student",
+            type: mongoose.Types.ObjectId
+        }
+    ],
     // Mo ta mon hoc
     description: {
         type: String,

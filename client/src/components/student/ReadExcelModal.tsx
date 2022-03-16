@@ -63,6 +63,8 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
 
                     const wb = XLSX.read(bufferArray, { type: 'buffer' })
 
+                    // console.log(wb)
+
                     // Lấy SheetNames đầu tiên
                     const wsname = wb.SheetNames[0]
 
@@ -70,15 +72,42 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
 
                     // Chuyển thành array để xử lý
                     const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
+
+                    // Tim STT
+                    let stt_top = 0;
+                    let stt_left = 0;
+                    data.forEach((item: any, i) => {
+                        let index = -1;
+                        if (item.length !== 0) {
+                            index = item.findIndex((item: any) => {
+                                return item === "STT"
+                            })
+                        }
+                        if (index !== -1) {
+                            stt_left = index
+                            stt_top = i
+                        }
+                    })
+
+                    console.log({ stt_top, stt_left });
+
+                    console.log(data)
+                    console.log(data.slice(stt_top + 1,))
+
                     if (data) {
-                        let newData: Student[] = data.slice(7,).map((item: any) => {
-                            return {
-                                studentCode: item[1] ? item[1].trim() : "",
-                                name: item[2] ? item[2].trim() : '',
-                                gender: item[5] ? item[5] : 'male'
+                        const newData: Student[] = [];
+                        data.slice(stt_top + 1,).forEach((item: any) => {
+                            if (item.length !== 0) {
+                                const student = {
+                                    studentCode: item[stt_left + 1] ? item[stt_left + 1].trim() : "",
+                                    name: item[stt_left + 2] ? item[stt_left + 2].trim() : '',
+                                    gender: item[stt_left + 5] ? item[stt_left + 5] : 'male'
+                                }
+                                newData.push(student)
                             }
                         })
-                        setStudents(newData)
+                        console.log(newData)
+                        // setStudents(newData)
                     }
                 }
             }
@@ -89,14 +118,14 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
     }
 
     const hanldeAddStudent = () => {
-        if (!file) {
-            alert("Vui lòng chọn file excel")
-            return;
-        }
-        if (typeof handleSetStudent === "function") {
-            handleSetStudent(students)
-            handleClose()
-        }
+        // if (!file) {
+        //     alert("Vui lòng chọn file excel")
+        //     return;
+        // }
+        // if (typeof handleSetStudent === "function") {
+        //     handleSetStudent(students)
+        //     handleClose()
+        // }
     }
 
     return (

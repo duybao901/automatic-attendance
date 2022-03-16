@@ -169,7 +169,7 @@ const StudentTable: React.FC<StudentTableProps> = ({ course, students }) => {
         </Table>
 
         {/* Form Student */}
-        <StudentFormModal open={openModalForm} hanldeSetOpen={setOpenModalForm} onEdit={onEdit} setOnEdit={setOnEdit} />
+        <StudentFormModal course={course} open={openModalForm} hanldeSetOpen={setOpenModalForm} onEdit={onEdit} setOnEdit={setOnEdit} />
     </TableContainer>
         ;
 }
