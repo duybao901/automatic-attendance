@@ -26,6 +26,12 @@ const LessonScheme = new mongoose.Schema({
         ref: 'course',
         type: mongoose.Schema.Types.ObjectId
     },
+    // Thu
+    weekday: {
+        type: String,
+        trim: true,
+        default: 'Thứ 2',
+    }
 },
     {
         timestamps: true

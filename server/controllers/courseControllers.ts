@@ -84,6 +84,7 @@ class CourseController {
             return res.json({ courses, length: courses.length })
 
         } catch (error: any) {
+            console.log(error)
             return res.status(500).json({ msg: error.message })
         }
     }

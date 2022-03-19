@@ -1,0 +1,46 @@
+@import "../../stylesSass/variables";
+@import "../../stylesSass/mixin";
+.lesson__body{
+    padding: 20px;
+    &-control{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 16px;
+        min-height: 65px;
+        background-color: $color-white;
+        border-radius: 5px;
+        box-shadow: $box-shadow-1;
+
+        & form {
+            & .form-group {
+                display: flex;
+                align-items: center;
+                height: 36px;
+                margin-right: 20px;
+                position: relative;
+                width: 230px;
+                & input {
+                    position: absolute;
+                    z-index: 9;
+                    width: 100%;
+                    margin-right: 5px;
+                    @include inputStyle;
+                    min-height: 40px;
+                    padding-right: 25px !important;
+                    padding-left: 10px;
+                    font-size: 1.5rem;                    
+                }
+                & i {
+                    font-size: 1.8rem;
+                    color: $color-text-secondary;
+                    position: absolute;
+                    z-index: 10;
+                    right: 5px;
+                }
+            }
+        }
+    }
+}

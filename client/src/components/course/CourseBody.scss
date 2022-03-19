@@ -3,7 +3,7 @@
 
 .course__body {
     padding: 20px;
-    & .course-name{
+    & .course-name {
         min-width: 200px !important;
     }
     & .course__control {
@@ -19,7 +19,6 @@
         box-shadow: $box-shadow-1;
         & form {
             display: flex;
-
             & .form-group {
                 display: flex;
                 align-items: center;
@@ -27,24 +26,24 @@
                 margin-right: 20px;
                 position: relative;
                 width: 230px;
-            }
-            & input {
-                position: absolute;
-                z-index: 9;
-                width: 100%;
-                margin-right: 5px;
-                @include inputStyle;
-                min-height: 36px;
-                padding-right: 25px !important;
-                padding-left: 10px;
-                font-size: 1.4rem;
-            }
-            & i {
-                font-size: 1.8rem;
-                color: $color-text-secondary;
-                position: absolute;
-                z-index: 10;
-                right: 5px;
+                & input {
+                    position: absolute;
+                    z-index: 9;
+                    width: 100%;
+                    margin-right: 5px;
+                    @include inputStyle;
+                    min-height: 36px;
+                    padding-right: 25px !important;
+                    padding-left: 10px;
+                    font-size: 1.4rem;
+                }
+                & i {
+                    font-size: 1.8rem;
+                    color: $color-text-secondary;
+                    position: absolute;
+                    z-index: 10;
+                    right: 5px;
+                }
             }
         }
     }
@@ -59,7 +58,7 @@
             }
             & .css-zqcytf-MuiButtonGroup-root .MuiButtonGroup-grouped {
                 width: 150px;
-            }          
+            }
         }
         & .course-name {
             min-width: 180px !important;

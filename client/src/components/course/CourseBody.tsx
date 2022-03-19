@@ -86,7 +86,7 @@ const CourseBody = () => {
 
     const dispatch = useDispatch()
     const classes = useStyles()
-    const { course: courses, auth ,profile} = useSelector((state: RootStore) => state)
+    const { course: courses, auth, profile } = useSelector((state: RootStore) => state)
     const [searchByName, setSearchByName] = useState<string>('')
     const [searchByCode, setSearchByCode] = useState<string>('')
     const [searchByNameTeacher, setCourseByNameTeacher] = useState<string>('')
@@ -274,10 +274,7 @@ const CourseBody = () => {
                                         <div>
                                             <ButtonGroup variant="contained" aria-label="outlined primary button group">
                                                 <PrimaryTooltip title="Chi tiết  môn học" className={classes.Tooltip}>
-
-
-
-                                                    <Button className={`${classes.Button} ${classes.ButtonInfor}`} color="info" >
+                                                    <Button className={`${classes.Button} ${classes.ButtonInfor}`} color="primary" >
                                                         <Link to={`/course/${course._id}`} style={{ textDecoration: "none", color: '#fff', width: "100%", height: "100%" }}>
                                                             <i style={{ fontSize: "2rem" }}
                                                                 className='bx bx-expand-vertical' >
@@ -289,7 +286,7 @@ const CourseBody = () => {
                                                     // admin hoac teacher tao thi moi co the chinh sua hoac xoa
                                                     (auth.user?.role === 'admin' || auth.user?._id === course.teacher?._id) && <React.Fragment>
                                                         <PrimaryTooltip title="Chỉnh sửa">
-                                                            <Button onClick={() => handleClickOpen(course)} className={classes.Button} ><i className='bx bxs-edit-alt' style={{ fontSize: "2rem" }}></i></Button>
+                                                            <Button color="primary" onClick={() => handleClickOpen(course)} className={classes.Button} ><i className='bx bxs-edit-alt' style={{ fontSize: "2rem" }}></i></Button>
                                                         </PrimaryTooltip>
                                                         <PrimaryTooltip title="Xoá">
                                                             <Button onClick={() => handleClickOpenDialog(course?._id as string)} className={classes.Button} color="error">  <i style={{ fontSize: "2rem" }} className='bx bx-x'></i></Button>
@@ -311,7 +308,7 @@ const CourseBody = () => {
                                                                     </p>
                                                                 </Button>
                                                                 <Button onClick={() => hanldeDeleteCourse(course._id as string)} className={classes.Button}>
-                                                                    {loadingDeleteCourse === course._id ?  <><Loading type='small' /> <p style={{ textTransform: "initial", marginLeft: "10px" }}>Đang xoá...</p></> :
+                                                                    {loadingDeleteCourse === course._id ? <><Loading type='small' /> <p style={{ textTransform: "initial", marginLeft: "10px" }}>Đang xoá...</p></> :
                                                                         <p style={{ textTransform: "capitalize", fontSize: '1.3rem' }}>
                                                                             Đồng ý
                                                                         </p>}

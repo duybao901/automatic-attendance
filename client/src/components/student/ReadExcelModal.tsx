@@ -89,11 +89,6 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
                         }
                     })
 
-                    console.log({ stt_top, stt_left });
-
-                    console.log(data)
-                    console.log(data.slice(stt_top + 1,))
-
                     if (data) {
                         const newData: Student[] = [];
                         data.slice(stt_top + 1,).forEach((item: any) => {
@@ -106,8 +101,7 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
                                 newData.push(student)
                             }
                         })
-                        console.log(newData)
-                        // setStudents(newData)
+                        setStudents(newData)
                     }
                 }
             }
@@ -118,14 +112,14 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
     }
 
     const hanldeAddStudent = () => {
-        // if (!file) {
-        //     alert("Vui lòng chọn file excel")
-        //     return;
-        // }
-        // if (typeof handleSetStudent === "function") {
-        //     handleSetStudent(students)
-        //     handleClose()
-        // }
+        if (!file) {
+            alert("Vui lòng chọn file excel")
+            return;
+        }
+        if (typeof handleSetStudent === "function") {
+            handleSetStudent(students)
+            handleClose()
+        }
     }
 
     return (

@@ -95,3 +95,18 @@ export interface ErrorStudent {
     errorGender?: string
     errorPhone?: string
 }
+
+export interface Lesson {
+    course?: Course
+    timeStart?: string
+    timeEnd?: string
+    desc?: string
+    weekday?: string
+}
+
+export interface LessonError {
+    errorCourse?: string
+    errorTimeStart?: string
+    errorTimeEnd?: string
+    errorTime?: string // start > end
+}

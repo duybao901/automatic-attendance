@@ -1,4 +1,3 @@
-
 export const ALERT = "ALERT"
 
 export interface AlertPayload {
