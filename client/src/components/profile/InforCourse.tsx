@@ -37,6 +37,13 @@ const useStyle = makeStyles({
     fontWeight: "500 !important",
     color: "#1e293b",
     height: "40px !important",
+    "&:hover": {
+      backgroundColor: "#473fce !important",
+      color: "#fff !important",
+      "& svg": {
+          fill: "#fff !important",
+      }
+  }
   },
   MenuItemDelete: {
     // color: "crimson !important"

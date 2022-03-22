@@ -32,7 +32,6 @@ const MenuList: React.FC<MenuProps> = ({ classes, handleEditCourse, course }) =>
     const [loadingDeleteCourse, setLoadingDeleteCourse] = useState<string>('');
 
     const editCourse = () => {
-        console.log('a')
         handleEditCourse(course)
         setAnchorEl(null);
     }

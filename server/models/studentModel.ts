@@ -26,7 +26,7 @@ const StudentScheme = new mongoose.Schema({
     course: {
         type: mongoose.Types.ObjectId,
         ref: "course"
-    }
+    },
 }, {
     timestamps: true
 })

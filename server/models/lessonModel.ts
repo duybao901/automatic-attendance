@@ -31,6 +31,10 @@ const LessonScheme = new mongoose.Schema({
         type: String,
         trim: true,
         default: 'Thứ 2',
+    },
+    teacher: {
+        ref: "user",
+        type: mongoose.Types.ObjectId
     }
 },
     {

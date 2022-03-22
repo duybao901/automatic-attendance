@@ -15,7 +15,13 @@ const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes)
         case types.CREATE_LESSON: {
             return {
                 ...state,
-                lessons: state.lessons ? [action.payload.newLesson, ...state.lessons] : [action.payload.newLesson]  
+                lessons: state.lessons ? [action.payload.newLesson, ...state.lessons] : [action.payload.newLesson]
+            }
+        }
+        case types.LOADING_LESSON: {
+            return {
+                ...state,
+                loading: action.payload
             }
         }
         default:

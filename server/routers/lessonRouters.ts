@@ -4,6 +4,7 @@ const router = express.Router();
 import { auth } from '../middlewares/auth'
 import LessonController from '../controllers/LessonControllers'
 
-router.post('/create_lesson', auth, LessonController.createLesson);
+router.post('/lesson', auth, LessonController.createLesson);
+router.get('/lesson', auth, LessonController.getLessonUser);
 
 export default router;

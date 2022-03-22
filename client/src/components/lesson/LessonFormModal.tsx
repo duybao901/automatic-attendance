@@ -4,6 +4,7 @@ import Loading from '../globals/loading/Loading';
 import { useDispatch, useSelector } from 'react-redux'
 import dayjs from 'dayjs';
 import "./LessonFormModal.scss"
+import { createLesson } from '../../store/actions/lessonActions'
 
 // MUI
 import Box from '@mui/material/Box';
@@ -20,6 +21,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TextField from '@mui/material/TextField';
 import { IconButton } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface LessonFormModalProps {
     open: boolean;
@@ -111,7 +113,7 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
         setLesson({ ...lesson, [e.target.name]: e.target.value })
     }
 
-    const handleSubmit = (e: FormSubmit) => {
+    const handleSubmit = async (e: FormSubmit) => {
         e.preventDefault();
 
         if (timeEnd && timeStart) {
@@ -127,21 +129,16 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
             }
 
         const isEmpty = Object.values(lessonError).every(x => (x === null || x === ''));
-
         if (isEmpty) {
-            // Submit
+            setLoading(true);
+            await dispatch(createLesson(lesson, auth))
+            setLoading(false);
+            handleCloseModal();
         }
 
     }
 
     // Form time
-    // const [timePickerStart, setTimePickerStart] = React.useState<Date | null>(
-    //     new Date(),
-    // );
-    // const [timePickerEnd, setTimePickerEnd] = React.useState<Date | null>(
-    //     new Date(),
-    // );
-
     const handleChangeTimeStart = (newValue: Date | null) => {
         try {
             setLesson({ ...lesson, timeStart: newValue?.toISOString() })
@@ -153,9 +150,6 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
 
     const handleChangeTimeEnd = (newValue: Date | null) => {
         try {
-
-
-
             setLessonError({ ...lessonError, errorTimeEnd: "" })
             setLesson({ ...lesson, timeEnd: newValue?.toISOString() })
             if (newValue && timeStart) {
@@ -181,14 +175,6 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
             return ""
         }
     }
-
-    // useEffect(() => {
-    //     if (lesson.course) {
-    //         activeCourse()
-    //     }
-    // }, [lesson.course])
-
-
 
     return <Modal
         open={open}
@@ -238,31 +224,41 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
                 </div>
                 <div className="form-group">
                     <label htmlFor="name">Chọn môn học *</label>
-                    <div className='form-group__course'>
-                        <div className='form-group__course-row'>
-                            {
-                                userCourse.map((course: Course) => {
-                                    return <div onClick={() => handleAddCourse(course)} className={`row__item ${activeCourse(course)}`} key={course._id}>
-                                        <div className="row__item-student">
-                                            {course.students?.length}
-                                        </div>
-                                        <div className="row__item-course">
-                                            <h2 className="course__name">
-                                                {course.name}
-                                            </h2>
-                                            <p className="course__code">
-                                                {course.courseCode}
-                                            </p>
-                                            <span className="course__createAt">Ngày tạo: {dayjs(course.yearStart).format("DD - MM - YYYY")}</span>
-                                        </div>
-                                        <div className="row__item-use">
-                                            <CheckCircleOutlineIcon style={{ color: "#fff", marginTop: "-4px" }} />
-                                        </div>
-                                    </div>
-                                })
-                            }
+                    {
+                        coursesStore.loading && <div>
+                            <CircularProgress />
+                            đang tải môn học...
                         </div>
-                    </div>
+                    }
+                    {
+                        (coursesStore.courses && coursesStore.loading === false) && coursesStore.courses.length === 0
+                            ? <p className="loading-text">Bạn chưa có môn học nào!</p>
+                            : <div className='form-group__course'>
+                                <div className='form-group__course-row'>
+                                    {
+                                        userCourse.map((course: Course) => {
+                                            return <div onClick={() => handleAddCourse(course)} className={`row__item ${activeCourse(course)}`} key={course._id}>
+                                                <div className="row__item-student">
+                                                    {course.students?.length}
+                                                </div>
+                                                <div className="row__item-course">
+                                                    <h2 className="course__name">
+                                                        {course.name}
+                                                    </h2>
+                                                    <p className="course__code">
+                                                        {course.courseCode}
+                                                    </p>
+                                                    <span className="course__createAt">Ngày tạo: {dayjs(course.yearStart).format("DD - MM - YYYY")}</span>
+                                                </div>
+                                                <div className="row__item-use">
+                                                    <CheckCircleOutlineIcon style={{ color: "#fff", marginTop: "-4px" }} />
+                                                </div>
+                                            </div>
+                                        })
+                                    }
+                                </div>
+                            </div>
+                    }
                     {
                         lessonError?.errorCourse && <small className="text-error">{lessonError?.errorCourse}</small>
                     }

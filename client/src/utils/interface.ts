@@ -97,11 +97,13 @@ export interface ErrorStudent {
 }
 
 export interface Lesson {
+    _id?: string
     course?: Course
     timeStart?: string
     timeEnd?: string
     desc?: string
     weekday?: string
+    teacher?: User
 }
 
 export interface LessonError {
