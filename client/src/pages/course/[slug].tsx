@@ -43,6 +43,7 @@ const CourseDetal = () => {
     const [loadingDeleteCourse, setLoadingDeleteCourse] = useState<boolean>(false)
 
     useEffect(() => {
+
         const getCourseDetail = async () => {
             setLoading(true)
             await dispatch(getDetailCourse(detailCourse, slug, auth))
@@ -50,7 +51,7 @@ const CourseDetal = () => {
         }
 
         getCourseDetail()
-
+        
         detailCourse.courses.forEach(course => {
             if (course._id === slug) {
                 setCourse(course)

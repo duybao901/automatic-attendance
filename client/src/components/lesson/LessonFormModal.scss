@@ -147,6 +147,27 @@
     }
 }
 
+@include MediaQuery(MD) {
+    .MuiBox-root.css-1mgnmsd {
+        width: 80%;
+    }
+}
+
+@include MediaQuery(SM) {
+    .MuiBox-root.css-1mgnmsd {
+        width: 80%;
+    }
+    .form-group__course {
+        height: 135px;
+    }
+
+    .form-group__course-row {
+        & .row__item {
+            width: calc(100% - 10px) !important;
+        }
+    }
+}
+
 .MuiFormControl-root.MuiTextField-root.css-1u3bzj6-MuiFormControl-root-MuiTextField-root label {
     font-size: 1.8rem;
     background-color: #fff;

@@ -1,8 +1,8 @@
 @import "../../stylesSass/variables";
 @import "../../stylesSass/mixin";
-.lesson__body{
+.lesson__body {
     padding: 20px;
-    &-control{
+    &-control {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -31,7 +31,7 @@
                     min-height: 40px;
                     padding-right: 25px !important;
                     padding-left: 10px;
-                    font-size: 1.5rem;                    
+                    font-size: 1.5rem;
                 }
                 & i {
                     font-size: 1.8rem;
@@ -39,6 +39,25 @@
                     position: absolute;
                     z-index: 10;
                     right: 5px;
+                }
+            }
+        }
+    }
+
+    @include MediaQuery(MD) {
+        &-control {
+            flex-direction: column;            
+            & form{
+                width: 100%;
+                & .form-group{
+                    width: 100%;
+                    margin-bottom: 10px;
+                    & i {
+                        right: 15px;
+                    }
+                    & input{
+                        padding-right: 40px !important;
+                    }
                 }
             }
         }

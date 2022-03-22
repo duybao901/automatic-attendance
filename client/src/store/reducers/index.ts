@@ -6,6 +6,7 @@ import teacher from './teacherReducers'
 import course from './courseReducers'
 import profile from './profileReducer'
 import detailCourse from './detailCourseReducers'
+import lesson from './lessonReducers'
 export default combineReducers({
     auth,
     alert,
@@ -13,6 +14,7 @@ export default combineReducers({
     teacher,
     course,
     profile,
-    detailCourse
+    detailCourse,
+    lesson
 })
 
