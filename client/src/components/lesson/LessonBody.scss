@@ -44,23 +44,37 @@
                 }
             }
         }
+        & .control__wrapper {
+            display: flex;
+            align-items: center;
+        }
+        & .control__my-lesson{
+            font-size: 1.3rem;
+            font-weight: 600;
+            font-family: $font-family-primary !important;
+            margin-right: 5px;
+        }
     }
     &-list {
         & .list__row {
             display: flex;
             flex-wrap: wrap;
-            margin-left: -25px;           
+            margin-left: -25px;
         }
     }
 
     @include MediaQuery(MD) {
         &-control {
             flex-direction: column;
+            & .control__wrapper {
+                width: 100%;
+                margin-bottom: 10px;
+            }
             & form {
                 width: 100%;
+                padding-right: 10px;
                 & .form-group {
                     width: 100%;
-                    margin-bottom: 10px;
                     & i {
                         right: 15px;
                     }
@@ -69,6 +83,6 @@
                     }
                 }
             }
-        }       
+        }
     }
 }

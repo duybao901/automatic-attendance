@@ -42,6 +42,7 @@ export const updateLesson = (lesson: Lesson, auth: AuthPayload) =>
     async (dispatch: Dispatch<LessonTypes | AlertType>) => {
         if (!auth.access_token && !auth.user) return;
         try {
+            // console.log(lesson.course?._id)
             const res = await putAPI(`lesson/${lesson._id}`, { ...lesson, course_id: lesson.course?._id }, auth.access_token)
             dispatch({ type: types.UPDATE_LESSON, payload: { newLesson: { ...lesson, teacher: auth.user } } })
             dispatch({ type: ALERT, payload: { success: res.data.msg } })

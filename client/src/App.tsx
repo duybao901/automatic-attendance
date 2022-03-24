@@ -14,12 +14,11 @@ import { getCourses } from "./store/actions/courseActions"
 import PrivateRouter from "./components/customRoute/PrivateRoute";
 import SideBar from "./components/globals/side-bar/SideBar";
 import DashBroadHeader from "./components/dashbroad/DashBroadHeader";
-import { getLessons } from './store/actions/lessonActions'
 
 function App() {
 
     const dispatch = useDispatch();
-    const { auth, sidebar } = useSelector((state: RootStore) => state)
+    const { auth, sidebar, lesson } = useSelector((state: RootStore) => state)
 
     useEffect(() => {
         dispatch(refreshToken())
@@ -27,8 +26,7 @@ function App() {
 
     useEffect(() => {
         dispatch(getCourses(auth))
-        dispatch(getLessons(auth))
-    }, [dispatch, auth])
+    }, [dispatch, auth])    
 
     return <div className="App">
         {/* Alert */}

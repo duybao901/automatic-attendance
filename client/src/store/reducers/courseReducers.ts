@@ -13,7 +13,6 @@ import {
     SEARCH_BY_COURSE_CODE,
     SEARCH_BY_COURSE_TEACHER,
     UPDATE_COURSE,
-    UPDATE_COURSE_STUDENT
 } from '../types/courseTypes'
 
 const initialState: CoursePayload = {
