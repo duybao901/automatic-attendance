@@ -149,7 +149,7 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
                         </Box>
                     </Box>
                     <div className="student__file">
-                        <input ref={refInput} type="file" accept='xlsx' onChange={handleChaneFile} />
+                        <input ref={refInput} type="file" accept=".xlsx, .xls, .csv" onChange={handleChaneFile} />
                     </div>
                     <div className='modal__control'>
                         <div>

@@ -4,7 +4,7 @@ import Loading from '../globals/loading/Loading';
 import { useDispatch, useSelector } from 'react-redux'
 import dayjs from 'dayjs';
 import "./LessonFormModal.scss"
-import { createLesson } from '../../store/actions/lessonActions'
+import { createLesson, updateLesson } from '../../store/actions/lessonActions'
 
 // MUI
 import Box from '@mui/material/Box';
@@ -76,11 +76,13 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
 
     }
 
+
     const [lesson, setLesson] = useState<Lesson>(initialLesson);
     const [lessonError, setLessonError] = useState<LessonError>(initialLessonError);
     const { timeStart, timeEnd, course, desc, weekday } = lesson;
     const [loading, setLoading] = useState<boolean>(false);
     const [userCourse, setUserCourse] = useState<Course[]>([]);
+
 
     const handleCloseModal = () => {
         setOpen(false);
@@ -96,15 +98,24 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
         }
     }, [onEdit])
 
+
     useEffect(() => {
         if (coursesStore.courses) {
             let userCourse: Course[] = [];
-            userCourse = coursesStore.courses.filter((course: Course) => {
-                if (course.teacher && auth.user) {
-                    return course.teacher._id === auth.user._id
-                }
-            });
-            setUserCourse(userCourse)
+            if (auth.user?.role !== 'admin') {
+                userCourse = coursesStore.courses.filter((course: Course) => {
+                    if (course.teacher && auth.user) {
+                        return course.teacher._id === auth.user._id
+                    }
+                });
+                setUserCourse(userCourse)
+            } else {
+                setUserCourse(coursesStore.courses)
+            }
+
+        }
+        return () => {
+            setUserCourse([])
         }
     }, [coursesStore.courses, auth.user])
 
@@ -131,9 +142,17 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
         const isEmpty = Object.values(lessonError).every(x => (x === null || x === ''));
         if (isEmpty) {
             setLoading(true);
-            await dispatch(createLesson(lesson, auth))
-            setLoading(false);
-            handleCloseModal();
+            if (onEdit) {
+                // Cap nhat
+                await dispatch(updateLesson(lesson, auth));
+                setLoading(false);
+                handleCloseModal();
+            } else {
+                // Them moi
+                await dispatch(createLesson(lesson, auth))
+                setLoading(false);
+                handleCloseModal();
+            }
         }
 
     }
@@ -231,10 +250,10 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
                         </div>
                     }
                     {
-                        (coursesStore.courses && coursesStore.loading === false) && coursesStore.courses.length === 0
+                        (coursesStore.courses && coursesStore.loading === false && userCourse.length === 0)
                             ? <p className="loading-text">Bạn chưa có môn học nào!</p>
                             : <div className='form-group__course'>
-                                <div className='form-group__course-row'>
+                                <div className='form-group__course-row' >
                                     {
                                         userCourse.map((course: Course) => {
                                             return <div onClick={() => handleAddCourse(course)} className={`row__item ${activeCourse(course)}`} key={course._id}>
@@ -302,7 +321,7 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
                 </div>
             </form>
         </Box>
-    </Modal>
+    </Modal >
 }
 
 export default LessonFormModal

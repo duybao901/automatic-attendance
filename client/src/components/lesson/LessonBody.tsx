@@ -3,14 +3,14 @@ import "./LessonBody.scss"
 import { useSelector } from 'react-redux'
 import { InputChange, RootStore } from '../../utils/interface'
 import LessonFormModal from './LessonFormModal'
-import dayjs from 'dayjs'
-import MenuListLesson from './MenuListLesson'
+import LessonCard from './LessonCard'
 // MUI
 import { makeStyles } from '@mui/styles';
 import { Button } from '@mui/material'
 import PrimaryTooltip from '../../components/globals/tool-tip/Tooltip'
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+
 
 
 const useStyle = makeStyles({
@@ -29,12 +29,12 @@ const useStyle = makeStyles({
 const LessonBody = () => {
 
     const classes = useStyle();
-    const { lesson } = useSelector((state: RootStore) => state);
+    const { lesson, auth } = useSelector((state: RootStore) => state);
     const [search, setSearch] = useState<string>("");
     const [openModal, setOpenModal] = useState<boolean>(false);
 
 
-    const addStudentClass = (student: number) => {
+    const handleAddStudentClass = (student: number) => {
         if (student >= 0 && student < 10) {
             return 'student-10'
         }
@@ -76,57 +76,13 @@ const LessonBody = () => {
                         </Box>
                     }
                     {
-                        (lesson.loading === false && lesson.lessons) && lesson.lessons.length === 0 && <p style={{fontSize:"1.4rem"}} className="loading-text">Không có buổi học nào!</p>
+                        (lesson.loading === false && lesson.lessons) && lesson.lessons.length === 0 && <p style={{ fontSize: "1.4rem" }} className="loading-text">Không có buổi học nào!</p>
                     }
 
                     <div className="list__row">
                         {
-                            lesson.lessons && lesson.lessons.map((lesson) => {
-                                return <div className='list__row-item' key={lesson._id}>
-                                    <div className="item__heading">
-                                        <span className={addStudentClass(lesson.course?.students?.length as number)}>
-                                            {lesson.course?.students?.length} sinh viên
-                                        </span>
-                                        <MenuListLesson />
-                                    </div>
-                                    <div className="item__infor">
-                                        <p className="item__infor-name">
-                                            <span>({lesson.course?.courseCode})</span>
-                                            {lesson.course?.name}
-                                        </p>
-                                        <span className="item__infor-credit">Tín chỉ: {lesson.course?.credit}</span>
-                                        <span className="item__infor-semester">học kì: {lesson.course?.semester}</span>
-
-
-                                    </div>
-                                    <div className="item__indicator"></div>
-                                    <div className="item__bottom">
-                                        <div>
-                                            <i className='bx bxs-calendar-week' ></i>
-                                            <span>{lesson.weekday}</span>
-                                        </div>
-                                        <div>
-                                            <i className='bx bxs-time'></i>
-                                            <span>Thời gian bắt đầu: {dayjs(lesson.timeStart).format("hh:mm a")}</span>
-                                        </div>
-                                        <div>
-                                            <i className='bx bxs-time-five'></i>
-                                            <span>Thời gian kết thúc: {dayjs(lesson.timeEnd).format("hh:mm a")}</span>
-                                        </div>
-                                        <div>
-                                            <i className='bx bxs-graduation'></i>
-                                            {
-                                                lesson.teacher && <span>{lesson.teacher?.name} ({lesson.teacher?.account})</span>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div className="item__line">
-
-                                    </div>
-                                    <div className="item__button">
-                                        <button className="btn-primary">Điểm danh <i className='bx bx-right-arrow-alt'></i></button>
-                                    </div>
-                                </div>
+                            lesson.lessons && lesson.lessons.map((lesson,index) => {
+                                return <LessonCard key={index} auth={auth} lesson={lesson} addStudentClass={handleAddStudentClass} />
                             })
                         }
                     </div>

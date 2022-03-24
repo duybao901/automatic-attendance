@@ -6,5 +6,7 @@ import LessonController from '../controllers/LessonControllers'
 
 router.post('/lesson', auth, LessonController.createLesson);
 router.get('/lesson', auth, LessonController.getLessonUser);
+router.put('/lesson/:id', auth, LessonController.updateLesson);
+router.delete('/lesson/:id', auth, LessonController.deleteLesson);
 
 export default router;

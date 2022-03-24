@@ -6,7 +6,7 @@ class LessonController {
 
     async getLessonUser(req: RequestUser, res: Response) {
         try {
-            const lessons = await Lessons.find({})
+            const lessons = await Lessons.find({}).sort('-createdAt')
                 .populate({
                     path: 'course',
                     populate: {
@@ -36,6 +36,40 @@ class LessonController {
             return res.json({
                 msg: "Tạo buổi học thành công",
                 newLesson: newLesson._doc
+            })
+
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
+
+    async updateLesson(req: RequestUser, res: Response) {
+        try {
+            const { id } = req.params;
+            const { timeStart, timeEnd, desc, course_id } = req.body;
+
+            const newLesson = await Lessons.findByIdAndUpdate(id, {
+                timeStart, timeEnd, desc, course_id
+            })
+
+            return res.json({
+                msg: "Cập nhật thành công",
+                newLesson: newLesson._doc
+            })
+
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
+
+    async deleteLesson(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+
+            await Lessons.findByIdAndDelete(id);
+
+            return res.json({
+                msg: "Xóa buổi học thành công"
             })
 
         } catch (error: any) {

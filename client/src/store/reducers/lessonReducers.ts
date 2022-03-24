@@ -13,6 +13,7 @@ const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes)
                 lessons: action.payload.lessons
             }
         case types.CREATE_LESSON: {
+            console.log(action.payload.newLesson)
             return {
                 ...state,
                 lessons: state.lessons ? [action.payload.newLesson, ...state.lessons] : [action.payload.newLesson]
@@ -22,6 +23,22 @@ const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes)
             return {
                 ...state,
                 loading: action.payload
+            }
+        }
+        case types.UPDATE_LESSON: {
+            return {
+                ...state,
+                lessons: state.lessons ?
+                    state.lessons.map(lesson => lesson._id === action.payload.newLesson._id ?
+                        action.payload.newLesson : lesson) : []
+            }
+        }
+        case types.DELETE_LESSON: {
+            return {
+                ...state,
+                lessons: state.lessons ? state.lessons.filter(lesson => {
+                    return lesson._id !== action.payload.lesson_id
+                }) : []
             }
         }
         default:
