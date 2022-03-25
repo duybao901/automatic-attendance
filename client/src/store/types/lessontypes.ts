@@ -6,6 +6,7 @@ export const LOADING_LESSON = 'LOADING_LESSON'
 export const UPDATE_LESSON = 'UPDATE_LESSON'
 export const DELETE_LESSON = 'DELETE_LESSON'
 export const TOGGLE_MY_LESSON = 'TOGGLE_MY_LESSON'
+export const SEARCH_LESSON = 'SEARCH_LESSON'
 
 export interface LessonPayload {
     lessons?: Lesson[],
@@ -14,7 +15,11 @@ export interface LessonPayload {
         list: Lesson[],
         toggle: boolean
     }
-    lessonSearch?: Lesson[]
+    searching: {
+        lessonSearch?: Lesson[],
+        onSearch?: boolean,
+        search?: string
+    }
 }
 
 export interface CreateLesson {
@@ -50,6 +55,13 @@ export interface DeleteLesson {
     }
 }
 
+export interface SearchLesson {
+    type: typeof SEARCH_LESSON,
+    payload: {
+        search: string
+    }
+}
+
 export interface ToggleMyLesson {
     type: typeof TOGGLE_MY_LESSON,
     payload: {
@@ -59,4 +71,7 @@ export interface ToggleMyLesson {
 }
 
 
-export type LessonTypes = CreateLesson | GetLessons | LoadingLesson | UpdateLesson | DeleteLesson | ToggleMyLesson
+export type LessonTypes =
+    CreateLesson | GetLessons | LoadingLesson
+    | UpdateLesson | DeleteLesson | ToggleMyLesson
+    | SearchLesson

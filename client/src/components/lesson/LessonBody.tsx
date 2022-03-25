@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { InputChange, RootStore } from '../../utils/interface'
 import LessonFormModal from './LessonFormModal'
 import LessonCard from './LessonCard'
+import { searchLesson } from '../../store/actions/lessonActions'
 // MUI
 import { makeStyles } from '@mui/styles';
 import { Button } from '@mui/material'
@@ -57,6 +58,11 @@ const LessonBody = () => {
         dispatch({ type: "TOGGLE_MY_LESSON", payload: { toggle: !lesson.myLesson?.toggle, auth } })
     }
 
+    const handleSearchLesson = (e: InputChange) => {
+        setSearch(e.target.value);
+        dispatch(searchLesson(e.target.value))
+    }
+
     return (
         <>
             <div className="dashbroad__body lesson__body">
@@ -64,7 +70,7 @@ const LessonBody = () => {
                     <Box className="control__wrapper">
                         <form className="control__form">
                             <div className="form-group">
-                                <input placeholder='Tìm theo tên môn học...' type='text' value={search} onChange={(e: InputChange) => setSearch(e.target.value)}></input>
+                                <input placeholder='Tìm theo tên môn học...' type='text' value={search} onChange={handleSearchLesson}></input>
                                 <i className='bx bx-search'></i>
                             </div>
                         </form>
@@ -99,7 +105,9 @@ const LessonBody = () => {
 
                     <div className="list__row">
                         {
-                            (lesson.lessons && lesson.myLesson?.toggle === false && lesson.loading === false) ?
+                            (lesson.searching.onSearch) ? lesson.searching.lessonSearch?.map((lesson, index) => {
+                                return <LessonCard key={index} auth={auth} lesson={lesson} addStudentClass={handleAddStudentClass} />
+                            }) : (lesson.lessons && lesson.myLesson?.toggle === false && lesson.loading === false) ?
                                 lesson.lessons.map((lesson, index) => {
                                     return <LessonCard key={index} auth={auth} lesson={lesson} addStudentClass={handleAddStudentClass} />
                                 })

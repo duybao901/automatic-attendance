@@ -27,7 +27,7 @@ export const createLesson = (lesson: Lesson, auth: AuthPayload) =>
 
         if (!auth.user && !auth.access_token && !lesson) return;
         try {
-            
+
             const res = await postAPI('lesson', { ...lesson, course_id: lesson.course?._id }, auth.access_token);
             dispatch({ type: types.CREATE_LESSON, payload: { newLesson: { ...lesson, teacher: auth.user } } })
             dispatch({ type: ALERT, payload: { success: res.data.msg } })
@@ -53,7 +53,7 @@ export const updateLesson = (lesson: Lesson, auth: AuthPayload) =>
 
 // Xoa buoi hoc
 export const deleteLesson = (lesson_id: string, auth: AuthPayload) =>
-    async (dispatch: Dispatch<LessonTypes | AlertType>) => {        
+    async (dispatch: Dispatch<LessonTypes | AlertType>) => {
         if (!auth.access_token && !auth.user) return;
         try {
             const res = await deleteAPI(`lesson/${lesson_id}`, auth.access_token)
@@ -63,3 +63,7 @@ export const deleteLesson = (lesson_id: string, auth: AuthPayload) =>
             return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
         }
     }
+
+export const searchLesson = (search: string) => (dispatch: Dispatch<LessonTypes | AlertType>) => {
+    dispatch({ type: types.SEARCH_LESSON, payload: { search } })
+}

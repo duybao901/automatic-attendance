@@ -1,4 +1,5 @@
 import { Course, SortingCourse, SearchingCourse } from '../../utils/interface'
+import nonAccentVietnamese from '../../utils/non-vietnamese'
 import {
     GET_COURSES,
     CoursePayload,
@@ -40,9 +41,9 @@ const sortBy = (sortting: SortingCourse, array: Course[]) => {
     return array.sort((a, b) => {
         if (sortting.sortBy === "name") {
             if (a.name && b.name) {
-                if (a.name?.toLocaleLowerCase() < b.name?.toLocaleLowerCase())
+                if (nonAccentVietnamese(a.name?.toLocaleLowerCase()) < nonAccentVietnamese(b.name?.toLocaleLowerCase()))
                     return sortting.sort === "asc" ? -1 : 1
-                else if (a.name?.toLocaleLowerCase() > b.name?.toLocaleLowerCase()) {
+                else if (nonAccentVietnamese(a.name?.toLocaleLowerCase()) > nonAccentVietnamese(b.name?.toLocaleLowerCase())) {
                     return sortting.sort === "asc" ? 1 : -1
                 }
             }
@@ -76,7 +77,7 @@ const arrayFilter = (id: string, array: Course[]): Course[] => {
 export const arraySearch = (searching: SearchingCourse, array: Course[]): Course[] => {
     const newArray: Course[] = array.filter(course => {
         if (searching.searchByCourseName !== "" && typeof searching.searchByCourseName === "string") {
-            if (course.name?.toLocaleLowerCase().includes(searching.searchByCourseName.toLocaleLowerCase())) {
+            if (nonAccentVietnamese(course.name?.toLocaleLowerCase() as string).includes(nonAccentVietnamese(searching.searchByCourseName.toLocaleLowerCase()))) {
                 return course
             }
         } else {
@@ -84,7 +85,7 @@ export const arraySearch = (searching: SearchingCourse, array: Course[]): Course
         }
     }).filter(course => {
         if (searching.searchByCourseCode !== "" && typeof searching.searchByCourseCode === "string") {
-            if (course.courseCode?.toLocaleLowerCase().includes(searching.searchByCourseCode.toLocaleLowerCase())) {
+            if (nonAccentVietnamese(course.courseCode?.toLocaleLowerCase() as string).includes(nonAccentVietnamese(searching.searchByCourseCode.toLocaleLowerCase()))) {
                 return course
             }
         } else {
@@ -92,7 +93,7 @@ export const arraySearch = (searching: SearchingCourse, array: Course[]): Course
         }
     }).filter(course => {
         if (searching.searchByCourseTeacher !== "" && course.teacher?.name && typeof searching.searchByCourseTeacher === "string") {
-            if (course.teacher?.name.toLocaleLowerCase().includes(searching.searchByCourseTeacher.toLocaleLowerCase())) {
+            if (nonAccentVietnamese(course.teacher?.name.toLocaleLowerCase() as string).includes(nonAccentVietnamese(searching.searchByCourseTeacher.toLocaleLowerCase()))) {
                 return course
             }
         } else {
@@ -335,7 +336,7 @@ const courseReducer = (state: CoursePayload = initialState, action: CourseType):
                 result: arraySlice(state.page as number, state.limit as number, sortBy(state?.sorting as SortingCourse, courses)),
                 coursesSearch: [...courses]
             }
-        }       
+        }
 
         default: return state;
     }

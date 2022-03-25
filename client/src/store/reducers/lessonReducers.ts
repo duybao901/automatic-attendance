@@ -1,13 +1,18 @@
 import * as types from '../types/lessontypes'
 import { LessonPayload, LessonTypes } from '../types/lessontypes'
 import { Lesson } from '../../utils/interface'
+import nonAccentVietnamese from '../../utils/non-vietnamese'
 const initialState: LessonPayload = {
     lessons: [],
     myLesson: {
         list: [],
         toggle: false
     },
-    lessonSearch: []
+    searching: {
+        lessonSearch: [],
+        onSearch: false,
+        search: ""
+    }
 }
 
 const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes): LessonPayload => {
@@ -58,15 +63,49 @@ const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes)
             }
         }
         case types.TOGGLE_MY_LESSON: {
-
             return {
                 ...state,
                 myLesson: {
                     toggle: action.payload.toggle,
-                    list: action.payload.toggle === false ? [] : state.lessons?.filter(lesson => lesson.teacher?._id === action.payload.auth.user?._id) as Lesson[]
+                    list: action.payload.toggle === false ? [] :
+                        state.lessons?.filter(lesson => lesson.teacher?._id === action.payload.auth.user?._id) as Lesson[]
                 }
             }
         }
+        case types.SEARCH_LESSON: {
+            if (action.payload.search === '') {
+                return {
+                    ...state,
+                    searching: {
+                        ...state.searching,
+                        onSearch: false,
+                        lessonSearch: [],
+                        search: action.payload.search
+                    }
+                }
+            }
+
+            let searching = {
+                ...state.searching,
+                onSearch: true,
+                lessonSearch: state.myLesson?.toggle ? state.myLesson.list.filter((lesson) => {
+                    if (typeof lesson.course !== 'undefined') {
+                        return lesson.course.name && nonAccentVietnamese(lesson.course.name.toLowerCase()).includes(nonAccentVietnamese(action.payload.search.toLowerCase()))
+                    }
+                }) : state.lessons && state.lessons.filter(lesson => {
+
+                    if (typeof lesson.course !== 'undefined') {
+                        return lesson.course.name && nonAccentVietnamese(lesson.course.name.toLowerCase()).includes(nonAccentVietnamese(action.payload.search.toLowerCase()))
+                    }
+                }),
+                search: action.payload.search
+            }
+            return {
+                ...state,
+                searching
+            }
+        }
+
         default:
             return { ...state }
     }
