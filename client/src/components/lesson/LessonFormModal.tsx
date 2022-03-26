@@ -314,7 +314,9 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
                     <Box display="flex">
                         <Box>
                             <PrimaryTooltip title="Tạo khoá học">
-                                <Button type="submit" variant='contained' className={classes.Button}>{loading ? <><Loading type='small' /> <p style={{ textTransform: "initial", marginLeft: "10px" }}>{onEdit ? "Đang cập nhật..." : "Đang tạo..."}</p></> : <p style={{ textTransform: "capitalize" }}>{onEdit ? "Cập nhật" : "Tạo buổi học"}</p>}</Button>
+                                <Button type="submit" variant='contained' className={classes.Button}>
+                                    {loading ? <><Loading type='small' /> <p style={{ textTransform: "initial", marginLeft: "10px" }}>{onEdit ? "Đang cập nhật..." : "Đang tạo..."}</p></> :
+                                        <p style={{ textTransform: "capitalize" }}>{onEdit ? "Cập nhật" : "Tạo buổi học"}</p>}</Button>
                             </PrimaryTooltip>
                         </Box>
                     </Box>

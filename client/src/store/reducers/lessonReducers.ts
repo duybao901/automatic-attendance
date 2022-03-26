@@ -105,7 +105,6 @@ const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes)
                 searching
             }
         }
-
         default:
             return { ...state }
     }

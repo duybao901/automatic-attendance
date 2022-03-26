@@ -27,6 +27,10 @@ const StudentScheme = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "course"
     },
+    avatar: {
+        type: String,
+        default: ""
+    }
 }, {
     timestamps: true
 })

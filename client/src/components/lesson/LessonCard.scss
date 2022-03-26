@@ -125,6 +125,7 @@
             }
         }
     }
+
     @include MediaQuery(MD) {
         &-card {
             width: calc(50% - 25px);
@@ -134,5 +135,21 @@
         &-card {
             width: calc(100% - 25px);
         }
+    }
+}
+
+.rollcalsession__form {
+    width: 100%;
+    & textarea {
+        @include inputStyle;
+        resize: none;
+        padding: 12px;
+        margin-bottom: 12px;
+        font-size: 1.8rem;
+        font-weight: 500;
+    }
+    & label {
+        @include labelStyle;
+        display: block;
     }
 }

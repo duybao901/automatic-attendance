@@ -15,7 +15,7 @@ const LessonScheme = new mongoose.Schema({
         trim: true
 
     },
-    // Mo ta buoi
+    // Mo ta buoi hoc
     desc: {
         type: String,
         default: "",

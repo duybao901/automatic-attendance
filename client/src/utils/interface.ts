@@ -112,3 +112,19 @@ export interface LessonError {
     errorTimeEnd?: string
     errorTime?: string // start > end
 }
+
+export interface Attendance {
+    _id?: string
+    student?: Student
+    note?: string
+    date?: string,
+    absent?: boolean
+}
+
+export interface RollCallSession {
+    _id?: string
+    course?: Course
+    lesson?: Lesson
+    comment?: string
+    attendance?: Attendance
+}

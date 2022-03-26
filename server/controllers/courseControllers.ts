@@ -45,9 +45,11 @@ class CourseController {
                     name: student.name,
                     studentCode: student.studentCode,
                     gender: student.gender,
-                    course: newCourse._id
+                    course: newCourse._id,
+                    avatar: student.gender === 'male' ? "https://res.cloudinary.com/dxnfxl89q/image/upload/v1648222975/nienluannganh/student-male-avatar_oywxdt.png" : "https://res.cloudinary.com/dxnfxl89q/image/upload/v1648222975/nienluannganh/student-female-avatar_zyezln.png"
                 }
             })
+            
             const studentArray = await Students.insertMany(studentsArrayObject);
 
             await Course.findByIdAndUpdate(newCourse._id, {
@@ -84,7 +86,6 @@ class CourseController {
             return res.json({ courses, length: courses.length })
 
         } catch (error: any) {
-            console.log(error)
             return res.status(500).json({ msg: error.message })
         }
     }
@@ -144,7 +145,8 @@ class CourseController {
                     name: student.name,
                     studentCode: student.studentCode,
                     gender: student.gender,
-                    course: id
+                    course: id,
+                    avatar: student.gender === 'male' ? "https://res.cloudinary.com/dxnfxl89q/image/upload/v1648222975/nienluannganh/student-male-avatar_oywxdt.png" : "https://res.cloudinary.com/dxnfxl89q/image/upload/v1648222975/nienluannganh/student-female-avatar_zyezln.png"
                 }
             })
 

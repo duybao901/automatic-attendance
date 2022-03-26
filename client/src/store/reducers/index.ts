@@ -7,6 +7,8 @@ import course from './courseReducers'
 import profile from './profileReducer'
 import detailCourse from './detailCourseReducers'
 import lesson from './lessonReducers'
+import rollCallSession from './rollCallSessionReducers'
+import detailRollCallSession from './rollCallSessionDetail'
 export default combineReducers({
     auth,
     alert,
@@ -15,6 +17,8 @@ export default combineReducers({
     course,
     profile,
     detailCourse,
-    lesson
+    lesson,
+    rollCallSession,
+    detailRollCallSession
 })
 

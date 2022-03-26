@@ -63,7 +63,6 @@ const CourseDetal = () => {
             setCourse({})
             setOnEdit(null)
             setOpen(false)
-
         }
     }, [slug, detailCourse, auth, dispatch])
 

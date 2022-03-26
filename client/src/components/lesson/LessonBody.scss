@@ -40,7 +40,7 @@
                     font-size: 1.8rem;
                     color: $color-text-secondary;
                     position: absolute;
-                    z-index: 10;
+                    z-index: 12;
                     left: 15px;
                 }
             }
@@ -75,10 +75,7 @@
                 width: 100%;
                 padding-right: 10px;
                 & .form-group {
-                    width: 100%;
-                    & i {
-                        right: 15px;
-                    }
+                    width: 100%;                   
                     & input {
                         padding-right: 40px !important;
                     }
