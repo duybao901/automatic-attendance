@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import mongoose from 'mongoose'
 import { RequestUser } from '../config/interface'
 import RollCallSessionModel from '../models/rollCallSessionModel';
 import AttendanceDetailModel from '../models/attendanceDetailModel';
@@ -61,6 +62,35 @@ class RollCallSessionControllers {
                 .populate("teacher", '-password')
 
             return res.json({ rollCallSession })
+
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
+
+    async getRollCallSessionUser(req: RequestUser, res: Response) {
+        try {
+
+            const { id } = req.params;
+
+            const rollCallSessions = await RollCallSessionModel.find({ teacher: new mongoose.Types.ObjectId(id) })
+                .populate({
+                    path: 'attendanceDetails',
+                    populate: [
+                        {
+                            path: "student"
+                        }
+                    ]
+                })
+                .populate({
+                    path: 'lesson',
+                    populate: {
+                        path: 'course',
+                    }
+                })
+                .populate("teacher", '-password').sort('-createdAt')
+
+            return res.json({ rollCallSessions })
 
         } catch (error: any) {
             return res.status(500).json({ msg: error.message })

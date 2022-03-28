@@ -269,7 +269,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                         {
                             !onEdit && <Box mr={1}>
                                 <PrimaryTooltip title='Làm mới'>
-                                    <Button variant='contained' onClick={() => setCourse(initialCourse)} color='success' className={classes.Button}><p style={{ textTransform: "capitalize" }}>Làm mới</p></Button>
+                                    <Button variant='contained' onClick={() => setCourse(initialCourse)} color='success' className={classes.Button}><p style={{ textTransform: "initial" }}>Làm mới</p></Button>
                                 </PrimaryTooltip>
                             </Box>
                         }
@@ -282,7 +282,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                         }
                         <Box>
                             <PrimaryTooltip title="Tạo khoá học">
-                                <Button type="submit" variant='contained' className={classes.Button}>{loading ? <><Loading type='small' /> <p style={{ textTransform: "initial", marginLeft: "10px" }}>{onEdit ? "Đang cập nhật..." : "Đang tạo..."}</p></> : <p style={{ textTransform: "capitalize" }}>{onEdit ? "Cập nhật" : "Tạo"}</p>}</Button>
+                                <Button type="submit" variant='contained' className={classes.Button}>{loading ? <><Loading type='small' /> <p style={{ textTransform: "initial", marginLeft: "10px" }}>{onEdit ? "Đang cập nhật..." : "Đang tạo..."}</p></> : <p style={{ textTransform: "initial" }}>{onEdit ? "Cập nhật" : "Tạo"}</p>}</Button>
                             </PrimaryTooltip>
                         </Box>
                     </Box>

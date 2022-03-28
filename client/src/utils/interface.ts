@@ -126,5 +126,6 @@ export interface RollCallSession {
     course?: Course
     lesson?: Lesson
     comment?: string
-    attendance?: Attendance
+    attendanceDetails?: Attendance[]
+    teacher?: User
 }

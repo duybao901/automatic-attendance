@@ -53,8 +53,7 @@ const useStyles = makeStyles({
         fontSize: "1rem !important",
         fontWeight: "600 !important",
         height: "36px",
-        padding: "4px !important",
-
+        padding: "4px !important",        
     },
     ButtonInfor: {
         padding: "0px !important",
@@ -68,7 +67,7 @@ const useStyles = makeStyles({
         fontSize: "1.2rem !important",
         fontWeight: "600 !important",
         height: "36px",
-        padding: "4px !important",
+        padding: "4px !important",        
         "& i": {
             marginTop: "-2px",
             fontSize: "1.6rem"

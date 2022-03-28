@@ -20,6 +20,7 @@ const useStyles = makeStyles({
         fontWeight: "600 !important",
         height: "36px",
         padding: "10px !important",
+        
 
     },
 });
@@ -126,7 +127,7 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
         <div className='student'>
             <Box mr={1}>
                 <PrimaryTooltip title="Thêm sinh viên">
-                    <Button onClick={handleOpen} color="info" variant='contained' className={classes.Button}><p>Thêm sinh viên</p></Button>
+                    <Button onClick={handleOpen} color="info" variant='contained' className={classes.Button}><p style={{ textTransform: "initial" }}>Thêm sinh viên</p></Button>
                 </PrimaryTooltip>
             </Box>
             <Modal

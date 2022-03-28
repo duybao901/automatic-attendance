@@ -28,9 +28,9 @@ const Home = () => {
                         <i className='bx bx-user-circle'></i>
                         <h3>Nhận diện</h3>
                     </Link>
-                    <Link className="box-item" to="/attendance">
+                    <Link className="box-item" to="/roll-call-session">
                         <i className='bx bx-edit'></i>
-                        <h3>Điểm danh</h3>
+                        <h3>Buổi điểm danh</h3>
                     </Link>
                     <Link className="box-item" to="/course">
                         <i className='bx bx-book-open'></i>

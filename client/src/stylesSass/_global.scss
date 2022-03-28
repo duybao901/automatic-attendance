@@ -1,5 +1,6 @@
 @import "./variables";
 @import "./mixin";
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -8,12 +9,13 @@
 html {
     font-size: 62.5%;
     color: $color-text;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+        "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !important;
 }
 
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
-        "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     max-width: 100%;
@@ -84,7 +86,7 @@ code {
     transition: padding 0.4s ease-in-out;
 }
 
-.MuiButton-containedPrimary{
+.MuiButton-containedPrimary {
     background-color: $color-primary !important;
 }
 

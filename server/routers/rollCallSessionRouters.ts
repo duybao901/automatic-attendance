@@ -6,5 +6,6 @@ import RollCallSessionController from '../controllers/rollCallSessionControllers
 
 router.post('/roll_call_session', auth, RollCallSessionController.createRollCallSession)
 router.get('/roll_call_session/:id', auth, RollCallSessionController.getRollCallSessionDetail)
+router.get('/roll_call_session_user/:id', auth, RollCallSessionController.getRollCallSessionUser)
 
 export default router;

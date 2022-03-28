@@ -13,7 +13,7 @@ app.use(express.json()); // req.body
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan("dev"));
-app.use(cookieParser()); // req.cookies to set cookie
+app.use(cookieParser()); // req.cookies to set cooki e
 
 // Connect Database
 import "./config/Database";

@@ -13,6 +13,7 @@ export const createRollCallSession = (data: any, auth: AuthPayload, history: any
         try {
             const res = await postAPI('roll_call_session', data, auth.access_token);
             dispatch({ type: ALERT, payload: { success: res.data.msg } })
+            dispatch({ type: types.CREATE_ROLL_CALL_SESSION, payload: { rollCallSession: res.data.newRollCallSession } })
             history.push(`/roll-call-session/${res.data.newRollCallSession._id}`)
         } catch (error: any) {
             dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
@@ -38,3 +39,14 @@ export const getDetailRollCallSession =
                 }
             }
         }
+
+export const getRollCallSessionUser = (auth: AuthPayload) =>
+    async (dispatch: Dispatch<RollCallSessionType | AlertType>) => {
+        if (!auth.access_token && !auth.user) return;
+        try {
+            const res = await getAPI(`roll_call_session_user/${auth.user?._id}`, auth.access_token);
+            console.log(res)
+        } catch (error: any) {
+            dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+        }
+    }
