@@ -1,0 +1,21 @@
+@import "../../stylesSass/variables";
+
+.rollcallsession-detail {
+    display: flex;
+    padding: 30px 40px;
+    justify-content: center;
+    flex-direction: column;
+    &__table {
+        width: 100%;
+        margin-top: 25px;
+        background-color: $color-white;
+        border-radius: 5px;
+        box-shadow: $box-shadow-1;
+    }
+    &__control {
+        width: 100%;
+        background-color: $color-white;
+        border-radius: 5px;
+        box-shadow: $box-shadow-1;
+    }
+}
