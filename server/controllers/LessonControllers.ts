@@ -1,5 +1,7 @@
 import { Request, Response } from 'express'
+import mongoose from 'mongoose'
 import Lessons from '../models/lessonModel'
+import RollCallSesson from '../models/rollCallSessionModel'
 import { RequestUser } from '../config/interface'
 
 class LessonController {
@@ -72,6 +74,34 @@ class LessonController {
             return res.json({
                 msg: "Xóa buổi học thành công"
             })
+
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
+
+    async getLesson(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+
+            const lesson = await Lessons.findById(id)
+                .populate({
+                    path: 'course',
+                    populate: {
+                        path: 'students'
+                    }
+                })
+                .populate("teacher", '-password')
+
+            const rollCallSessions = await RollCallSesson.find({
+                lesson: new mongoose.Types.ObjectId(id)
+            })
+                .populate("lesson")
+                .populate(['attendanceDetails'])
+
+
+
+            return res.json({ lesson, rollCallSessions })
 
         } catch (error: any) {
             return res.status(500).json({ msg: error.message })

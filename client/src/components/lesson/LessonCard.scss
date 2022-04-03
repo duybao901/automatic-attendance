@@ -123,6 +123,14 @@
                 margin-top: 2px;
                 margin-left: 5px;
             }
+
+            & a.btn-primary {
+                width: 125px;
+                min-width: 64px;
+                height: 40px;
+                margin-right: 10px;
+                text-decoration: none;
+            }
         }
     }
 
@@ -135,6 +143,12 @@
         &-card {
             width: calc(100% - 25px);
         }
+    }
+}
+
+@include MediaQuery(SM) {
+    .lesson-card__modal .css-xqly9z {
+        width: 90% !important;
     }
 }
 

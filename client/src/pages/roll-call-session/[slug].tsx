@@ -17,6 +17,9 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import AttendanceDetailRow from '../../components/roll-call-session/AttendanceDetailRow'
 import { makeStyles } from '@mui/styles';
+import PrimaryTooltip from '../../components/globals/tool-tip/Tooltip'
+import { Button } from '@mui/material'
+
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -26,7 +29,8 @@ const useStyles = makeStyles({
     TableCellHead: {
         fontSize: "1.4rem !important",
         fontFamily: "-apple-system, BlinkMacSystemFont, Inter,' Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;",
-        fontWeight: "600 !important"
+        fontWeight: "600 !important",
+        height: "60px !important",
     },
 });
 
@@ -38,7 +42,7 @@ const RollCallSessionDetail = () => {
     const { detailRollCallSession: detailRollCallSessionStore, auth } = useSelector((state: RootStore) => state)
 
     const [detailRollCallSession, setDetailRollCallSession] = useState<RollCallSession>({})
-    const [comment, setComment] = useState<string>("");
+    const [comment, setComment] = useState<string>();
 
     useEffect(() => {
         if (slug) {
@@ -56,64 +60,115 @@ const RollCallSessionDetail = () => {
 
     }, [slug, auth, detailRollCallSessionStore])
 
-    const handleSubmit = (e: FormSubmit) => {
+    useEffect(() => {
+        if (detailRollCallSession) {
+            setComment(detailRollCallSession.comment)
+        }
+    }, [detailRollCallSessionStore])
+
+    //  Luu nhan xet
+    const handleSubmit = (e: FormSubmit) => {       
         e.preventDefault()
+        
     }
 
-    console.log(detailRollCallSession)
+    // console.log(detailRollCallSession)
 
     return (
         <div className='dashbroad__body dashbroad__body--xl'>
-
             <div className='rollcallsession-detail'>
-                <div className="rollcallsession-detail__control">
-                    {/* Detail Roll Call Session Card */}
-                    <div className='rollcallsession-detail__control-detail'>
-                        <h2 className="detail__course-name">
+                <div className="rollcallsession-detail__header">
+                    {
+
+                    }
+                    <div className="header__left">
+                        <h2>
                             {
                                 detailRollCallSession.lesson?.course?.name
                             }
+                            <span>
+                                #{
+                                    detailRollCallSession.lesson?.course?.courseCode
+                                }
+                            </span>
                         </h2>
-                        <p className="detail__course-code">
+                        <p className="header__left-comment">
                             {
-                                detailRollCallSession.lesson?.course?.courseCode
+                                detailRollCallSession.comment ? detailRollCallSession.comment : "Chưa có nhận xết về buổi học"
                             }
                         </p>
-                        <p className="detail__comment">
-                            {
-                                detailRollCallSession.comment
-                            }
-                        </p>
-                        <div className="detail__group">
-                            <i className='bx bxs-calendar-week' ></i>
-                            <span>{detailRollCallSession.lesson?.weekday}</span>
+
+                    </div>
+                    <div className="header__right">
+                        <div className="header__btn-end">
+                            <PrimaryTooltip title="Xuất file excel">
+                                <Button variant='contained'>
+                                    <i className='bx bx-export' style={{ fontSize: '2.4rem', marginRight: "5px", marginTop: "-5px" }}></i>
+                                    <p className="button-text"> Xuất File</p>
+                                </Button>
+                            </PrimaryTooltip>
                         </div>
-                        <div className="detail__group">
-                            <i className='bx bxs-time'></i>
-                            <span>Thời gian bắt đầu: {dayjs(detailRollCallSession.lesson?.timeStart).format("hh:mm a")}</span>
+                        <div className="header__btn-end">
+                            <PrimaryTooltip title="Kết thúc buổi điểm danh" color='error'>
+                                <Button variant='contained'>
+                                    <i style={{ fontSize: '2.4rem', marginRight: "5px" }} className='bx bx-stopwatch'></i>  <p className="button-text">Kết Thúc</p>
+                                </Button>
+                            </PrimaryTooltip>
                         </div>
-                        <div className="detail__group">
-                            <i className='bx bxs-time-five'></i>
-                            <span>Thời gian kết thúc: {dayjs(detailRollCallSession.lesson?.timeEnd).format("hh:mm a")}</span>
+                    </div>
+                </div>
+                <div className="rollcallsession-detail__control">
+                    {/* Detail Roll Call Session Card */}
+                    <div className='rollcallsession-detail__control-detail'>
+                        <div className="detail__infor">
+                            <div className="detail__infor-group">
+                                <i className='bx bxs-calendar-week' ></i>
+                                <span>{detailRollCallSession.lesson?.weekday}</span>
+                            </div>
+                            <div className="detail__infor-group">
+                                <i className='bx bxs-time'></i>
+                                <span>Thời gian bắt đầu: {dayjs(detailRollCallSession.lesson?.timeStart).format("hh:mm a")}</span>
+                            </div>
+                            <div className="detail__infor-group">
+                                <i className='bx bxs-time-five'></i>
+                                <span>Thời gian kết thúc: {dayjs(detailRollCallSession.lesson?.timeEnd).format("hh:mm a")}</span>
+                            </div>
+                            <div className="detail__infor-group">
+                                <i className='bx bxs-graduation'></i>
+                                {
+                                    <span>{detailRollCallSession.teacher?.name} ({detailRollCallSession.teacher?.account})</span>
+                                }
+                            </div>
                         </div>
-                        <div className="detail__group">
-                            <i className='bx bxs-graduation'></i>
-                            {
-                                <span>{detailRollCallSession.teacher?.name} ({detailRollCallSession.teacher?.account})</span>
-                            }
+                        <div className="detail__comment">
+                            <form onSubmit={handleSubmit}>
+                                <div className="form__group">
+                                    <label htmlFor="comment">Nhận xét buổi học</label>
+                                    <textarea
+                                        cols={20}
+                                        rows={5}
+                                        value={comment ? comment : ""}
+                                        name='commnet'
+                                        id='comment'
+                                        onChange={(e: InputChange) => setComment(e.target.value)} />
+                                </div>
+                                <div className="form__button">
+                                    <PrimaryTooltip title="Lưu nhận xét">
+                                        <Button variant='contained' type='submit'>
+                                            <p style={{ textTransform: "initial", fontSize: "1.3rem" }}>Lưu</p>
+                                        </Button>
+                                    </PrimaryTooltip>
+                                </div>
+                            </form>
+
                         </div>
                     </div>
 
-                    {/* Form */}
-                    <div className="rollcallsession-detail__control-comment">
-                        <form onSubmit={handleSubmit}>
-                            <input
-                                type="text" value={comment}
-                                name='commnet'
-                                id='comment'
-                                onChange={(e: InputChange) => setComment(e.target.value)} />
-                        </form>
+                    {/* End */}
+                    <div className='rollcallsession-detail__control-button'>
+
                     </div>
+
                 </div>
                 <div className='rollcallsession-detail__table'>
                     <TableContainer className={classes.TableContainer} component={Paper}>

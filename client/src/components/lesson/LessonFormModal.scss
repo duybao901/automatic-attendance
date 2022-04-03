@@ -15,8 +15,14 @@
             @include inputStyle;
         }
 
+        & textarea {
+            @include inputStyle;
+            resize: none;
+            padding: 12px;
+        }
+
         &__course {
-            max-height: 220px;
+            max-height: 180px;
             overflow-y: scroll;
             padding: 5px;
             /* width */

@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import { FormSubmit, InputChange, Lesson } from '../../utils/interface'
+import { FormSubmit, InputChange, Lesson, RootStore } from '../../utils/interface'
 import "./LessonCard.scss"
 import MenuListLesson from './MenuListLesson'
 import dayjs from 'dayjs'
 import { AuthPayload } from '../../store/types/authTypes'
-import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory, Link } from 'react-router-dom'
+
 
 // MUI
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { modelStyle } from '../../utils/model-style'
 import PrimaryTooltip from '../../components/globals/tool-tip/Tooltip'
@@ -39,6 +39,7 @@ const LessonCard: React.FC<LessonCardProps> = ({ auth, lesson, addStudentClass }
 
   const history = useHistory();
   const dispatch = useDispatch();
+  const { lessonDetail } = useSelector((state: RootStore) => state);
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,15 +47,15 @@ const LessonCard: React.FC<LessonCardProps> = ({ auth, lesson, addStudentClass }
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  
+
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
     const data = {
       lesson: lesson,
-      comment
+      comment,     
     }
     setLoading(true);
-    await dispatch(createRollCallSession(data, auth, history))
+    await dispatch(createRollCallSession(data, auth, history, lessonDetail, lesson))
     handleClose()
     setLoading(false);
 
@@ -103,13 +104,18 @@ const LessonCard: React.FC<LessonCardProps> = ({ auth, lesson, addStudentClass }
       <div className="lesson-card__line">
 
       </div>
-      <div onClick={handleOpen} className="lesson-card__button">
+      <div className="lesson-card__button">
+        <Link to={`/lesson/${lesson._id}`} className='btn-primary'>
+          Chi tiết
+        </Link>
         <button
+          onClick={handleOpen}
+          type='submit'
           disabled={(auth.user?.role === 'admin' || auth.user?._id === lesson.course?.teacher || auth.user?._id === lesson.course?.teacher?._id) ? false : true}
           className={`btn-primary 
           ${(auth.user?.role === 'admin' || auth.user?._id === lesson.course?.teacher || auth.user?._id === lesson.course?.teacher?._id) ?
               "" : "btn-primary--disable"}`}>
-          Điểm danh <i className='bx bx-right-arrow-alt'>
+          Điểm danh <i style={{ marginTop: '-1px' }} className='bx bx-right-arrow-alt'>
           </i>
         </button>
       </div>
@@ -118,6 +124,7 @@ const LessonCard: React.FC<LessonCardProps> = ({ auth, lesson, addStudentClass }
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        className="lesson-card__modal"
       >
         <Box sx={modelStyle}>
           <Box display='flex' justifyContent="space-between" alignItems='center' mb={2}>
@@ -164,7 +171,7 @@ const LessonCard: React.FC<LessonCardProps> = ({ auth, lesson, addStudentClass }
           </form>
         </Box>
       </Modal>
-    </div >
+    </div>
   )
 }
 

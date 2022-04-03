@@ -1,8 +1,11 @@
 import { RollCallSession } from '../../utils/interface'
 export const GET_ROLL_CALL_SESSION_DETAIL = "GET_ROLL_CALL_SESSION_DETAIL"
+export const LOADING_ROLL_CALL_SESSION_DETAIL = "LOADING_ROLL_CALL_SESSION_DETAIL"
+export const UPDATE_ROLL_CALL_SESSION_DETAIL = "UPDATE_ROLL_CALL_SESSION_DETAIL"
 
 export interface RollCallSessionDetailPayload {
     rollCallSessions?: RollCallSession[]
+    loading?: boolean
 }
 
 interface GetRollCallSessionDetail {
@@ -12,4 +15,18 @@ interface GetRollCallSessionDetail {
     }
 }
 
-export type RollCallSessionDetailType = GetRollCallSessionDetail
+interface LoadingRollCallSessionDetail {
+    type: typeof LOADING_ROLL_CALL_SESSION_DETAIL,
+    payload: {
+        loading: boolean
+    }
+}
+
+interface UpdateRollCallSessionDetail {
+    type: typeof UPDATE_ROLL_CALL_SESSION_DETAIL,
+    payload: {
+        rollCallSessions: RollCallSession
+    }
+}
+
+export type RollCallSessionDetailType = GetRollCallSessionDetail | LoadingRollCallSessionDetail | UpdateRollCallSessionDetail

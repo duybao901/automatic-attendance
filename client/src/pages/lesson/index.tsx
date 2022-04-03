@@ -19,7 +19,6 @@ const Lesson = () => {
             <DashBroadUser auth={auth} />
             <LessonBody />
         </div>
-
     )
 }
 

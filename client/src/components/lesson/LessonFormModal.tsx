@@ -58,7 +58,7 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
 
     const dispatch = useDispatch();
     const classes = useStyles();
-    const { auth, course: coursesStore } = useSelector((state: RootStore) => state);
+    const { auth, course: coursesStore, lessonDetail } = useSelector((state: RootStore) => state);
 
     const initialLessonError: LessonError = {
         errorCourse: "",
@@ -140,11 +140,13 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
             }
 
         const isEmpty = Object.values(lessonError).every(x => (x === null || x === ''));
+
+
         if (isEmpty) {
             setLoading(true);
             if (onEdit) {
                 // Cap nhat
-                await dispatch(updateLesson(lesson, auth));
+                await dispatch(updateLesson(lesson, auth, lessonDetail));
                 setLoading(false);
                 handleCloseModal();
             } else {
@@ -300,6 +302,10 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
                         <MenuItem value={"Thứ 7"} className={classes.MenuItem}>Thứ 7</MenuItem>
                         <MenuItem value={"Chủ nhật"} className={classes.MenuItem}>Chủ nhật</MenuItem>
                     </Select>
+                </div>
+                <div className='form-group'>
+                    <label htmlFor="desc">Mô tả buổi học</label>
+                    <textarea id="desc" name="desc" rows={3} cols={10} onChange={handleChange} value={desc}>   </textarea>
                 </div>
                 <div className='modal__control'>
                     <div>

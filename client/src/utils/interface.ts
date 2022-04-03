@@ -104,7 +104,10 @@ export interface Lesson {
     desc?: string
     weekday?: string
     teacher?: User
+    createdAt?: string
 }
+
+
 
 export interface LessonError {
     errorCourse?: string
@@ -128,4 +131,11 @@ export interface RollCallSession {
     comment?: string
     attendanceDetails?: Attendance[]
     teacher?: User
+    end?: boolean
+    createdAt?: string
+}
+
+export interface LessonDetail {
+    lesson?: Lesson
+    rollCallSessions?: RollCallSession[]
 }

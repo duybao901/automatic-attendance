@@ -1,19 +1,110 @@
 @import "../../stylesSass/variables";
+@import "../../stylesSass/mixin";
 
 .rollcallsession-detail {
     display: flex;
     padding: 30px 40px;
     justify-content: center;
     flex-direction: column;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        & .header__left {
+            width: 60%;
+            & h2 {
+                font-size: 2.8rem;
+                color: $color-primary;
+                margin-bottom: 5px;
+                & span {
+                    color: $color-text;
+                    margin-left: 10px;
+                    font-size: 2rem;
+                }
+            }
+
+            &-comment {
+                font-size: 1.4rem;
+                color: $color-text-2;
+                line-height: 2rem;
+            }
+        }
+
+        & .header__right {
+            display: flex;
+
+            & div {
+                margin-left: 10px;
+                & > button {
+                    height: 40px;
+                    padding: 0 15px;
+                }
+            }
+        }
+    }
+
+    &__control {
+        &-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: $color-white;
+            border-radius: 5px;
+            box-shadow: $box-shadow-1;
+            & .detail__infor {
+                width: 50%;
+                &-group {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 3px;
+                    & i {
+                        font-size: 2rem;
+                        color: $color-text-2;
+                        margin-right: 6px;
+                    }
+                    & span {
+                        font-size: 1.2rem;
+                        color: $color-text;
+                        font-weight: 500;
+                    }
+                }
+            }
+
+            & .detail__comment {
+                width: 50%;
+                & form {
+                    width: 100%;
+                    & .form__group {
+                        display: flex;
+                        flex-direction: column;
+                        margin-bottom: 10px;
+                        & textarea {
+                            width: 100%;
+                            @include inputStyle;
+                            padding: 10px;
+                            resize: none;
+                        }
+
+                        & label {
+                            @include labelStyle;
+                        }
+                    }
+
+                    & .form__button{
+                        display: flex;
+                        & button{
+                            width: 100% !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     &__table {
         width: 100%;
         margin-top: 25px;
-        background-color: $color-white;
-        border-radius: 5px;
-        box-shadow: $box-shadow-1;
-    }
-    &__control {
-        width: 100%;
         background-color: $color-white;
         border-radius: 5px;
         box-shadow: $box-shadow-1;

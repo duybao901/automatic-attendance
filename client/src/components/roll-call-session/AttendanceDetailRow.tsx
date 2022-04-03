@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import './AttendanceDetailRow.scss'
 import { Attendance, RollCallSession, InputChange } from '../../utils/interface';
@@ -41,6 +41,16 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
     const classes = useStyles();
     const [note, setNote] = useState<string>('');
 
+    const handleAttendance = (e: InputChange, attendance: Attendance) => {
+        // console.log(attendance?.student?.name)
+    }
+
+    useEffect(() => {
+        if (attendance.note) {
+            setNote(attendance.note)
+        }
+    }, [attendance])
+
     return <TableRow
         className="detail__row"
         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -72,7 +82,7 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
         </TableCell>
         <TableCell className={classes.TableCellBody} align="left">
             <FormGroup>
-                <FormControlLabel control={<Checkbox defaultChecked color='primary' sx={{ '& .MuiSvgIcon-root': { fontSize: 30 } }} />} label="Có mặt" />
+                <FormControlLabel control={<Checkbox onChange={(e) => handleAttendance(e, attendance)} defaultChecked={attendance.absent ? false : true} color='primary' sx={{ '& .MuiSvgIcon-root': { fontSize: 30 } }} />} label="Có mặt" />
             </FormGroup>
         </TableCell>
         <TableCell className={classes.TableCellBody} align="left">
