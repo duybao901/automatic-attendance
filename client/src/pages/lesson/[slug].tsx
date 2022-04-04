@@ -212,7 +212,7 @@ const LessonDetail = () => {
               </TableHead>
               <TableBody>
                 {
-                  lessonDetailStore.loading === true ? <div className='loading-text' style={{ marginTop: "10px" }}>Đang tải...</div> :
+                  lessonDetailStore.loading === true ? <TableRow> <TableCell><div className='loading-text' style={{ marginTop: "10px" }}>Đang tải...</div></TableCell></TableRow> :
                     lessonDetailState?.rollCallSessions && lessonDetailState?.rollCallSessions?.length === 0
                       ? <div className='loading-text' style={{ marginTop: "10px" }}>Môn học này chưa có buổi điểm danh nào</div> :
                       lessonDetailState?.rollCallSessions?.map((rollCallsessDetail) => {

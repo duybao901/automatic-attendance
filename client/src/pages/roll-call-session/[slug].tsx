@@ -3,9 +3,10 @@ import { useParams } from 'react-router-dom'
 import { FormSubmit, InputChange, Params } from '../../utils/interface'
 import { RootStore, RollCallSession } from '../../utils/interface'
 import { useDispatch, useSelector } from 'react-redux'
-import { getDetailRollCallSession } from '../../store/actions/rollCallSession'
+import { getDetailRollCallSession, updateDetailRollCallSession } from '../../store/actions/rollCallSession'
 import dayjs from 'dayjs'
 import "./RollCallSessionDetail.scss"
+import Loading from '../../components/globals/loading/Loading'
 
 // MUI
 import Table from '@mui/material/Table';
@@ -19,6 +20,7 @@ import AttendanceDetailRow from '../../components/roll-call-session/AttendanceDe
 import { makeStyles } from '@mui/styles';
 import PrimaryTooltip from '../../components/globals/tool-tip/Tooltip'
 import { Button } from '@mui/material'
+import { Box } from '@mui/system'
 
 
 const useStyles = makeStyles({
@@ -43,6 +45,7 @@ const RollCallSessionDetail = () => {
 
     const [detailRollCallSession, setDetailRollCallSession] = useState<RollCallSession>({})
     const [comment, setComment] = useState<string>();
+    const [loadingComment, setLoadingCommnet] = useState<boolean>(false);
 
     useEffect(() => {
         if (slug) {
@@ -58,7 +61,7 @@ const RollCallSessionDetail = () => {
             }
         })
 
-    }, [slug, auth, detailRollCallSessionStore])
+    }, [slug, auth, detailRollCallSessionStore.rollCallSessions])
 
     useEffect(() => {
         if (detailRollCallSession) {
@@ -67,9 +70,11 @@ const RollCallSessionDetail = () => {
     }, [detailRollCallSessionStore])
 
     //  Luu nhan xet
-    const handleSubmit = (e: FormSubmit) => {       
+    const handleSubmit = async (e: FormSubmit) => {
         e.preventDefault()
-        
+        setLoadingCommnet(true)
+        await dispatch(updateDetailRollCallSession({ ...detailRollCallSession, comment }, auth))
+        setLoadingCommnet(false)
     }
 
     // console.log(detailRollCallSession)
@@ -155,7 +160,11 @@ const RollCallSessionDetail = () => {
                                 <div className="form__button">
                                     <PrimaryTooltip title="Lưu nhận xét">
                                         <Button variant='contained' type='submit'>
-                                            <p style={{ textTransform: "initial", fontSize: "1.3rem" }}>Lưu</p>
+                                            {
+                                                loadingComment ?
+                                                    <><Loading type='small'></Loading><p style={{ textTransform: "initial", fontSize: "1.3rem", marginLeft: "15px" }}>Đang lưu...</p></>
+                                                    : <p style={{ textTransform: "initial", fontSize: "1.3rem" }}>Lưu</p>
+                                            }
                                         </Button>
                                     </PrimaryTooltip>
                                 </div>

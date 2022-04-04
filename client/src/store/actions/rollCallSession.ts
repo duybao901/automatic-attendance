@@ -6,7 +6,7 @@ import { LessonDetailPayload, LessonDetailTypes, UPDATE_LESSON_DETAIL } from '..
 import { AuthPayload } from '../../store/types/authTypes'
 import { ALERT, AlertType } from '../../store/types/alertTypes'
 import { RollCallSession, Lesson } from '../../utils/interface'
-import { getAPI, postAPI } from '../../utils/fetchApi'
+import { getAPI, postAPI, putAPI } from '../../utils/fetchApi'
 
 export const createRollCallSession = (data: any, auth: AuthPayload, history: any, lessonDetail: LessonDetailPayload, lesson: Lesson) =>
     async (dispatch: Dispatch<RollCallSessionType | AlertType | LessonDetailTypes>) => {
@@ -71,11 +71,12 @@ export const getDetailRollCallSession =
         }
 
 export const updateDetailRollCallSession =
-    (rollCallSessionDetail: RollCallSessionDetailPayload, auth: AuthPayload) =>
+    (rollCallSessionDetail: RollCallSession, auth: AuthPayload) =>
         async (dispatch: Dispatch<RollCallSessionDetailType | AlertType>) => {
             if (!auth.access_token) return;
             try {
-
+                const res = await putAPI(`roll_call_session/${rollCallSessionDetail._id}`, rollCallSessionDetail, auth.access_token);
+                dispatch({ type: ALERT, payload: { success: res.data.msg } });
             } catch (error: any) {
                 dispatch({ type: LOADING_ROLL_CALL_SESSION_DETAIL, payload: { loading: false } })
                 dispatch({ type: ALERT, payload: { error: error.response.data.msg } })

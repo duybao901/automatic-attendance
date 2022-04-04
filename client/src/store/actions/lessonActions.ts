@@ -29,10 +29,10 @@ export const createLesson = (lesson: Lesson, auth: AuthPayload) =>
         try {
 
             const res = await postAPI('lesson', { ...lesson, course_id: lesson.course?._id }, auth.access_token);
-            dispatch({ type: types.CREATE_LESSON, payload: { newLesson: { ...lesson, teacher: auth.user } } })
+            console.log(res)
+            dispatch({ type: types.CREATE_LESSON, payload: { newLesson: { ...res.data.newLesson, course: { ...lesson.course }, teacher: auth.user } } })
             dispatch({ type: ALERT, payload: { success: res.data.msg } })
         } catch (error: any) {
-            console.log(error.response)
             return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
         }
     }

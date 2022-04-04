@@ -96,6 +96,38 @@ class RollCallSessionControllers {
             return res.status(500).json({ msg: error.message })
         }
     }
+
+    async updateRollCallSession(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const { end, attendanceDetails, lesson, teacher, comment } = req.body;
+            console.log({ id, end, attendanceDetails, lesson, teacher, comment })
+
+            const rollCallSession = await RollCallSessionModel.findByIdAndUpdate(id, {
+                end, attendanceDetails, lesson, teacher, comment
+            }).populate(
+                {
+                    path: 'attendanceDetails',
+                    populate: [
+                        {
+                            path: "student"
+                        }
+                    ]
+                }
+            )
+                .populate({
+                    path: 'lesson',
+                    populate: {
+                        path: 'course',
+                    }
+                })
+                .populate("teacher", '-password')
+
+            return res.json({ msg: "Chỉnh sửa thành công", rollCallSession: rollCallSession._doc });
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
 }
 
 export default new RollCallSessionControllers();
