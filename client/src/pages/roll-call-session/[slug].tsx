@@ -7,6 +7,7 @@ import { getDetailRollCallSession, updateDetailRollCallSession } from '../../sto
 import dayjs from 'dayjs'
 import "./RollCallSessionDetail.scss"
 import Loading from '../../components/globals/loading/Loading'
+import Logo from '../../images/logo.png';
 
 // MUI
 import Table from '@mui/material/Table';
@@ -50,7 +51,7 @@ const RollCallSessionDetail = () => {
     useEffect(() => {
         if (slug) {
             const handleGetDetailRollCallSession = async () => {
-                await dispatch(getDetailRollCallSession(detailRollCallSessionStore, slug, auth))
+                dispatch(getDetailRollCallSession(detailRollCallSessionStore, slug, auth))
             }
             handleGetDetailRollCallSession()
         }
@@ -58,34 +59,24 @@ const RollCallSessionDetail = () => {
         detailRollCallSessionStore.rollCallSessions?.filter(rollCallSession => {
             if (rollCallSession._id === slug) {
                 setDetailRollCallSession(rollCallSession)
+                setComment(rollCallSession.comment)
             }
         })
 
     }, [slug, auth, detailRollCallSessionStore.rollCallSessions])
 
-    useEffect(() => {
-        if (detailRollCallSession) {
-            setComment(detailRollCallSession.comment)
-        }
-    }, [detailRollCallSessionStore])
-
     //  Luu nhan xet
     const handleSubmit = async (e: FormSubmit) => {
         e.preventDefault()
         setLoadingCommnet(true)
-        await dispatch(updateDetailRollCallSession({ ...detailRollCallSession, comment }, auth))
+        await dispatch(updateDetailRollCallSession({ ...detailRollCallSession, comment }, auth, detailRollCallSessionStore))
         setLoadingCommnet(false)
     }
-
-    // console.log(detailRollCallSession)
 
     return (
         <div className='dashbroad__body dashbroad__body--xl'>
             <div className='rollcallsession-detail'>
                 <div className="rollcallsession-detail__header">
-                    {
-
-                    }
                     <div className="header__left">
                         <h2>
                             {
@@ -126,6 +117,7 @@ const RollCallSessionDetail = () => {
                     {/* Detail Roll Call Session Card */}
                     <div className='rollcallsession-detail__control-detail'>
                         <div className="detail__infor">
+                            <img src={Logo} alt="logo" />
                             <div className="detail__infor-group">
                                 <i className='bx bxs-calendar-week' ></i>
                                 <span>{detailRollCallSession.lesson?.weekday}</span>
@@ -144,7 +136,10 @@ const RollCallSessionDetail = () => {
                                     <span>{detailRollCallSession.teacher?.name} ({detailRollCallSession.teacher?.account})</span>
                                 }
                             </div>
+
                         </div>
+
+                        {/* Comment */}
                         <div className="detail__comment">
                             <form onSubmit={handleSubmit}>
                                 <div className="form__group">
@@ -173,10 +168,6 @@ const RollCallSessionDetail = () => {
                         </div>
                     </div>
 
-                    {/* End */}
-                    <div className='rollcallsession-detail__control-button'>
-
-                    </div>
 
                 </div>
                 <div className='rollcallsession-detail__table'>

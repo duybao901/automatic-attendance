@@ -25,7 +25,7 @@ interface LoadingRollCallSessionDetail {
 interface UpdateRollCallSessionDetail {
     type: typeof UPDATE_ROLL_CALL_SESSION_DETAIL,
     payload: {
-        rollCallSessions: RollCallSession
+        rollCallSession: RollCallSession
     }
 }
 

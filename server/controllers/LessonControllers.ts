@@ -3,6 +3,8 @@ import mongoose from 'mongoose'
 import Lessons from '../models/lessonModel'
 import RollCallSesson from '../models/rollCallSessionModel'
 import { RequestUser } from '../config/interface'
+import AttentdanceDetailModel from '../models/attendanceDetailModel'
+import RollCallSessionModel from "../models/rollCallSessionModel"
 
 class LessonController {
 
@@ -49,7 +51,6 @@ class LessonController {
         try {
             const { id } = req.params;
             const { timeStart, timeEnd, desc, course_id, weekday } = req.body;
-            console.log(course_id)
 
             const newLesson = await Lessons.findByIdAndUpdate(id, {
                 timeStart, timeEnd, desc, course: course_id, weekday
@@ -69,7 +70,25 @@ class LessonController {
         try {
             const { id } = req.params;
 
-            await Lessons.findByIdAndDelete(id);
+            // Xoa buoi hoc
+            const lesson = await Lessons.findByIdAndDelete(id).populate('course');
+            console.log({ lesson })
+
+            // Xoa cac buoi diem danh lien quan toi buoi hoc
+
+            let rollCallSessions = await RollCallSessionModel.find({ lesson: lesson._id })
+
+            await RollCallSessionModel.deleteMany({ lesson: lesson._id });
+            console.log({ rollCallSessions })
+
+
+
+            // Xoa cac chi tiet diem danh
+            await AttentdanceDetailModel.deleteMany({
+                rollCallSession: {
+                    $in: rollCallSessions.map((item) => item._id)
+                }
+            })
 
             return res.json({
                 msg: "Xóa buổi học thành công"

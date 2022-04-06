@@ -86,6 +86,11 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
 
     const handleCloseModal = () => {
         setOpen(false);
+        if(onEdit){
+            setLesson(onEdit)
+        }else{
+            setLesson(initialLesson)
+        }
     }
 
     // Use Effect

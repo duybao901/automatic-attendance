@@ -57,6 +57,7 @@ const LessonCard: React.FC<LessonCardProps> = ({ auth, lesson, addStudentClass }
     setLoading(true);
     await dispatch(createRollCallSession(data, auth, history, lessonDetail, lesson))
     handleClose()
+    setComment("")
     setLoading(false);
 
   }

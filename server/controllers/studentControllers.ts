@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 import { Request, Response } from 'express'
 import Students from '../models/studentModel'
-import Course from '../models/courseModel'
 
 class StudentControlles {
     async updateStudent(req: Request, res: Response) {

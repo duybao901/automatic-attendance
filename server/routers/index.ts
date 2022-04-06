@@ -5,6 +5,8 @@ import courseRouter from './courseRouter'
 import studentRouter from './studentRouters'
 import lessonRouter from './lessonRouters'
 import rollCallSession from './rollCallSessionRouters'
+import attendanceDetail  from './attendanceDetailRoters'
+
 
 const routers = {
     authRouter,
@@ -12,6 +14,7 @@ const routers = {
     courseRouter,
     studentRouter,
     lessonRouter,
-    rollCallSession
+    rollCallSession,
+    attendanceDetail
 };
 export default routers;

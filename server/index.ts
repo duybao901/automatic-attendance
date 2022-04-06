@@ -30,5 +30,6 @@ app.use("/api", routers.courseRouter);
 app.use('/api', routers.studentRouter);
 app.use('/api', routers.lessonRouter);
 app.use('/api', routers.rollCallSession);
+app.use('/api', routers.attendanceDetail);
 
 

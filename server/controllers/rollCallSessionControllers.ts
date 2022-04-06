@@ -19,14 +19,25 @@ class RollCallSessionControllers {
 
             const newAttendanceDetail = await AttendanceDetailModel.insertMany(studentsArrayObject)
 
-            const newRollCallSession = new RollCallSessionModel({
+            const newAttendanceDetailId = newAttendanceDetail.map(attendanceDetail => attendanceDetail._id);
+
+            let newRollCallSession = new RollCallSessionModel({
                 lesson,
                 comment,
                 course: lesson.course,
                 teacher: req.user,
-                attendanceDetails: newAttendanceDetail.map(attendanceDetail => attendanceDetail._id)
+                attendanceDetails: newAttendanceDetailId
             })
-            await newRollCallSession.save();
+
+            newRollCallSession = await newRollCallSession.save();
+
+            // // Cap nhat lai chi tiet diem danh
+            await AttendanceDetailModel.updateMany(
+                { _id: { $in: newAttendanceDetailId } }, {
+                $set: {
+                    rollCallSession: new mongoose.Types.ObjectId(newRollCallSession._id)
+                }
+            })
 
             return res.json({
                 msg: "Tạo buổi điểm danh thành công",
@@ -101,7 +112,6 @@ class RollCallSessionControllers {
         try {
             const { id } = req.params;
             const { end, attendanceDetails, lesson, teacher, comment } = req.body;
-            console.log({ id, end, attendanceDetails, lesson, teacher, comment })
 
             const rollCallSession = await RollCallSessionModel.findByIdAndUpdate(id, {
                 end, attendanceDetails, lesson, teacher, comment

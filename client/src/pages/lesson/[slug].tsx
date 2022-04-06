@@ -224,7 +224,7 @@ const LessonDetail = () => {
                           <TableCell className={`${classes.TableCellBodyDecs}`} align="left">
                             <div className="table__desc">
                               <span>
-                                Ngày: {dayjs(rollCallsessDetail.createdAt).format("DD-MM-YYYY")}
+                                Ngày tạo: {dayjs(rollCallsessDetail.createdAt).format("DD-MM-YYYY")}
                               </span>
                               <p>
                                 {rollCallsessDetail.comment ? rollCallsessDetail.comment : "chưa có nhận xét"}

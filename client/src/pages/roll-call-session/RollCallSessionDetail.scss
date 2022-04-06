@@ -54,6 +54,13 @@
             box-shadow: $box-shadow-1;
             & .detail__infor {
                 width: 50%;
+
+                & img {
+                    width: 80px;
+                    height: 80px;
+                    margin-bottom: 20px;
+                }
+
                 &-group {
                     display: flex;
                     align-items: center;
@@ -91,9 +98,9 @@
                         }
                     }
 
-                    & .form__button{
+                    & .form__button {
                         display: flex;
-                        & button{
+                        & button {
                             width: 100% !important;
                         }
                     }

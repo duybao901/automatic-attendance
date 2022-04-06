@@ -21,6 +21,10 @@ const AttendanceDetailScheme = new mongoose.Schema({
     isAttendance: {
         type: Boolean,
         default: false
+    },
+    rollCallSession: {
+        type: mongoose.Types.ObjectId,
+        ref: 'rollCallSession'
     }
 }, {
     timestamps: true

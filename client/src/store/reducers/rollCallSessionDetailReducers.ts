@@ -20,6 +20,14 @@ const rollCallSessionDetailReducers = (state: RollCallSessionDetailPayload = ini
                 loading: action.payload.loading
             }
         }
+        case types.UPDATE_ROLL_CALL_SESSION_DETAIL: {
+            return {
+                ...state,
+                rollCallSessions: state.rollCallSessions && state.rollCallSessions.map((_rollCallSession) => {
+                    return _rollCallSession._id === action.payload.rollCallSession._id ? action.payload.rollCallSession : _rollCallSession
+                })
+            }
+        }
         default:
             return {
                 ...state

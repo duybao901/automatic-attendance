@@ -1,7 +1,10 @@
 import { Dispatch } from 'react'
 import * as types from '../types/rollCallSessionTypes'
 import { RollCallSessionType } from '../types/rollCallSessionTypes'
-import { GET_ROLL_CALL_SESSION_DETAIL, RollCallSessionDetailType, RollCallSessionDetailPayload, LOADING_ROLL_CALL_SESSION_DETAIL } from '../types/rollCallSessionDetailTypes'
+import {
+    GET_ROLL_CALL_SESSION_DETAIL, UPDATE_ROLL_CALL_SESSION_DETAIL,
+    RollCallSessionDetailType, RollCallSessionDetailPayload, LOADING_ROLL_CALL_SESSION_DETAIL
+} from '../types/rollCallSessionDetailTypes'
 import { LessonDetailPayload, LessonDetailTypes, UPDATE_LESSON_DETAIL } from '../types/lessonDetailTypes'
 import { AuthPayload } from '../../store/types/authTypes'
 import { ALERT, AlertType } from '../../store/types/alertTypes'
@@ -71,12 +74,33 @@ export const getDetailRollCallSession =
         }
 
 export const updateDetailRollCallSession =
-    (rollCallSessionDetail: RollCallSession, auth: AuthPayload) =>
+    (rollCallSessionDetail: RollCallSession, auth: AuthPayload, RollCallSessionDetailPayload: RollCallSessionDetailPayload) =>
         async (dispatch: Dispatch<RollCallSessionDetailType | AlertType>) => {
             if (!auth.access_token) return;
             try {
                 const res = await putAPI(`roll_call_session/${rollCallSessionDetail._id}`, rollCallSessionDetail, auth.access_token);
-                dispatch({ type: ALERT, payload: { success: res.data.msg } });
+                dispatch({ type: ALERT, payload: { success: "Cập nhật thành công" } });
+                RollCallSessionDetailPayload.rollCallSessions?.forEach((_rollCallSession) => {
+                    if (_rollCallSession._id === res.data.rollCallSession._id) {
+                        dispatch({ type: UPDATE_ROLL_CALL_SESSION_DETAIL, payload: { rollCallSession: rollCallSessionDetail } })
+                    }
+                })
+            } catch (error: any) {
+                dispatch({ type: LOADING_ROLL_CALL_SESSION_DETAIL, payload: { loading: false } })
+                dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+            }
+        }
+
+export const updateAttendanceDetail =
+    (rollCallSessionDetail: RollCallSession, auth: AuthPayload, RollCallSessionDetailPayload: RollCallSessionDetailPayload) =>
+        async (dispatch: Dispatch<RollCallSessionDetailType | AlertType>) => {
+            if (!auth.access_token) return;
+            try {
+                RollCallSessionDetailPayload.rollCallSessions?.forEach((_rollCallSession) => {
+                    if (_rollCallSession._id === rollCallSessionDetail._id) {
+                        dispatch({ type: UPDATE_ROLL_CALL_SESSION_DETAIL, payload: { rollCallSession: rollCallSessionDetail } })
+                    }
+                })
             } catch (error: any) {
                 dispatch({ type: LOADING_ROLL_CALL_SESSION_DETAIL, payload: { loading: false } })
                 dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
