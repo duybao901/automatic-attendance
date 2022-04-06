@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useImperativeHandle } from 'react'
+import React, { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import './AttendanceDetailRow.scss'
 import { Attendance, RollCallSession, InputChange, FormSubmit, RootStore } from '../../utils/interface';
@@ -15,6 +15,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { makeStyles } from '@mui/styles';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface AttendanceDetailRowProps {
     detailRollCallSession: RollCallSession
@@ -38,6 +39,9 @@ const useStyles = makeStyles({
         "overflow": "hidden",
         "textOverflow": "ellipsis",
     },
+    TableCellBodyDate: {
+        width: "100px !important"
+    }
 });
 
 const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, detailRollCallSession }) => {
@@ -48,7 +52,6 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
     const [note, setNote] = useState<string>('');
     const [loadingAttendace, setLoadingAttendace] = useState<boolean>(false);
     const [loadingNote, setLoadingNote] = useState<boolean>(false);
-    const [checked, setChecked] = useState<boolean>(false);
     const handleAttendance = async (e: InputChange, attendance: Attendance) => {
 
         if (loadingAttendace) return;
@@ -77,6 +80,7 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
 
     const handleSubmitNote = async (e: FormSubmit) => {
         e.preventDefault();
+        if (note === "") return;
         setLoadingNote(true);
         try {
 
@@ -106,9 +110,6 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
         if (attendance.note) {
             setNote(attendance.note)
         }
-        if (attendance) {
-            setChecked(attendance.absent as boolean)
-        }
     }, [attendance])
 
     return <TableRow
@@ -117,7 +118,7 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
     >
         <TableCell className={`${classes.TableCellBody} ${classes.TableCellBodyId}`}>
             {
-                attendance.student?._id
+                attendance.student?._id ? attendance.student?._id : <p style={{ color: "crimson" }}>Sinh viên này đã bị xoá khỏi lớp học</p>
             }
         </TableCell>
         <TableCell className={classes.TableCellBody} align="left">
@@ -132,8 +133,15 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
         </TableCell>
         <TableCell className={classes.TableCellBody} align="left">
             {
-                dayjs(attendance?.date).format("DD-MM-YYYY")
+                attendance.student?.gender
             }
+        </TableCell>
+        <TableCell className={`${classes.TableCellBody} ${classes.TableCellBodyDate}`} align="left">
+            <p style={{ width: "100px" }}>
+                {
+                    dayjs(attendance?.date).format("DD-MM-YYYY")
+                }
+            </p>
         </TableCell>
         <TableCell className={classes.TableCellBody} align="left">
             {
@@ -143,18 +151,17 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
         <TableCell className={classes.TableCellBody} align="left">
             <FormGroup>
                 {
-                    loadingAttendace ? <p className="loading-text">Đang điểm danh...</p> :
-                        <FormControlLabel control={<Checkbox checked={attendance.absent ? false : true} onChange={(e) => handleAttendance(e, attendance)} color='primary' sx={{ '& .MuiSvgIcon-root': { fontSize: 30 } }} />} label="Có mặt" />
+                    attendance.student?._id && <FormControlLabel control={!loadingAttendace ? <Checkbox disabled={detailRollCallSession.end ? true : false} checked={attendance.absent ? false : true} onChange={(e) => handleAttendance(e, attendance)} color='primary' sx={{ '& .MuiSvgIcon-root': { fontSize: 30 } }} /> : <CircularProgress />} label="Có mặt" />
                 }
             </FormGroup>
         </TableCell>
         <TableCell className={classes.TableCellBody} align="left">
             <form className="detail__row-note" onSubmit={handleSubmitNote}>
                 <div className='note__group'>
-                    <textarea value={note} rows={3} cols={20} onChange={(e: InputChange) => setNote(e.target.value)}>
+                    <textarea disabled={detailRollCallSession.end ? true : false} value={note} rows={3} cols={20} onChange={(e: InputChange) => setNote(e.target.value)}>
                     </textarea>
                     <PrimaryToolTip title="Lưu ghi chú">
-                        <Button type='submit' color='primary' variant='contained'>
+                        <Button disabled={detailRollCallSession.end ? true : false} type='submit' color='primary' variant='contained'>
                             {/* {
                                 loadingNote && <Loading type='small'>
                                 </Loading>
@@ -169,7 +176,7 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
                 </div>
             </form>
         </TableCell>
-
+                                
     </TableRow>
 
 }

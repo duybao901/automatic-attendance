@@ -8,6 +8,9 @@ import dayjs from 'dayjs'
 import "./RollCallSessionDetail.scss"
 import Loading from '../../components/globals/loading/Loading'
 import Logo from '../../images/logo.png';
+import { updateAttendanceDetail } from '../../store/actions/rollCallSession'
+import { ALERT } from '../../store/types/alertTypes'
+import { putAPI } from '../../utils/fetchApi';
 
 // MUI
 import Table from '@mui/material/Table';
@@ -21,8 +24,11 @@ import AttendanceDetailRow from '../../components/roll-call-session/AttendanceDe
 import { makeStyles } from '@mui/styles';
 import PrimaryTooltip from '../../components/globals/tool-tip/Tooltip'
 import { Button } from '@mui/material'
-import { Box } from '@mui/system'
-
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import { modelStyle } from '../../utils/model-style'
+import Box from '@mui/material/Box';
+import { IconButton } from '@mui/material';
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -47,6 +53,7 @@ const RollCallSessionDetail = () => {
     const [detailRollCallSession, setDetailRollCallSession] = useState<RollCallSession>({})
     const [comment, setComment] = useState<string>();
     const [loadingComment, setLoadingCommnet] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (slug) {
@@ -73,6 +80,22 @@ const RollCallSessionDetail = () => {
         setLoadingCommnet(false)
     }
 
+    // Ket thuc buoi diem danh
+    const handleEndRollCallSession = async (detailRollCallSession: RollCallSession) => {
+        try {
+            dispatch({ type: ALERT, payload: { loading: true } })
+            await dispatch(updateDetailRollCallSession({ ...detailRollCallSession, end: true }, auth, detailRollCallSessionStore))
+            handleCloseDialog()
+        } catch (error: any) {
+            dispatch({ type: ALERT, payload: { loading: false } })
+            dispatch({ type: ALERT, payload: { error: error.response.dât.msg } })
+        }
+    }
+
+    const handleCloseDialog = () => {
+        setOpen(false)
+    }
+
     return (
         <div className='dashbroad__body dashbroad__body--xl'>
             <div className='rollcallsession-detail'>
@@ -96,20 +119,57 @@ const RollCallSessionDetail = () => {
 
                     </div>
                     <div className="header__right">
+                        {
+                            detailRollCallSession.end && <h2><i className='bx bxs-alarm-exclamation' ></i>Buổi học đã kết thúc</h2>
+                        }
                         <div className="header__btn-end">
                             <PrimaryTooltip title="Xuất file excel">
                                 <Button variant='contained'>
                                     <i className='bx bx-export' style={{ fontSize: '2.4rem', marginRight: "5px", marginTop: "-5px" }}></i>
-                                    <p className="button-text"> Xuất File</p>
+                                    <p className="button-text">Xuất File</p>
                                 </Button>
                             </PrimaryTooltip>
                         </div>
                         <div className="header__btn-end">
-                            <PrimaryTooltip title="Kết thúc buổi điểm danh" color='error'>
-                                <Button variant='contained'>
-                                    <i style={{ fontSize: '2.4rem', marginRight: "5px" }} className='bx bx-stopwatch'></i>  <p className="button-text">Kết Thúc</p>
-                                </Button>
-                            </PrimaryTooltip>
+                            {
+                                (!detailRollCallSession.end && detailRollCallSessionStore.loading === false) && <PrimaryTooltip title="Kết thúc buổi điểm danh" color='error'>
+                                    <Button onClick={() => setOpen(true)} variant='contained'>
+                                        <i style={{ fontSize: '2.4rem', marginRight: "5px" }} className='bx bx-stopwatch'></i>  <p className="button-text">Kết Thúc</p>
+                                    </Button>
+                                </PrimaryTooltip>
+                            }
+                            {/* Dialog Confirm End Roll Call Session */}
+                            <Dialog
+                                open={open}
+                                onClose={handleCloseDialog}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <Box padding={2}>
+                                    <Box display='flex' justifyContent="space-between" alignItems='center' mb={2}>
+                                        <h2 className="modal__heading">Bạn có chắc muốn kết thúc buổi điểm danh, mọi hành động điểm danh sẽ không còn được thực hiện nữa!</h2>
+                                        <Box>
+                                            <PrimaryTooltip title='Đóng hộp thoại'>
+                                                <IconButton size="medium" onClick={handleCloseDialog}>
+                                                    <i className='bx bx-x' style={{ color: "#473fce", fontSize: "2.6rem" }}></i>
+                                                </IconButton>
+                                            </PrimaryTooltip>
+                                        </Box>
+                                    </Box>
+                                    <DialogActions>
+                                        <PrimaryTooltip title="Kết thúc buổi điểm danh">
+                                            <Button color="success" onClick={handleCloseDialog} variant='contained'>
+                                                <p className="button-text">Đóng</p>
+                                            </Button>
+                                        </PrimaryTooltip>
+                                        <PrimaryTooltip title="Kết thúc buổi điểm danh" >
+                                            <Button color="error" onClick={(() => handleEndRollCallSession(detailRollCallSession))} variant='contained'>
+                                                <i style={{ fontSize: '2.4rem', marginRight: "5px" }} className='bx bx-stopwatch'></i>  <p className="button-text">Kết Thúc</p>
+                                            </Button>
+                                        </PrimaryTooltip>
+                                    </DialogActions>
+                                </Box>
+                            </Dialog>
                         </div>
                     </div>
                 </div>
@@ -178,6 +238,7 @@ const RollCallSessionDetail = () => {
                                     <TableCell className={classes.TableCellHead} >ID sinh viên</TableCell>
                                     <TableCell className={classes.TableCellHead} align="left">Họ và tên</TableCell>
                                     <TableCell className={classes.TableCellHead} align="left">MSSV</TableCell>
+                                    <TableCell className={classes.TableCellHead} align="left">Giới tính</TableCell>
                                     <TableCell className={classes.TableCellHead} align="left">Ngày</TableCell>
                                     <TableCell className={classes.TableCellHead} align="left">Học phần</TableCell>
                                     <TableCell className={classes.TableCellHead} align="left">Điểm danh</TableCell>
@@ -194,7 +255,6 @@ const RollCallSessionDetail = () => {
                         </Table>
                     </TableContainer>
                 </div>
-
             </div>
         </div>
 

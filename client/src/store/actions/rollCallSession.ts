@@ -78,6 +78,7 @@ export const updateDetailRollCallSession =
         async (dispatch: Dispatch<RollCallSessionDetailType | AlertType>) => {
             if (!auth.access_token) return;
             try {
+                dispatch({ type: LOADING_ROLL_CALL_SESSION_DETAIL, payload: { loading: true } })
                 const res = await putAPI(`roll_call_session/${rollCallSessionDetail._id}`, rollCallSessionDetail, auth.access_token);
                 dispatch({ type: ALERT, payload: { success: "Cập nhật thành công" } });
                 RollCallSessionDetailPayload.rollCallSessions?.forEach((_rollCallSession) => {
@@ -85,6 +86,7 @@ export const updateDetailRollCallSession =
                         dispatch({ type: UPDATE_ROLL_CALL_SESSION_DETAIL, payload: { rollCallSession: rollCallSessionDetail } })
                     }
                 })
+                dispatch({ type: LOADING_ROLL_CALL_SESSION_DETAIL, payload: { loading: false } })
             } catch (error: any) {
                 dispatch({ type: LOADING_ROLL_CALL_SESSION_DETAIL, payload: { loading: false } })
                 dispatch({ type: ALERT, payload: { error: error.response.data.msg } })

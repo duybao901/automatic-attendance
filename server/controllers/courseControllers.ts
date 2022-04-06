@@ -4,7 +4,7 @@ import Course from "../models/courseModel";
 import Users from '../models/userModel';
 import Students from '../models/studentModel';
 import { RequestUser } from '../config/interface'
-
+import Lessons from '../models/lessonModel'
 
 class APIfeatures {
 
@@ -49,7 +49,7 @@ class CourseController {
                     avatar: student.gender === 'male' ? "https://res.cloudinary.com/dxnfxl89q/image/upload/v1648222975/nienluannganh/student-male-avatar_oywxdt.png" : "https://res.cloudinary.com/dxnfxl89q/image/upload/v1648222975/nienluannganh/student-female-avatar_zyezln.png"
                 }
             })
-            
+
             const studentArray = await Students.insertMany(studentsArrayObject);
 
             await Course.findByIdAndUpdate(newCourse._id, {
@@ -111,6 +111,11 @@ class CourseController {
 
             let course = await Course.findById(id);
             if (!course) return res.status(404).json({ msg: "Không tìm thấy môn học" })
+
+            const lesson = await Lessons.find({ course: course._id })
+            if (lesson.length !== 0) {
+                return res.status(400).json({ msg: "Hãy xoá các buổi học liên quan!" })
+            }
 
             const arrayId = course.students.map((student: any) => {
                 return `${new mongoose.Types.ObjectId(student._id)}`

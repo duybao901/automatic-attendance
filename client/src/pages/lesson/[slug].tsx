@@ -206,7 +206,7 @@ const LessonDetail = () => {
                   <TableCell className={classes.TableCellHead} align="left">Mô tả</TableCell>
                   <TableCell className={classes.TableCellHead} align="center">Có mặt</TableCell>
                   <TableCell className={classes.TableCellHead} align="center">Vắng</TableCell>
-                  <TableCell className={classes.TableCellHead} align="center">Đã kết thúc</TableCell>
+                  <TableCell className={classes.TableCellHead} align="center">Kết thúc</TableCell>
                   <TableCell className={classes.TableCellHead} align="center">Chi tiết</TableCell>
                 </TableRow>
               </TableHead>
