@@ -20,7 +20,7 @@ const useStyles = makeStyles({
         fontWeight: "600 !important",
         height: "36px",
         padding: "10px !important",
-        
+
 
     },
 });
@@ -76,16 +76,42 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
 
                     // Tim STT
                     let stt_top = 0;
-                    let stt_left = 0;
+                    let index_student_code = -1;
+                    let index_student_name = -1;
+                    let index_student_gender = -1;
+
                     data.forEach((item: any, i) => {
-                        let index = -1;
+                        let index_stt = -1;
+
                         if (item.length !== 0) {
-                            index = item.findIndex((item: any) => {
-                                return item === "STT"
+
+                            index_stt = item.findIndex((_item: any) => {
+                                return _item === "STT"
                             })
+
+                            if (index_stt !== -1) {
+                                if (index_student_code === -1) {
+                                    index_student_code = item.findIndex((_item: any) => {
+                                        return _item === "Ma sinh vien"
+                                    })
+                                }
+
+
+                                if (index_student_name === -1) {
+                                    index_student_name = item.findIndex((_item: any) => {
+                                        return _item === "Ho và ten"
+                                    })
+                                }
+
+                                if (index_student_gender === -1) {
+                                    index_student_gender = item.findIndex((_item: any) => {
+                                        return _item === "Phai"
+                                    })
+                                }
+                            }
                         }
-                        if (index !== -1) {
-                            stt_left = index
+
+                        if (index_stt !== -1) {
                             stt_top = i
                         }
                     })
@@ -95,13 +121,14 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
                         data.slice(stt_top + 1,).forEach((item: any) => {
                             if (item.length !== 0) {
                                 const student = {
-                                    studentCode: item[stt_left + 1] ? item[stt_left + 1].trim() : "",
-                                    name: item[stt_left + 2] ? item[stt_left + 2].trim() : '',
-                                    gender: item[stt_left + 5] ? item[stt_left + 5] : 'male'
+                                    studentCode: item[index_student_code] ? item[index_student_code].trim() : "",
+                                    name: item[index_student_name] ? item[+ index_student_name].trim() : '',
+                                    gender: item[index_student_gender] ? item[index_student_gender] : 'male'
                                 }
                                 newData.push(student)
                             }
                         })
+                        console.log(newData)
                         setStudents(newData)
                     }
                 }
