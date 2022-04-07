@@ -77,7 +77,6 @@ const LessonDetail = () => {
     }
   }, [auth, slug, lessonDetailStore.lessons])
 
-  console.log(lessonDetailState)
 
   const countAbsent = (attdentdances: Attendance[], isAbsent: true | false) => {
     let count = 0;
@@ -210,9 +209,9 @@ const LessonDetail = () => {
               </TableHead>
               <TableBody>
                 {
-                  lessonDetailStore.loading === true ? <TableRow> <TableCell><div className='loading-text' style={{ marginTop: "10px" }}>Đang tải...</div></TableCell></TableRow> :
+                  lessonDetailStore.loading === true ? <tr ><td className='loading-text' style={{ marginTop: "10px" }}>Đang tải...</td></tr> :
                     lessonDetailState?.rollCallSessions && lessonDetailState?.rollCallSessions?.length === 0
-                      ? <div className='loading-text' style={{ marginTop: "10px" }}>Môn học này chưa có buổi điểm danh nào</div> :
+                      ? <p className='loading-text' style={{ marginTop: "10px" }}>Môn học này chưa có buổi điểm danh nào</p> :
                       lessonDetailState?.rollCallSessions?.map((rollCallsessDetail) => {
                         return <TableRow
                           key={rollCallsessDetail._id}

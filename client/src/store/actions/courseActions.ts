@@ -16,7 +16,7 @@ import { ALERT, AlertType } from '../types/alertTypes'
 import { AuthPayload } from '../types/authTypes'
 import { deleteAPI, getAPI, postAPI, putAPI } from '../../utils/fetchApi'
 import { DELETE_USER_COURSE, EDIT_USER_COURSE, CREATE_USER_COURSE, ProfileType, ProfilePayload } from '../types/profileTypes'
-import { RollCallSessionDetailPayload, RollCallSessionDetailType } from '../types/rollCallSessionDetailTypes'
+import { RollCallSessionDetailPayload, RollCallSessionDetailType, UPDATE_ROLL_CALL_SESSION_DETAIL } from '../types/rollCallSessionDetailTypes'
 
 // Detail Course
 import { GET_DETAIL_COURSE, DetailCoursePayload, DetailCourseType, UPDATE_DETAIL_COURSE } from '../types/detailCourseTypes'
@@ -105,20 +105,36 @@ export const searchByCourseTeacher = (search: string) => async (dispatch: Dispat
 
 
 //Student
-export const updateStudent = (student: Student, auth: AuthPayload, course: Course, detailRollCallSession: RollCallSessionDetailPayload) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
-    if (!student && !auth.access_token) return;
+export const updateStudent = (student: Student, auth: AuthPayload, course: Course, detailRollCallSession: RollCallSessionDetailPayload) =>
+    async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType | RollCallSessionDetailType>) => {
+        if (!student && !auth.access_token) return;
 
-    try {
-        const res = await putAPI(`student/${student._id}`, student, auth.access_token);
-        const newStudent = course.students && course.students.map((_student: Student) => {
-            return _student && _student._id === student._id ? student : _student
-        })
-        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...course, students: newStudent, teacher: auth.user } } })
-        dispatch({ type: ALERT, payload: { success: res.data.msg } })
-    } catch (error: any) {
-        return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+        try {
+            const res = await putAPI(`student/${student._id}`, student, auth.access_token);
+            const newStudent = course.students && course.students.map((_student: Student) => {
+                return _student && _student._id === student._id ? student : _student
+            })
+
+            detailRollCallSession.rollCallSessions?.forEach(_rollCallSession => {
+                if (_rollCallSession.lesson?.course?._id === course._id) {
+                    const newAttendanceDetails = _rollCallSession.attendanceDetails?.map((_attendanceDetail) => {
+                        return _attendanceDetail.student?._id === student._id ? { ..._attendanceDetail, student } : _attendanceDetail
+                    })
+                    dispatch({
+                        type: UPDATE_ROLL_CALL_SESSION_DETAIL,
+                        payload: { rollCallSession: { ..._rollCallSession, attendanceDetails: newAttendanceDetails } }
+                    })
+                }
+            })
+
+
+
+            dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...course, students: newStudent, teacher: auth.user } } })
+            dispatch({ type: ALERT, payload: { success: res.data.msg } })
+        } catch (error: any) {
+            return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+        }
     }
-}
 
 export const deleteStudent = (student_id: string, auth: AuthPayload, students: Student[], course: Course) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
     if (!auth.access_token && !auth.user) return;

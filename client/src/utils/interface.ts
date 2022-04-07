@@ -87,6 +87,7 @@ export interface Student {
     studentCode?: string
     gender?: string
     phone?: string
+    course?: string
 }
 
 export interface ErrorStudent {
