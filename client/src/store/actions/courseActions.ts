@@ -16,6 +16,7 @@ import { ALERT, AlertType } from '../types/alertTypes'
 import { AuthPayload } from '../types/authTypes'
 import { deleteAPI, getAPI, postAPI, putAPI } from '../../utils/fetchApi'
 import { DELETE_USER_COURSE, EDIT_USER_COURSE, CREATE_USER_COURSE, ProfileType, ProfilePayload } from '../types/profileTypes'
+import { RollCallSessionDetailPayload, RollCallSessionDetailType } from '../types/rollCallSessionDetailTypes'
 
 // Detail Course
 import { GET_DETAIL_COURSE, DetailCoursePayload, DetailCourseType, UPDATE_DETAIL_COURSE } from '../types/detailCourseTypes'
@@ -104,7 +105,7 @@ export const searchByCourseTeacher = (search: string) => async (dispatch: Dispat
 
 
 //Student
-export const updateStudent = (student: Student, auth: AuthPayload, course: Course) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
+export const updateStudent = (student: Student, auth: AuthPayload, course: Course, detailRollCallSession: RollCallSessionDetailPayload) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
     if (!student && !auth.access_token) return;
 
     try {

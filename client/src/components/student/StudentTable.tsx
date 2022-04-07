@@ -103,9 +103,8 @@ const StudentTable: React.FC<StudentTableProps> = ({ course, students }) => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
                 <TableRow>
-                    <TableCell className={classes.TableCellHead}>ID Sinh viên</TableCell>
+                    <TableCell className={classes.TableCellHead}>Mã số sinh viên</TableCell>
                     <TableCell className={classes.TableCellHead} align="left">Họ và Tên</TableCell>
-                    <TableCell className={classes.TableCellHead} align="left">MSSV</TableCell>
                     <TableCell className={classes.TableCellHead} align="left">Giới tính</TableCell>
                     <TableCell className={classes.TableCellHead} align="left">Số điện thoại</TableCell>
                     <TableCell className={`${classes.TableCellHead} ${classes.TableCellHeadAction}`} align="center">Chỉnh sửa</TableCell>
@@ -119,11 +118,8 @@ const StudentTable: React.FC<StudentTableProps> = ({ course, students }) => {
                         key={student._id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
-                        <TableCell component="th" scope="row" className={`${classes.TableCellBody} ${classes.TableCellBodyId}`}>
-                            {student._id}
-                        </TableCell>
-                        <TableCell align="left" className={classes.TableCellBody}>{student.name}</TableCell>
                         <TableCell align="left" className={classes.TableCellBody}>{student.studentCode}</TableCell>
+                        <TableCell align="left" className={classes.TableCellBody}>{student.name}</TableCell>
                         <TableCell align="left" className={classes.TableCellBody}>{student.gender}</TableCell>
                         <TableCell align="left" className={classes.TableCellBody}>{student.phone}</TableCell>
 

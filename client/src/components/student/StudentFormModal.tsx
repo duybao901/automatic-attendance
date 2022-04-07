@@ -38,7 +38,7 @@ const useStyles = makeStyles({
 
 const StudentFormModal: React.FC<StudentFormModalProps> = ({ open, hanldeSetOpen, onEdit, setOnEdit, course }) => {
 
-    const { auth } = useSelector((state: RootStore) => state);
+    const { auth, detailRollCallSession } = useSelector((state: RootStore) => state);
     const dispatch = useDispatch()
     const classes = useStyles()
 
@@ -101,7 +101,7 @@ const StudentFormModal: React.FC<StudentFormModalProps> = ({ open, hanldeSetOpen
             setErrorStudent(errors)
         } else {
             setLoading(true)
-            await dispatch(updateStudent(student, auth, course as Course))
+            await dispatch(updateStudent(student, auth, course as Course, detailRollCallSession))
             setLoading(false)
         }
 

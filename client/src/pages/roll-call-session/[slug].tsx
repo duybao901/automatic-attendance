@@ -235,7 +235,6 @@ const RollCallSessionDetail = () => {
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell className={classes.TableCellHead} >ID sinh viên</TableCell>
                                     <TableCell className={classes.TableCellHead} align="left">Họ và tên</TableCell>
                                     <TableCell className={classes.TableCellHead} align="left">MSSV</TableCell>
                                     <TableCell className={classes.TableCellHead} align="left">Giới tính</TableCell>

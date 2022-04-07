@@ -94,10 +94,27 @@ export const updateDetailRollCallSession =
         }
 
 export const updateAttendanceDetail =
-    (rollCallSessionDetail: RollCallSession, auth: AuthPayload, RollCallSessionDetailPayload: RollCallSessionDetailPayload) =>
-        async (dispatch: Dispatch<RollCallSessionDetailType | AlertType>) => {
+    (rollCallSessionDetail: RollCallSession, auth: AuthPayload, RollCallSessionDetailPayload: RollCallSessionDetailPayload, lessonDetailPayload: LessonDetailPayload) =>
+        async (dispatch: Dispatch<RollCallSessionDetailType | AlertType | LessonDetailTypes>) => {
             if (!auth.access_token) return;
             try {
+
+                // Cap nhat lai lession detail         
+                lessonDetailPayload.lessons?.forEach(_lessionDetail => {
+                    _lessionDetail.rollCallSessions?.forEach((_rollCallSesson) => {
+                        if (_rollCallSesson._id === rollCallSessionDetail._id) {
+                            const newrollCallSessions = _lessionDetail.rollCallSessions?.map((item) => {
+                                return _rollCallSesson._id === rollCallSessionDetail._id ? rollCallSessionDetail : item
+                            })                           
+                            dispatch({
+                                type: UPDATE_LESSON_DETAIL, payload: {
+                                    lessonDetail: { ..._lessionDetail, rollCallSessions: newrollCallSessions }
+                                }
+                            })
+                        }
+                    })
+                });
+
                 RollCallSessionDetailPayload.rollCallSessions?.forEach((_rollCallSession) => {
                     if (_rollCallSession._id === rollCallSessionDetail._id) {
                         dispatch({ type: UPDATE_ROLL_CALL_SESSION_DETAIL, payload: { rollCallSession: rollCallSessionDetail } })

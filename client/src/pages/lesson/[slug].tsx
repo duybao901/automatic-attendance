@@ -126,14 +126,13 @@ const LessonDetail = () => {
           </div>
           <div className="card__header-right">
             <div className="right__course-infor">
-              {/* <div className="infor__row">
-
-              </div> */}
 
               <div className="infor__row">
                 <h2 className="infor__row-left infor__row-name">
-                  {lessonDetailState?.lesson?.course?.name}
+                  <Link style={{ textDecoration: "none", color: "inherit" }} to={`/course/${lessonDetailState?.lesson?.course?._id}`}>
+                    {lessonDetailState?.lesson?.course?.name}
 
+                  </Link>
                 </h2>
                 <p className="infor__row-right infor__row-code">
                   #<span>{lessonDetailState?.lesson?.course?.courseCode}</span>
@@ -202,7 +201,6 @@ const LessonDetail = () => {
             <Table className="card__rollcallsesson-table" aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell className={classes.TableCellHead}>ID</TableCell>
                   <TableCell className={classes.TableCellHead} align="left">Mô tả</TableCell>
                   <TableCell className={classes.TableCellHead} align="center">Có mặt</TableCell>
                   <TableCell className={classes.TableCellHead} align="center">Vắng</TableCell>
@@ -220,7 +218,6 @@ const LessonDetail = () => {
                           key={rollCallsessDetail._id}
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                          <TableCell className={classes.TableCellBodyId} component="th" scope="row">{rollCallsessDetail._id}</TableCell>
                           <TableCell className={`${classes.TableCellBodyDecs}`} align="left">
                             <div className="table__desc">
                               <span>

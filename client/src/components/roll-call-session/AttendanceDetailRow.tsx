@@ -48,7 +48,7 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
 
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { detailRollCallSession: detailRollCallSessionStore, auth } = useSelector((state: RootStore) => state)
+    const { detailRollCallSession: detailRollCallSessionStore, auth, lessonDetail } = useSelector((state: RootStore) => state)
     const [note, setNote] = useState<string>('');
     const [loadingAttendace, setLoadingAttendace] = useState<boolean>(false);
     const [loadingNote, setLoadingNote] = useState<boolean>(false);
@@ -70,7 +70,7 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
                 return _attendanceDetail._id === attendance._id ? { ...attendance, absent: !attendance.absent } : _attendanceDetail
             })
 
-            dispatch(updateAttendanceDetail({ ...detailRollCallSession, attendanceDetails: newAttendanceDetails }, auth, detailRollCallSessionStore))
+            dispatch(updateAttendanceDetail({ ...detailRollCallSession, attendanceDetails: newAttendanceDetails }, auth, detailRollCallSessionStore, lessonDetail))
 
         } catch (error: any) {
             setLoadingAttendace(false)
@@ -97,7 +97,7 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
                 return _attendanceDetail._id === attendance._id ? { ...attendance, note } : _attendanceDetail
             })
 
-            dispatch(updateAttendanceDetail({ ...detailRollCallSession, attendanceDetails: newAttendanceDetails }, auth, detailRollCallSessionStore))
+            dispatch(updateAttendanceDetail({ ...detailRollCallSession, attendanceDetails: newAttendanceDetails }, auth, detailRollCallSessionStore, lessonDetail))
         } catch (error: any) {
             setLoadingNote(false);
             dispatch({ type: ALERT, payload: { error: error.response.dât.msg } })
@@ -116,12 +116,10 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
         className="detail__row"
         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
     >
-        <TableCell className={`${classes.TableCellBody} ${classes.TableCellBodyId}`}>
-            {
-                attendance.student?._id ? attendance.student?._id : <p style={{ color: "crimson" }}>Sinh viên này đã bị xoá khỏi lớp học</p>
-            }
-        </TableCell>
         <TableCell className={classes.TableCellBody} align="left">
+            {
+                !attendance.student?._id && <p style={{ color: "crimson" }}>Sinh viên này đã bị xoá khỏi lớp học</p>
+            }
             {
                 attendance.student?.name
             }
@@ -176,7 +174,7 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
                 </div>
             </form>
         </TableCell>
-                                
+
     </TableRow>
 
 }

@@ -53,7 +53,7 @@ const useStyles = makeStyles({
         fontSize: "1rem !important",
         fontWeight: "600 !important",
         height: "36px",
-        padding: "4px !important",        
+        padding: "4px !important",
     },
     ButtonInfor: {
         padding: "0px !important",
@@ -67,7 +67,7 @@ const useStyles = makeStyles({
         fontSize: "1.2rem !important",
         fontWeight: "600 !important",
         height: "36px",
-        padding: "4px !important",        
+        padding: "4px !important",
         "& i": {
             marginTop: "-2px",
             fontSize: "1.6rem"
@@ -183,7 +183,6 @@ const CourseBody = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell align="center" className={classes.TableCellHead}>STT</TableCell>
-                            <TableCell className={classes.TableCellHead}>ID Khoá học</TableCell>
                             <TableCell align="left" className={classes.TableCellHead}>
                                 <p style={{ display: "flex", alignItems: 'center' }}>
                                     {
@@ -206,6 +205,7 @@ const CourseBody = () => {
                             <TableCell align="left" className={classes.TableCellHead}>Giáo viên</TableCell>
                             <TableCell align="left" className={classes.TableCellHead}>Học kì</TableCell>
                             <TableCell align="left" className={classes.TableCellHead}>Năm học</TableCell>
+                            <TableCell align="left" className={classes.TableCellHead}>Sinh viên</TableCell>
                             <TableCell align="left" className={classes.TableCellHead} style={{ minWidth: "120px" }}>
                                 <p style={{ display: "flex", alignItems: 'center' }}>
                                     {
@@ -259,14 +259,18 @@ const CourseBody = () => {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell className={classes.TableCellBody} align='center' component="th" scope="row">{(courses.page && courses.limit) && ((courses.page - 1) * courses.limit) + index + 1}</TableCell>
-                                    <TableCell className={classes.TableCellBodyId} component="th" scope="row">{course._id}</TableCell>
                                     <TableCell className={`${classes.TableCellBody} course-name`} align="left">{course.name}</TableCell>
                                     <TableCell className={classes.TableCellBody} align="center" style={{ textTransform: "uppercase" }}>{course.courseCode}</TableCell>
                                     <TableCell className={classes.TableCellBody} align="center">{course.credit}</TableCell>
                                     <TableCell className={classes.TableCellBody} align="left"><h3 style={{ fontSize: "1.4rem", fontWeight: "600" }}>{course.teacher?.name}</h3> ({course.teacher?.account})</TableCell>
                                     <TableCell className={classes.TableCellBody} align="center">{course.semester}</TableCell>
-                                    <TableCell className={classes.TableCellBody} align="left" style={{ width: "200px" }}>
+                                    <TableCell className={classes.TableCellBody} align="left">
                                         {dayjs(course.yearStart).format("DD/MM/YYYY")} - {dayjs(course.yearEnd).format("DD/MM/YYYY")}
+                                    </TableCell>
+                                    <TableCell className={classes.TableCellBody} align="center">
+                                        {
+                                            course.students?.length
+                                        }
                                     </TableCell>
                                     <TableCell className={classes.TableCellBody} align="left">{dayjs(course.createdAt).format("DD/MM/YYYY")}</TableCell>
                                     <TableCell className={classes.TableCellBody} align="left">
