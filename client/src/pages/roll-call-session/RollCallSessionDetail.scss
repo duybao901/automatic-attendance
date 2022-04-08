@@ -65,6 +65,31 @@
             box-shadow: $box-shadow-1;
             & .detail__infor {
                 width: 50%;
+                padding-right: 40px;
+                &-header {
+                    display: flex;
+                    justify-content: space-between;
+                    & .header__right {
+                        display: flex;
+                        &-badge {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 4px 12px;
+                            height: 25px;
+                            background-color: rgb(219 234 254);
+                            color: rgb(30 64 175);
+                            margin-left: 10px;
+                            font-size: 1.2rem;
+                            font-weight: 500;
+                            border-radius: 50px;
+                            &--absent {
+                                background-color: rgb(252 231 243);
+                                color: rgb(157 23 77);
+                            }
+                        }
+                    }
+                }
 
                 & img {
                     width: 80px;
@@ -126,5 +151,31 @@
         background-color: $color-white;
         border-radius: 5px;
         box-shadow: $box-shadow-1;
+    }
+
+    @include MediaQuery(SM) {
+        & {
+            padding: 20px;
+        }
+        &__control {
+            &-detail {
+                flex-wrap: wrap;
+                & .detail__infor {
+                    width: 100%;
+                    margin-bottom: 20px;
+                    padding-right: 0px;       
+                    
+                    & img{
+                        width: 70px;
+                        height: 70px;
+                    }
+                }
+
+
+                & .detail__comment{
+                    width: 100%;
+                }
+            }
+        }
     }
 }

@@ -72,17 +72,13 @@ class LessonController {
 
             // Xoa buoi hoc
             const lesson = await Lessons.findByIdAndDelete(id).populate('course');
-            console.log({ lesson })
 
             // Xoa cac buoi diem danh lien quan toi buoi hoc
 
             let rollCallSessions = await RollCallSessionModel.find({ lesson: lesson._id })
 
             await RollCallSessionModel.deleteMany({ lesson: lesson._id });
-            console.log({ rollCallSessions })
-
-
-
+            
             // Xoa cac chi tiet diem danh
             await AttentdanceDetailModel.deleteMany({
                 rollCallSession: {

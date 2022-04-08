@@ -27,4 +27,12 @@
             font-size: 1.4rem;
         }
     }
+
+    @include MediaQuery(MD){
+        &-note {
+            & textarea {
+                width: 150px !important;
+            }
+        }
+    }
 }

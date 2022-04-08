@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { FormSubmit, InputChange, Params } from '../../utils/interface'
-import { RootStore, RollCallSession } from '../../utils/interface'
+import { RootStore, RollCallSession, Attendance } from '../../utils/interface'
 import { useDispatch, useSelector } from 'react-redux'
 import { getDetailRollCallSession, updateDetailRollCallSession } from '../../store/actions/rollCallSession'
 import dayjs from 'dayjs'
 import "./RollCallSessionDetail.scss"
 import Loading from '../../components/globals/loading/Loading'
 import Logo from '../../images/logo.png';
-import { updateAttendanceDetail } from '../../store/actions/rollCallSession'
 import { ALERT } from '../../store/types/alertTypes'
-import { putAPI } from '../../utils/fetchApi';
 
 // MUI
 import Table from '@mui/material/Table';
@@ -96,6 +94,17 @@ const RollCallSessionDetail = () => {
         setOpen(false)
     }
 
+    const countAbsent = (attdentdances: Attendance[], isAbsent: true | false) => {
+        if (!attdentdances) return;
+        let count = 0;
+        attdentdances.forEach((attdentdance) => {
+            if (attdentdance.absent === isAbsent) {
+                count++;
+            }
+        })
+        return count;
+    }
+
     return (
         <div className='dashbroad__body dashbroad__body--xl'>
             <div className='rollcallsession-detail'>
@@ -123,14 +132,6 @@ const RollCallSessionDetail = () => {
                             detailRollCallSession.end && <h2><i className='bx bxs-alarm-exclamation' ></i>Buổi học đã kết thúc</h2>
                         }
                         <div className="header__btn-end">
-                            <PrimaryTooltip title="Xuất file excel">
-                                <Button variant='contained'>
-                                    <i className='bx bx-export' style={{ fontSize: '2.4rem', marginRight: "5px", marginTop: "-5px" }}></i>
-                                    <p className="button-text">Xuất File</p>
-                                </Button>
-                            </PrimaryTooltip>
-                        </div>
-                        <div className="header__btn-end">
                             {
                                 (!detailRollCallSession.end && detailRollCallSessionStore.loading === false) && <PrimaryTooltip title="Kết thúc buổi điểm danh" color='error'>
                                     <Button onClick={() => setOpen(true)} variant='contained'>
@@ -147,7 +148,7 @@ const RollCallSessionDetail = () => {
                             >
                                 <Box padding={2}>
                                     <Box display='flex' justifyContent="space-between" alignItems='center' mb={2}>
-                                        <h2 className="modal__heading">Bạn có chắc muốn kết thúc buổi điểm danh, mọi hành động điểm danh sẽ không còn được thực hiện nữa!</h2>
+                                        <h2 className="modal__heading" style={{ color: "crimson" }}>Kết thúc buổi điểm danh</h2>
                                         <Box>
                                             <PrimaryTooltip title='Đóng hộp thoại'>
                                                 <IconButton size="medium" onClick={handleCloseDialog}>
@@ -156,6 +157,11 @@ const RollCallSessionDetail = () => {
                                             </PrimaryTooltip>
                                         </Box>
                                     </Box>
+                                    <div style={{ marginBottom: "20px" }}>
+                                        <p style={{ fontSize: "1.4rem"}}>
+                                            Bạn có chắc muốn kết thúc buổi điểm danh, mọi hành động điểm danh sẽ không còn được thực hiện nữa !!!
+                                        </p>
+                                    </div>
                                     <DialogActions>
                                         <PrimaryTooltip title="Kết thúc buổi điểm danh">
                                             <Button color="success" onClick={handleCloseDialog} variant='contained'>
@@ -164,7 +170,7 @@ const RollCallSessionDetail = () => {
                                         </PrimaryTooltip>
                                         <PrimaryTooltip title="Kết thúc buổi điểm danh" >
                                             <Button color="error" onClick={(() => handleEndRollCallSession(detailRollCallSession))} variant='contained'>
-                                                <i style={{ fontSize: '2.4rem', marginRight: "5px" }} className='bx bx-stopwatch'></i>  <p className="button-text">Kết Thúc</p>
+                                                <i style={{ fontSize: '2.4rem', marginRight: "5px" }} className='bx bx-exit'></i>  <p className="button-text">Kết Thúc</p>
                                             </Button>
                                         </PrimaryTooltip>
                                     </DialogActions>
@@ -177,7 +183,17 @@ const RollCallSessionDetail = () => {
                     {/* Detail Roll Call Session Card */}
                     <div className='rollcallsession-detail__control-detail'>
                         <div className="detail__infor">
-                            <img src={Logo} alt="logo" />
+                            <div className="detail__infor-header">
+                                <img src={Logo} alt="logo" />
+                                <div className="header__right">
+                                    <span className="header__right-badge">
+                                        Có mặt: {countAbsent(detailRollCallSession.attendanceDetails as Attendance[], false)}
+                                    </span>
+                                    <span className="header__right-badge header__right-badge--absent">
+                                        Vắng: {countAbsent(detailRollCallSession.attendanceDetails as Attendance[], true)}
+                                    </span>
+                                </div>
+                            </div>
                             <div className="detail__infor-group">
                                 <i className='bx bxs-calendar-week' ></i>
                                 <span>{detailRollCallSession.lesson?.weekday}</span>
