@@ -67,7 +67,7 @@ const useStyles = makeStyles({
 const StudentTable: React.FC<StudentTableProps> = ({ course, students }) => {
 
     const dispatch = useDispatch()
-    const { auth, detailCourse, lessonDetail } = useSelector((state: RootStore) => state)
+    const { auth, detailCourse, lessonDetail, detailRollCallSession } = useSelector((state: RootStore) => state)
     const classes = useStyles()
     const [openModalForm, setOpenModalForm] = useState<boolean>(false)
     const [onEdit, setOnEdit] = useState<Student | null>({});
@@ -94,7 +94,7 @@ const StudentTable: React.FC<StudentTableProps> = ({ course, students }) => {
     // Xoa sinh vien
     const hanldeDeleteStudent = async (student_id: string) => {
         setLoadingDeleteStudent(true)
-        await dispatch(deleteStudent(student_id, auth, students as Student[], course as Course, lessonDetail))
+        await dispatch(deleteStudent(student_id, auth, students as Student[], course as Course, lessonDetail, detailRollCallSession))
         setLoadingDeleteStudent(false)
     }
 

@@ -156,14 +156,18 @@ class CourseController {
             })
 
             const studentArray = await Students.insertMany(studentsArrayObject);
+            console.log({ studentArray })
+            console.log({ course })
 
             course = await Course.findByIdAndUpdate(id, {
                 name, semester, credit, yearStart, yearEnd, courseCode, description, students: course.students.concat(studentArray.map(student => student._id))
-            }, { new: true });
+            }, { new: true }).populate(['students']);
+
 
             return res.json({ msg: "Cập nhật môn học thành công", course: { ...course?._doc }, studentArray })
 
         } catch (error: any) {
+            console.log(error)
             return res.status(500).json({ msg: error.message })
         }
     }

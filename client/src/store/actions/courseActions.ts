@@ -16,8 +16,9 @@ import { ALERT, AlertType } from '../types/alertTypes'
 import { AuthPayload } from '../types/authTypes'
 import { deleteAPI, getAPI, postAPI, putAPI } from '../../utils/fetchApi'
 import { DELETE_USER_COURSE, EDIT_USER_COURSE, CREATE_USER_COURSE, ProfileType, ProfilePayload } from '../types/profileTypes'
-import { RollCallSessionDetailPayload, RollCallSessionDetailType, UPDATE_ROLL_CALL_SESSION_DETAIL } from '../types/rollCallSessionDetailTypes'
 
+// Detail Roll Call Session
+import { RollCallSessionDetailPayload, RollCallSessionDetailType, UPDATE_ROLL_CALL_SESSION_DETAIL } from '../types/rollCallSessionDetailTypes'
 // Detail Course
 import { GET_DETAIL_COURSE, DetailCoursePayload, DetailCourseType, UPDATE_DETAIL_COURSE } from '../types/detailCourseTypes'
 // Detail Lession
@@ -57,11 +58,11 @@ export const updateCourse = (course: Course, auth: AuthPayload) => async (dispat
     if (!auth.access_token) return;
     const { name, courseCode, credit, yearStart, yearEnd, semester, description, students } = course;
     try {
+
         const res = await putAPI(`update_course/${course._id}`, { name, courseCode, credit, yearStart, yearEnd, semester, description, students }, auth.access_token);
-        console.log(res.data.studentArray)
-        dispatch({ type: UPDATE_COURSE, payload: { course: { ...res.data.course, teacher: auth.user, students: res.data.studentArray } } })
+        dispatch({ type: UPDATE_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } })
         dispatch({ type: EDIT_USER_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } });
-        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...res.data.course, teacher: auth.user, students: res.data.studentArray } } })
+        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...res.data.course, teacher: auth.user } } })
         dispatch({ type: ALERT, payload: { success: res.data.msg } })
     } catch (error: any) {
         dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
@@ -106,7 +107,7 @@ export const searchByCourseTeacher = (search: string) => async (dispatch: Dispat
 }
 
 
-//Student
+//* Student
 export const updateStudent = (student: Student, auth: AuthPayload, course: Course, detailRollCallSession: RollCallSessionDetailPayload) =>
     async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType | RollCallSessionDetailType>) => {
         if (!student && !auth.access_token) return;
@@ -129,8 +130,6 @@ export const updateStudent = (student: Student, auth: AuthPayload, course: Cours
                 }
             })
 
-
-
             dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...course, students: newStudent, teacher: auth.user } } })
             dispatch({ type: ALERT, payload: { success: res.data.msg } })
         } catch (error: any) {
@@ -138,16 +137,15 @@ export const updateStudent = (student: Student, auth: AuthPayload, course: Cours
         }
     }
 
-export const deleteStudent = (student_id: string, auth: AuthPayload, students: Student[], course: Course, lessonDetail: LessonDetailPayload) =>
-    async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType | LessonDetailTypes>) => {
+export const deleteStudent = (student_id: string, auth: AuthPayload, students: Student[],
+    course: Course, lessonDetail: LessonDetailPayload, rollCallSessionDetail: RollCallSessionDetailPayload) =>
+    async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType | LessonDetailTypes | RollCallSessionDetailType>) => {
         if (!auth.access_token && !auth.user) return;
         try {
 
             const res = await deleteAPI(`student/${student_id}`, auth.access_token);
             const newStudents = students?.filter(student => student._id !== student_id)
             const data = { ...course, students: newStudents }
-
-            console.log({ lessonDetail })
 
             lessonDetail.lessons?.forEach((_lesson) => {
                 if (_lesson.lesson?.course?._id === course._id) {
@@ -162,7 +160,7 @@ export const deleteStudent = (student_id: string, auth: AuthPayload, students: S
                         })
                         dispatch({
                             type: UPDATE_LESSON_DETAIL, payload: {
-                                lessonDetail: {..._lesson, rollCallSessions: newRollCallSessions}
+                                lessonDetail: { ..._lesson, rollCallSessions: newRollCallSessions }
                             }
                         })
                     }
@@ -170,10 +168,19 @@ export const deleteStudent = (student_id: string, auth: AuthPayload, students: S
 
             })
 
+            rollCallSessionDetail.rollCallSessions?.forEach(_rollCallSession => {
+                if (_rollCallSession.lesson?.course?._id === course._id) {
+                    const newAttendanceDetails = _rollCallSession.attendanceDetails?.filter((_attendanceDetail) => {
+                        return _attendanceDetail.student?._id !== student_id
+                    })
+                    dispatch({
+                        type: UPDATE_ROLL_CALL_SESSION_DETAIL,
+                        payload: { rollCallSession: { ..._rollCallSession, attendanceDetails: newAttendanceDetails } }
+                    })
+                }
+            })
 
-
-
-
+            dispatch({ type: UPDATE_COURSE, payload: { course: { ...course, students: newStudents, teacher: auth.user } } })
             dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...data, teacher: auth.user } } })
             dispatch({ type: ALERT, payload: { success: res.data.msg } })
         } catch (error: any) {

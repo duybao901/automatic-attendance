@@ -146,7 +146,7 @@ const ReportLessonModelDetails: React.FC<ReportLessonDetailModelProps> = ({ less
                 </Box>
                 <div className="lesson-report__body">
                     <Box height={'400px'} width={'80%'} margin={"20px auto"}>
-                        <Bar options={options} data={data} />;
+                        <Bar options={options} data={data} />
                     </Box>
                 </div>
             </Box>

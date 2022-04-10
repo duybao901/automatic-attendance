@@ -48,6 +48,7 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
         }
     };
 
+    // Doc file 
     const handleChaneFile = (e: any) => {
         try {
             const file = e.target.files[0]
@@ -128,7 +129,6 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
                                 newData.push(student)
                             }
                         })
-                        console.log(newData)
                         setStudents(newData)
                     }
                 }

@@ -42,7 +42,7 @@ export const updateLesson = (lesson: Lesson, auth: AuthPayload, lessonDetail: Le
     async (dispatch: Dispatch<LessonTypes | AlertType | LessonDetailTypes>) => {
         if (!auth.access_token && !auth.user) return;
         try {
-            // console.log(lesson.course?._id)
+                        
             const res = await putAPI(`lesson/${lesson._id}`, { ...lesson, course_id: lesson.course?._id }, auth.access_token)
 
             const newLesson = { ...lesson, teacher: auth.user }
