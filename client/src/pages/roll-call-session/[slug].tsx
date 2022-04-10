@@ -9,6 +9,7 @@ import "./RollCallSessionDetail.scss"
 import Loading from '../../components/globals/loading/Loading'
 import Logo from '../../images/logo.png';
 import { ALERT } from '../../store/types/alertTypes'
+import { countAbsent } from '../../utils/student'
 
 // MUI
 import Table from '@mui/material/Table';
@@ -24,7 +25,6 @@ import PrimaryTooltip from '../../components/globals/tool-tip/Tooltip'
 import { Button } from '@mui/material'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import { modelStyle } from '../../utils/model-style'
 import Box from '@mui/material/Box';
 import { IconButton } from '@mui/material';
 
@@ -46,7 +46,7 @@ const RollCallSessionDetail = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { slug }: Params = useParams();
-    const { detailRollCallSession: detailRollCallSessionStore, auth } = useSelector((state: RootStore) => state)
+    const { detailRollCallSession: detailRollCallSessionStore, auth, course , lesson} = useSelector((state: RootStore) => state)
 
     const [detailRollCallSession, setDetailRollCallSession] = useState<RollCallSession>({})
     const [comment, setComment] = useState<string>();
@@ -92,17 +92,6 @@ const RollCallSessionDetail = () => {
 
     const handleCloseDialog = () => {
         setOpen(false)
-    }
-
-    const countAbsent = (attdentdances: Attendance[], isAbsent: true | false) => {
-        if (!attdentdances) return;
-        let count = 0;
-        attdentdances.forEach((attdentdance) => {
-            if (attdentdance.absent === isAbsent) {
-                count++;
-            }
-        })
-        return count;
     }
 
     return (
@@ -158,7 +147,7 @@ const RollCallSessionDetail = () => {
                                         </Box>
                                     </Box>
                                     <div style={{ marginBottom: "20px" }}>
-                                        <p style={{ fontSize: "1.4rem"}}>
+                                        <p style={{ fontSize: "1.4rem" }}>
                                             Bạn có chắc muốn kết thúc buổi điểm danh, mọi hành động điểm danh sẽ không còn được thực hiện nữa !!!
                                         </p>
                                     </div>
@@ -187,10 +176,10 @@ const RollCallSessionDetail = () => {
                                 <img src={Logo} alt="logo" />
                                 <div className="header__right">
                                     <span className="header__right-badge">
-                                        Có mặt: {countAbsent(detailRollCallSession.attendanceDetails as Attendance[], false)}
+                                        Có mặt: {countAbsent(detailRollCallSession.attendanceDetails ? detailRollCallSession.attendanceDetails : [], false)}
                                     </span>
                                     <span className="header__right-badge header__right-badge--absent">
-                                        Vắng: {countAbsent(detailRollCallSession.attendanceDetails as Attendance[], true)}
+                                        Vắng: {countAbsent(detailRollCallSession.attendanceDetails ? detailRollCallSession.attendanceDetails : [], true)}
                                     </span>
                                 </div>
                             </div>

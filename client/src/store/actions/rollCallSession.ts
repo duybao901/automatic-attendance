@@ -104,8 +104,8 @@ export const updateAttendanceDetail =
                     _lessionDetail.rollCallSessions?.forEach((_rollCallSesson) => {
                         if (_rollCallSesson._id === rollCallSessionDetail._id) {
                             const newrollCallSessions = _lessionDetail.rollCallSessions?.map((item) => {
-                                return _rollCallSesson._id === rollCallSessionDetail._id ? rollCallSessionDetail : item
-                            })                           
+                                return item._id === rollCallSessionDetail._id ? rollCallSessionDetail : item
+                            })
                             dispatch({
                                 type: UPDATE_LESSON_DETAIL, payload: {
                                     lessonDetail: { ..._lessionDetail, rollCallSessions: newrollCallSessions }

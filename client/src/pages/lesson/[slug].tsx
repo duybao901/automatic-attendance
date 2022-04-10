@@ -6,6 +6,7 @@ import { getDetailLesson } from '../../store/actions/lessonActions'
 import Logo from '../../images/logo.png';
 import dayjs from 'dayjs'
 import "./LessonDetail.scss"
+import { countAbsent } from '../../utils/student'
 
 // MUI
 import Table from '@mui/material/Table';
@@ -17,6 +18,7 @@ import TableRow from '@mui/material/TableRow';
 import { makeStyles } from '@mui/styles';
 import PrimaryTooltip from '../../components/globals/tool-tip/Tooltip'
 import Button from "@mui/material/Button"
+import ReportLessonModel from '../../components/lesson/ReportLessonModel'
 
 const useStyles = makeStyles({
   TableContainer: {
@@ -58,7 +60,7 @@ const LessonDetail = () => {
   const classes = useStyles();
   const { slug } = useParams<Params>();
   const dispatch = useDispatch();
-  const [lessonDetailState, setLessonDetailState] = useState<ILessonDetail>();
+  const [lessonDetailState, setLessonDetailState] = useState<ILessonDetail>({});
   const { auth, lessonDetail: lessonDetailStore } = useSelector((state: RootStore) => state);
 
   useEffect(() => {
@@ -78,18 +80,11 @@ const LessonDetail = () => {
   }, [auth, slug, lessonDetailStore.lessons])
 
 
-  const countAbsent = (attdentdances: Attendance[], isAbsent: true | false) => {
-    let count = 0;
-    attdentdances.forEach((attdentdance) => {
-      if (attdentdance.absent === isAbsent) {
-        count++;
-      }
-    })
-    return count;
-  }
-
   return (
     <div className="lesson__detail dashbroad__body dashbroad__body--xl">
+      <div className="lesson__detail-report">
+        <ReportLessonModel lessonDetail={lessonDetailState} />
+      </div>
       <div className="lesson__detail-card">
         <Link to='/lesson' className="card__back"><i className='bx bxs-chevron-left'></i></Link>
         <div className="card__header">
@@ -125,7 +120,6 @@ const LessonDetail = () => {
           </div>
           <div className="card__header-right">
             <div className="right__course-infor">
-
               <div className="infor__row">
                 <h2 className="infor__row-left infor__row-name">
                   <Link style={{ textDecoration: "none", color: "inherit" }} to={`/course/${lessonDetailState?.lesson?.course?._id}`}>
@@ -159,7 +153,6 @@ const LessonDetail = () => {
                 </span>
                 <span className="infor__row-right">
                   {lessonDetailState?.lesson?.course?.semester}
-
                 </span>
               </div>
               <div className="infor__row">
@@ -231,14 +224,14 @@ const LessonDetail = () => {
                           <TableCell align="center">
                             <span className='table__absent'>
                               {
-                                countAbsent(rollCallsessDetail?.attendanceDetails as Attendance[], false)
+                                countAbsent(rollCallsessDetail.attendanceDetails ? rollCallsessDetail.attendanceDetails : [], false)
                               }
                             </span>
                           </TableCell>
                           <TableCell align="center">
                             <span className="table__absent">
                               {
-                                countAbsent(rollCallsessDetail?.attendanceDetails as Attendance[], true)
+                                countAbsent(rollCallsessDetail.attendanceDetails ? rollCallsessDetail.attendanceDetails : [], true)
                               }
                             </span>
                           </TableCell>

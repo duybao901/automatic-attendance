@@ -1,0 +1,19 @@
+@import "../../stylesSass/variables";
+@import "../../stylesSass/mixin";
+
+.lesson-report {
+    &__button {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: 20px;
+    }
+
+    &__header {
+        font-size: 1.9rem;
+        color: $color-primary;
+        & span{
+            color: $color-text;
+        }
+    }
+}

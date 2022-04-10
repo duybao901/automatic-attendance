@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import { Request, Response } from 'express'
 import Students from '../models/studentModel'
+import AttendanceDetail from '../models/attendanceDetailModel'
 
 class StudentControlles {
     async updateStudent(req: Request, res: Response) {
@@ -36,6 +37,10 @@ class StudentControlles {
 
 
             await Students.findByIdAndDelete(id)
+
+            await AttendanceDetail.deleteMany({
+                student: student._id
+            })
 
             res.json({
                 msg: 'Xóa sinh viên thành công',

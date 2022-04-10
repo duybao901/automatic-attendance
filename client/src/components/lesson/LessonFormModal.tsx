@@ -86,9 +86,9 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
 
     const handleCloseModal = () => {
         setOpen(false);
-        if(onEdit){
+        if (onEdit) {
             setLesson(onEdit)
-        }else{
+        } else {
             setLesson(initialLesson)
         }
     }
@@ -249,7 +249,11 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
                     }
                 </div>
                 <div className="form-group">
-                    <label htmlFor="name">Chọn môn học *</label>
+                    <label htmlFor="name">Chọn môn học *
+                        {
+                            onEdit && (<span style={{ color: "crimson", marginLeft: "5px" }}>Không thể chọn môn học</span>)
+                        }
+                    </label>
                     {
                         coursesStore.loading && <div>
                             <CircularProgress />
@@ -257,33 +261,34 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
                         </div>
                     }
                     {
-                        (coursesStore.courses && coursesStore.loading === false && userCourse.length === 0)
-                            ? <p className="loading-text">Bạn chưa có môn học nào!</p>
-                            : <div className='form-group__course'>
-                                <div className='form-group__course-row' >
-                                    {
-                                        userCourse.map((course: Course) => {
-                                            return <div onClick={() => handleAddCourse(course)} className={`row__item ${activeCourse(course)}`} key={course._id}>
-                                                <div className="row__item-student">
-                                                    {course.students?.length}
+                        onEdit ? <></> :
+                            (coursesStore.courses && coursesStore.loading === false && userCourse.length === 0)
+                                ? <p className="loading-text">Bạn chưa có môn học nào!</p>
+                                : <div className='form-group__course'>
+                                    <div className='form-group__course-row' >
+                                        {
+                                            userCourse.map((course: Course) => {
+                                                return <div onClick={() => handleAddCourse(course)} className={`row__item ${activeCourse(course)}`} key={course._id}>
+                                                    <div className="row__item-student">
+                                                        {course.students?.length}
+                                                    </div>
+                                                    <div className="row__item-course">
+                                                        <h2 className="course__name">
+                                                            {course.name}
+                                                        </h2>
+                                                        <p className="course__code">
+                                                            {course.courseCode}
+                                                        </p>
+                                                        <span className="course__createAt">Ngày tạo: {dayjs(course.yearStart).format("DD - MM - YYYY")}</span>
+                                                    </div>
+                                                    <div className="row__item-use">
+                                                        <CheckCircleOutlineIcon style={{ color: "#fff", marginTop: "-4px" }} />
+                                                    </div>
                                                 </div>
-                                                <div className="row__item-course">
-                                                    <h2 className="course__name">
-                                                        {course.name}
-                                                    </h2>
-                                                    <p className="course__code">
-                                                        {course.courseCode}
-                                                    </p>
-                                                    <span className="course__createAt">Ngày tạo: {dayjs(course.yearStart).format("DD - MM - YYYY")}</span>
-                                                </div>
-                                                <div className="row__item-use">
-                                                    <CheckCircleOutlineIcon style={{ color: "#fff", marginTop: "-4px" }} />
-                                                </div>
-                                            </div>
-                                        })
-                                    }
+                                            })
+                                        }
+                                    </div>
                                 </div>
-                            </div>
                     }
                     {
                         lessonError?.errorCourse && <small className="text-error">{lessonError?.errorCourse}</small>
