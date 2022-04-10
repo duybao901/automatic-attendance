@@ -1,5 +1,5 @@
 import { Dispatch } from 'react'
-import { Course, Student } from '../../utils/interface'
+import { Course, LessonDetail, Student } from '../../utils/interface'
 import {
     CREATE_COURSE,
     GET_COURSES, CourseType,
@@ -20,6 +20,8 @@ import { RollCallSessionDetailPayload, RollCallSessionDetailType, UPDATE_ROLL_CA
 
 // Detail Course
 import { GET_DETAIL_COURSE, DetailCoursePayload, DetailCourseType, UPDATE_DETAIL_COURSE } from '../types/detailCourseTypes'
+// Detail Lession
+import { LessonDetailPayload, LessonDetailTypes, UPDATE_LESSON_DETAIL } from '../types/lessonDetailTypes'
 
 export const getCourses = (auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType>) => {
     if (!auth.access_token) return;
@@ -136,18 +138,48 @@ export const updateStudent = (student: Student, auth: AuthPayload, course: Cours
         }
     }
 
-export const deleteStudent = (student_id: string, auth: AuthPayload, students: Student[], course: Course) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
-    if (!auth.access_token && !auth.user) return;
-    try {
-        const res = await deleteAPI(`student/${student_id}`, auth.access_token);
-        const newStudents = students?.filter(student => student._id !== student_id)
-        const data = { ...course, students: newStudents }
-        dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...data, teacher: auth.user } } })
-        dispatch({ type: ALERT, payload: { success: res.data.msg } })
-    } catch (error: any) {
-        return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+export const deleteStudent = (student_id: string, auth: AuthPayload, students: Student[], course: Course, lessonDetail: LessonDetailPayload) =>
+    async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType | LessonDetailTypes>) => {
+        if (!auth.access_token && !auth.user) return;
+        try {
+
+            const res = await deleteAPI(`student/${student_id}`, auth.access_token);
+            const newStudents = students?.filter(student => student._id !== student_id)
+            const data = { ...course, students: newStudents }
+
+            console.log({ lessonDetail })
+
+            lessonDetail.lessons?.forEach((_lesson) => {
+                if (_lesson.lesson?.course?._id === course._id) {
+                    {
+                        const newRollCallSessions = _lesson.rollCallSessions?.map((_rollCallSession) => {
+                            return {
+                                ..._rollCallSession,
+                                attendanceDetails: _rollCallSession?.attendanceDetails?.filter((_attendanceDetai) => {
+                                    return _attendanceDetai?.student !== student_id
+                                })
+                            }
+                        })
+                        dispatch({
+                            type: UPDATE_LESSON_DETAIL, payload: {
+                                lessonDetail: {..._lesson, rollCallSessions: newRollCallSessions}
+                            }
+                        })
+                    }
+                }
+
+            })
+
+
+
+
+
+            dispatch({ type: UPDATE_DETAIL_COURSE, payload: { course: { ...data, teacher: auth.user } } })
+            dispatch({ type: ALERT, payload: { success: res.data.msg } })
+        } catch (error: any) {
+            return dispatch({ type: ALERT, payload: { error: error.response.data.msg } })
+        }
     }
-}
 
 export const getDetailCourse = (detailCourse: DetailCoursePayload, course_id: string, auth: AuthPayload) => async (dispatch: Dispatch<CourseType | AlertType | DetailCourseType>) => {
     // Kiem tra trong mang detailCourse co course_id nay khong    

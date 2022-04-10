@@ -72,9 +72,20 @@ const ReportLessonModelDetails: React.FC<ReportLessonDetailModelProps> = ({ less
                 text: 'Chi tiết các buổi điểm danh',
             },
         },
+        scales: {
+            y: {
+                title: {
+                    display: true,
+                    text: 'Sinh viên'
+                },
+                ticks: {
+                    // forces step size to be 50 units
+                    stepSize: 1
+                }
+            },
+        },
     };
 
-    console.log(lessonDetail);
 
     const labels = lessonDetail.rollCallSessions?.map((_rollCallSession) => {
         return `Ngày ${dayjs(_rollCallSession.createdAt).format("DD-MM-YYYY ")}`
@@ -90,6 +101,7 @@ const ReportLessonModelDetails: React.FC<ReportLessonDetailModelProps> = ({ less
                         return countAbsent(_rollCallSession.attendanceDetails ? _rollCallSession.attendanceDetails : [], false)
                     }),
                     backgroundColor: 'rgba(77, 63, 206, 1)',
+                    barPercentage: 0.5
                 },
                 {
                     label: 'Vắng',
@@ -97,18 +109,19 @@ const ReportLessonModelDetails: React.FC<ReportLessonDetailModelProps> = ({ less
                         return countAbsent(_rollCallSession.attendanceDetails ? _rollCallSession.attendanceDetails : [], true)
                     }),
                     backgroundColor: 'rgba(217, 76, 76, .9)',
+                    barPercentage: 0.5
                 },
             ],
     };
 
     return <div className="lesson-report__detail">
-        <div className="lesson-report__button">
+        < div className="lesson-report__button" >
             <PrimaryTooltip title="Tạo khoá học">
                 <Button onClick={handleOpen} type="submit" variant='contained' className={classes.Button}>
                     <i style={{ fontSize: "1.8rem", marginRight: "5px", marginTop: "-2px" }} className='bx bx-line-chart'></i>Chi tiết
                 </Button>
             </PrimaryTooltip>
-        </div>
+        </div >
         <Modal
             open={open}
             onClose={handleClose}
@@ -138,7 +151,7 @@ const ReportLessonModelDetails: React.FC<ReportLessonDetailModelProps> = ({ less
                 </div>
             </Box>
         </Modal>
-    </div>
+    </div >
 }
 
 export default ReportLessonModelDetails
