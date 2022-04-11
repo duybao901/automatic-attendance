@@ -88,9 +88,11 @@ const LessonDetail = () => {
         <div className="lesson__detail-report">
           <ReportLessonModel lessonDetail={lessonDetailState} />
         </div>
-        <div style={{ marginLeft: "10px" }}>
-          <ExportReportLessonButton lessonDetail={lessonDetailState} />
-        </div>
+        {
+          !lessonDetailStore.loading && <div style={{ marginLeft: "10px" }}>
+            <ExportReportLessonButton lessonDetail={lessonDetailState} />
+          </div>
+        }
       </Box>
       <div className="lesson__detail-card">
         <Link to='/lesson' className="card__back"><i className='bx bxs-chevron-left'></i></Link>

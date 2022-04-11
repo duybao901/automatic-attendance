@@ -1,7 +1,8 @@
 import React from 'react'
-import { LessonDetail } from '../../utils/interface'
+import { LessonDetail, Attendance } from '../../utils/interface'
 import { CSVLink } from "react-csv";
 import dayjs from 'dayjs'
+import { countAbsent } from '../../utils/student'
 // MUI
 import { Button } from '@mui/material'
 import PrimaryTooltip from '../globals/tool-tip/Tooltip';
@@ -26,6 +27,15 @@ const useStyles = makeStyles({
     },
 });
 
+// Dem tong so cacs sinh vien vang hoc hoac co hoc
+const countTotalAbsent = (lessonDetail: LessonDetail, isAbsent: boolean) => {
+    let total = 0;
+    lessonDetail.rollCallSessions?.forEach((_rollCallSession) => {
+        total += countAbsent(_rollCallSession.attendanceDetails as Attendance[], isAbsent)
+    })
+    return total
+}
+
 const transformDataToCsv = (lessonDetail: LessonDetail) => {
 
 
@@ -45,7 +55,6 @@ const transformDataToCsv = (lessonDetail: LessonDetail) => {
     ];
 
     const line4 = [
-        "Thứ",
         `${lessonDetail?.lesson?.weekday}`,
     ];
 
@@ -64,6 +73,11 @@ const transformDataToCsv = (lessonDetail: LessonDetail) => {
         `${lessonDetail.lesson?.desc ? lessonDetail.lesson?.desc : "Buổi học không có nhận xét"}`,
     ];
 
+    const line8 = ['Tổng: ', countTotalAbsent(lessonDetail, true) + countTotalAbsent(lessonDetail, false)]
+    const line9 = ['Vắng học: ', `${countTotalAbsent(lessonDetail, true)} sinh viên`]
+
+    const line10 = ['Có mặt: ', `${countTotalAbsent(lessonDetail, false)} sinh viên`]
+
     // Push to data
     const data = [
         line1,
@@ -72,22 +86,32 @@ const transformDataToCsv = (lessonDetail: LessonDetail) => {
         line4,
         line5,
         line6,
-        line7
+        line7,
+        line8,
+        line9,
+        line10
     ];
 
-    lessonDetail?.rollCallSessions?.forEach((_rollCallSession) => {
-        // Ngat 2 dong
-        data.push([''])
-        data.push([''])
+    // Ngat 2 dong
+    data.push([''])
+    data.push([''])
 
+    data.push(['------------ CHI TIẾT CÁC BUỔI ĐIỂM DANH ------------'])
+    lessonDetail?.rollCallSessions?.forEach((_rollCallSession, index) => {
+        data.push([`------------ Buổi ${++index} ------------`])
+        data.push([`Kết thúc: ${_rollCallSession.end ? "Đã kết thúc" : "Chưa kết thúc"}`])
         data.push(['Ngày', `${dayjs(_rollCallSession?.createdAt).format('DD/MM/YYYY')}`])
         data.push(['Mô tả', _rollCallSession?.comment as string])
 
-        data.push(['Mã số sinh viên', 'Họ và tên', 'Giới tính', 'Vắng', 'Có mặt', 'Số điện thoại'])
+        data.push(['Mã số sinh viên', 'Họ và tên', 'Giới tính', 'Vắng', 'Có mặt', 'Ghi chú', 'Số điện thoại'])
         _rollCallSession.attendanceDetails?.forEach((_attendanceDetail) => {
             data.push([`${_attendanceDetail.student?.studentCode}`, `${_attendanceDetail.student?.name}`, `${_attendanceDetail.student?.gender}`,
-            `${_attendanceDetail.absent ? 'x' : ""}`, `${_attendanceDetail.absent ? '' : "x"}`, `${_attendanceDetail.student?.phone ? _attendanceDetail.student?.phone : ""}`])
+            `${_attendanceDetail.absent ? 'x' : ""}`, `${_attendanceDetail.absent ? '' : "x"}`, `${_attendanceDetail.note}`, `${_attendanceDetail.student?.phone ? _attendanceDetail.student?.phone : ""}`])
         })
+
+        // Ngat 2 dong
+        data.push([''])
+        data.push([''])
 
     })
 
