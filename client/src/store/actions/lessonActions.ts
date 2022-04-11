@@ -108,6 +108,7 @@ export const getDetailLesson = (id: string, lessonDetail: LessonDetailPayload, a
             try {
                 dispatch({ type: LOADING_LESSION_DETAIL, payload: { loading: true } })
                 const res = await getAPI(`lesson/${id}`, auth.access_token);
+
                 dispatch({
                     type: GET_LESSON_DETAIL, payload: {
                         lessonDetail: {

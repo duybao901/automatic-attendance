@@ -11,6 +11,7 @@ import { countAbsent } from '../../utils/student'
 // MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
+import Box from '@mui/material/Box';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
@@ -19,6 +20,7 @@ import { makeStyles } from '@mui/styles';
 import PrimaryTooltip from '../../components/globals/tool-tip/Tooltip'
 import Button from "@mui/material/Button"
 import ReportLessonModel from '../../components/lesson/ReportLessonModel'
+import ExportReportLessonButton from '../../components/lesson/ExportReportLessonButton'
 
 const useStyles = makeStyles({
   TableContainer: {
@@ -82,9 +84,14 @@ const LessonDetail = () => {
 
   return (
     <div className="lesson__detail dashbroad__body dashbroad__body--xl">
-      <div className="lesson__detail-report">
-        <ReportLessonModel lessonDetail={lessonDetailState} />
-      </div>
+      <Box display={'flex'}>
+        <div className="lesson__detail-report">
+          <ReportLessonModel lessonDetail={lessonDetailState} />
+        </div>
+        <div style={{ marginLeft: "10px" }}>
+          <ExportReportLessonButton lessonDetail={lessonDetailState} />
+        </div>
+      </Box>
       <div className="lesson__detail-card">
         <Link to='/lesson' className="card__back"><i className='bx bxs-chevron-left'></i></Link>
         <div className="card__header">

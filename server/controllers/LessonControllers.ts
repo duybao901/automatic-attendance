@@ -78,7 +78,7 @@ class LessonController {
             let rollCallSessions = await RollCallSessionModel.find({ lesson: lesson._id })
 
             await RollCallSessionModel.deleteMany({ lesson: lesson._id });
-            
+
             // Xoa cac chi tiet diem danh
             await AttentdanceDetailModel.deleteMany({
                 rollCallSession: {
@@ -112,7 +112,14 @@ class LessonController {
                 lesson: new mongoose.Types.ObjectId(id)
             })
                 .populate("lesson")
-                .populate(['attendanceDetails'])
+                .populate([
+                    {
+                        path: "attendanceDetails",
+                        populate: {
+                            path: 'student'
+                        }
+                    }
+                ])
 
 
 
