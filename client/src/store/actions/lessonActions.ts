@@ -6,6 +6,7 @@ import { AlertType, ALERT } from '../types/alertTypes'
 import { AuthPayload } from '../types/authTypes'
 import { deleteAPI, getAPI, postAPI, putAPI } from '../../utils/fetchApi'
 import { Lesson } from '../../utils/interface'
+import { RollCallSessionDetailPayload, RollCallSessionDetailType, UPDATE_ROLL_CALL_SESSION_DETAIL } from '../types/rollCallSessionDetailTypes'
 
 // Lay buoi hoc
 export const getLessons = (auth: AuthPayload) =>
@@ -38,11 +39,11 @@ export const createLesson = (lesson: Lesson, auth: AuthPayload) =>
     }
 
 // Chinh sua buoi hoc
-export const updateLesson = (lesson: Lesson, auth: AuthPayload, lessonDetail: LessonDetailPayload) =>
-    async (dispatch: Dispatch<LessonTypes | AlertType | LessonDetailTypes>) => {
+export const updateLesson = (lesson: Lesson, auth: AuthPayload, lessonDetail: LessonDetailPayload, rollCallSessionDetail: RollCallSessionDetailPayload) =>
+    async (dispatch: Dispatch<LessonTypes | AlertType | LessonDetailTypes | RollCallSessionDetailType>) => {
         if (!auth.access_token && !auth.user) return;
         try {
-                        
+
             const res = await putAPI(`lesson/${lesson._id}`, { ...lesson, course_id: lesson.course?._id }, auth.access_token)
 
             const newLesson = { ...lesson, teacher: auth.user }
@@ -55,6 +56,18 @@ export const updateLesson = (lesson: Lesson, auth: AuthPayload, lessonDetail: Le
                     dispatch({
                         type: UPDATE_LESSON_DETAIL, payload: {
                             lessonDetail: { ...lessonDetail, lesson: newLesson }
+                        }
+                    })
+                }
+            })
+
+            // Cap nhat lai Roll call session detail
+            rollCallSessionDetail.rollCallSessions?.forEach((_rollCallSession) => {
+                if (_rollCallSession.lesson?._id === lesson._id) {
+                    dispatch({
+                        type: UPDATE_ROLL_CALL_SESSION_DETAIL,
+                        payload: {
+                            rollCallSession: { ..._rollCallSession, lesson: newLesson }
                         }
                     })
                 }

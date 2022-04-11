@@ -58,7 +58,7 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
 
     const dispatch = useDispatch();
     const classes = useStyles();
-    const { auth, course: coursesStore, lessonDetail } = useSelector((state: RootStore) => state);
+    const { auth, course: coursesStore, lessonDetail, detailRollCallSession } = useSelector((state: RootStore) => state);
 
     const initialLessonError: LessonError = {
         errorCourse: "",
@@ -151,7 +151,7 @@ const LessonFormModal: React.FC<LessonFormModalProps> = ({ open, setOpen, onEdit
             setLoading(true);
             if (onEdit) {
                 // Cap nhat
-                await dispatch(updateLesson(lesson, auth, lessonDetail));
+                await dispatch(updateLesson(lesson, auth, lessonDetail, detailRollCallSession));
                 setLoading(false);
                 handleCloseModal();
             } else {
