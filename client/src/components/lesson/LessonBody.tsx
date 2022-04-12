@@ -14,6 +14,7 @@ import Box from '@mui/material/Box';
 import ToggleButton from '@mui/material/ToggleButton';
 import BookmarkAddedOutlinedIcon from '@mui/icons-material/BookmarkAddedOutlined';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+import Skeleton from '@mui/material/Skeleton';
 
 const useStyle = makeStyles({
     ButtonAdd: {
@@ -25,6 +26,12 @@ const useStyle = makeStyles({
             marginTop: "-2px",
             fontSize: "1.6rem"
         }
+    },
+    SkeletonTop: {
+        borderRadius: "5px !important",
+    },
+    SkeletonButton: {
+        borderRadius:"20px"
     },
 })
 
@@ -95,28 +102,83 @@ const LessonBody = () => {
                 </div>
                 <div className="lesson__body-list">
                     {
-                        lesson.loading && <Box display='flex' alignItems='center'>
-                            <CircularProgress size={30} /> <p className="loading-text" style={{ marginLeft: "5px" }}>Đang tải buổi học...</p>
-                        </Box>
+                        lesson.loading && <div className="list__row">
+                            {
+                                [1, 2, 3, 4].map((_, index) => {
+                                    return <div key={index} className='lesson-card'>
+                                        <div style={{ padding: "0 20px", display: 'flex', justifyContent: "space-between", alignItems: "center" }}>
+                                            <span>
+                                                <Skeleton variant="text" width={100} height={35} animation='wave' />
+                                            </span>
+                                            {
+
+                                                <Skeleton variant="circular" width={30} height={30} animation='wave' />
+                                            }
+                                        </div>
+                                        <div style={{ padding: "0 20px", marginBottom: "20px" }}>
+                                            <p className="lesson-card__infor-name">
+                                                <Skeleton variant="text" width={"100%"} height={40} animation='wave' />
+                                            </p>
+                                            <Box display={'flex'} >
+                                                <span style={{ display: "flex", marginRight: "20px" }}>
+                                                    <Skeleton variant="text" width={50} height={20} animation='wave' />
+                                                    &nbsp;
+                                                    <Skeleton variant="text" width={10} height={20} animation='wave' />
+                                                </span>
+                                                <span style={{ display: "flex" }} className="lesson-card__infor-semester">
+                                                    <Skeleton variant="text" width={50} height={20} animation='wave' />
+                                                    &nbsp;
+                                                    <Skeleton variant="text" width={10} height={20} animation='wave' />
+                                                </span>
+                                            </Box>
+                                        </div>
+                                        <div className="lesson-card__indicator"></div>
+                                        <div style={{padding:"0px 20px", marginBottom:"20px"}}>
+                                            <div>
+                                                <Skeleton variant="text" width={"25%"} height={25} animation='wave' />
+                                            </div>
+                                            <div>
+                                                <Skeleton variant="text" width={"100%"} height={25} animation='wave' />
+                                            </div>
+                                            <div>
+                                                <Skeleton variant="text" width={"100%"} height={25} animation='wave' />
+                                            </div>
+                                            <div>
+                                                <Skeleton variant="text" width={"80%"} height={25} animation='wave' />
+                                            </div>
+                                        </div>
+
+                                        <div className="lesson-card__button">
+                                            <Skeleton style={{marginRight:"10px"}} className={classes.SkeletonButton} variant="rectangular" width={125} height={40} animation='wave' />
+                                            <Skeleton className={classes.SkeletonButton} variant="rectangular" width={125} height={40} animation='wave' />
+                                        </div>
+                                    </div>
+                                })}
+                        </div>
                     }
+
                     {
                         (lesson.loading === false && lesson.lessons) && lesson.lessons.length === 0 && <p style={{ fontSize: "1.4rem" }} className="loading-text">Không có buổi học nào!</p>
                     }
 
-                    <div className="list__row">
-                        {
-                            (lesson.searching.onSearch) ? lesson.searching.lessonSearch?.map((lesson, index) => {
-                                return <LessonCard key={index} auth={auth} lesson={lesson} addStudentClass={handleAddStudentClass} />
-                            }) : (lesson.lessons && lesson.myLesson?.toggle === false && lesson.loading === false) ?
-                                lesson.lessons.map((lesson, index) => {
+
+                    {
+                        !lesson.loading && <div className="list__row">
+                            {
+                                (lesson.searching.onSearch) ? lesson.searching.lessonSearch?.map((lesson, index) => {
                                     return <LessonCard key={index} auth={auth} lesson={lesson} addStudentClass={handleAddStudentClass} />
-                                })
-                                :
-                                lesson.myLesson?.list.map((lesson, index) => {
-                                    return <LessonCard key={index} auth={auth} lesson={lesson} addStudentClass={handleAddStudentClass} />
-                                })
-                        }
-                    </div>
+                                }) : (lesson.lessons && lesson.myLesson?.toggle === false && lesson.loading === false) ?
+                                    lesson.lessons.map((lesson, index) => {
+                                        return <LessonCard key={index} auth={auth} lesson={lesson} addStudentClass={handleAddStudentClass} />
+                                    })
+                                    :
+                                    lesson.myLesson?.list.map((lesson, index) => {
+                                        return <LessonCard key={index} auth={auth} lesson={lesson} addStudentClass={handleAddStudentClass} />
+                                    })
+                            }
+                        </div>
+                    }
+
                 </div>
             </div>
             <LessonFormModal open={openModal} setOpen={setOpenModal} />

@@ -28,10 +28,10 @@ const Home = () => {
                         <i className='bx bx-user-circle'></i>
                         <h3>Nhận diện</h3>
                     </Link>
-                    <Link className="box-item" to="/roll-call-session">
+                    {/* <Link className="box-item" to="/roll-call-session">
                         <i className='bx bx-edit'></i>
                         <h3>Buổi điểm danh</h3>
-                    </Link>
+                    </Link> */}
                     <Link className="box-item" to="/course">
                         <i className='bx bx-book-open'></i>
                         <h3>Môn học</h3>

@@ -27,6 +27,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import Box from '@mui/material/Box';
 import { IconButton } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -39,6 +40,9 @@ const useStyles = makeStyles({
         fontWeight: "600 !important",
         height: "60px !important",
     },
+    SekeletonRadius: {
+        borderRadius: "5px"
+    }
 });
 
 const RollCallSessionDetail = () => {
@@ -46,7 +50,7 @@ const RollCallSessionDetail = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { slug }: Params = useParams();
-    const { detailRollCallSession: detailRollCallSessionStore, auth, course , lesson} = useSelector((state: RootStore) => state)
+    const { detailRollCallSession: detailRollCallSessionStore, auth, course, lesson } = useSelector((state: RootStore) => state)
 
     const [detailRollCallSession, setDetailRollCallSession] = useState<RollCallSession>({})
     const [comment, setComment] = useState<string>();
@@ -103,15 +107,33 @@ const RollCallSessionDetail = () => {
                             {
                                 detailRollCallSession.lesson?.course?.name
                             }
-                            <span>
-                                #{
-                                    detailRollCallSession.lesson?.course?.courseCode
-                                }
-                            </span>
+                            {
+                                detailRollCallSessionStore.loading && <Box display={'flex'} marginLeft={"-10px"}>
+                                    <Skeleton width={300} height={40} variant='text'></Skeleton>
+                                    <Box>
+                                        <Skeleton width={50} height={40} variant='text'></Skeleton>
+                                    </Box>
+                                </Box>
+                            }
+
+                            {
+                                !detailRollCallSessionStore.loading && <span>
+                                    #{
+                                        detailRollCallSession.lesson?.course?.courseCode
+                                    }
+                                </span>
+                            }
                         </h2>
                         <p className="header__left-comment">
                             {
-                                detailRollCallSession.comment ? detailRollCallSession.comment : "Chưa có nhận xết về buổi học"
+                                detailRollCallSessionStore.loading && <Box display={'flex'}>
+                                    <Skeleton width={300} height={25} variant='text'></Skeleton>
+                                </Box>
+                            }
+                            {
+
+                                !detailRollCallSessionStore.loading && (detailRollCallSession.comment ? detailRollCallSession.comment : "Chưa có nhận xết về buổi học")
+
                             }
                         </p>
 
@@ -121,6 +143,11 @@ const RollCallSessionDetail = () => {
                             detailRollCallSession.end && <h2><i className='bx bxs-alarm-exclamation' ></i>Buổi học đã kết thúc</h2>
                         }
                         <div className="header__btn-end">
+                            {
+                                detailRollCallSessionStore.loading && <Box display={'flex'}>
+                                    <Skeleton className={classes.SekeletonRadius} width={100} height={40} variant='rectangular'></Skeleton>
+                                </Box>
+                            }
                             {
                                 (!detailRollCallSession.end && detailRollCallSessionStore.loading === false) && <PrimaryTooltip title="Kết thúc buổi điểm danh" color='error'>
                                     <Button onClick={() => setOpen(true)} variant='contained'>
@@ -184,22 +211,43 @@ const RollCallSessionDetail = () => {
                                 </div>
                             </div>
                             <div className="detail__infor-group">
-                                <i className='bx bxs-calendar-week' ></i>
-                                <span>{detailRollCallSession.lesson?.weekday}</span>
-                            </div>
-                            <div className="detail__infor-group">
-                                <i className='bx bxs-time'></i>
-                                <span>Thời gian bắt đầu: {dayjs(detailRollCallSession.lesson?.timeStart).format("hh:mm a")}</span>
-                            </div>
-                            <div className="detail__infor-group">
-                                <i className='bx bxs-time-five'></i>
-                                <span>Thời gian kết thúc: {dayjs(detailRollCallSession.lesson?.timeEnd).format("hh:mm a")}</span>
-                            </div>
-                            <div className="detail__infor-group">
-                                <i className='bx bxs-graduation'></i>
                                 {
-                                    <span>{detailRollCallSession.teacher?.name} ({detailRollCallSession.teacher?.account})</span>
+                                    detailRollCallSessionStore.loading ? <Skeleton height={22} variant="text" width={50} />
+                                        : <>
+                                            <i className='bx bxs-calendar-week' ></i>
+                                            <span>{detailRollCallSession.lesson?.weekday}</span>
+                                        </>
                                 }
+                            </div>
+                            <div className="detail__infor-group">
+                                {
+                                    detailRollCallSessionStore.loading ? <Skeleton height={22} variant="text" width={200} />
+                                        : <>
+                                            <i className='bx bxs-time'></i>
+                                            <span>Thời gian bắt đầu: {dayjs(detailRollCallSession.lesson?.timeStart).format("hh:mm a")}</span>
+                                        </>
+                                }
+                            </div>
+                            <div className="detail__infor-group">
+                                {
+                                    detailRollCallSessionStore.loading ? <Skeleton height={22} variant="text" width={200} />
+                                        : <>
+                                            <i className='bx bxs-time-five'></i>
+                                            <span>Thời gian kết thúc: {dayjs(detailRollCallSession.lesson?.timeEnd).format("hh:mm a")}</span>
+                                        </>
+                                }
+                            </div>
+                            <div className="detail__infor-group">
+                                {
+                                    detailRollCallSessionStore.loading ? <Skeleton height={22} variant="text" width={220} />
+                                        : <>
+                                            <i className='bx bxs-graduation'></i>
+                                            {
+                                                <span>{detailRollCallSession.teacher?.name} ({detailRollCallSession.teacher?.account})</span>
+                                            }
+                                        </>
+                                }
+
                             </div>
 
                         </div>

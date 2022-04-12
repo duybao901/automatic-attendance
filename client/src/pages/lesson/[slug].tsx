@@ -21,6 +21,7 @@ import PrimaryTooltip from '../../components/globals/tool-tip/Tooltip'
 import Button from "@mui/material/Button"
 import ReportLessonModel from '../../components/lesson/ReportLessonModel'
 import ExportReportLessonButton from '../../components/lesson/ExportReportLessonButton'
+import Skeleton from '@mui/material/Skeleton';
 
 const useStyles = makeStyles({
   TableContainer: {
@@ -54,6 +55,21 @@ const useStyles = makeStyles({
   },
   Button: {
     minWidth: "100px !important"
+  },
+
+  // Sekeleton
+  SkeletonTop: {
+    borderRadius: "5px !important",
+  },
+  SkeletonInline: {
+    display: 'inline-block !important'
+  },
+  classNameInforRowLeft: {
+    marginLeft: "auto"
+
+  },
+  classNameInforRowRight: {
+    marginRight: "auto"
   }
 });
 
@@ -84,9 +100,18 @@ const LessonDetail = () => {
 
   return (
     <div className="lesson__detail dashbroad__body dashbroad__body--xl">
-      <Box display={'flex'}>
+      <Box display={'flex'} >
+        {/* Seleketon loading */}
+        {lessonDetailStore.loading && <Box marginBottom={'20px'} display={"flex"}>
+          <Box marginRight={'20px'}>
+            <Skeleton className={classes.SkeletonTop} variant="rectangular" width={120} height={36} animation='wave' />
+          </Box>
+          <Box>
+            <Skeleton className={classes.SkeletonTop} variant="rectangular" width={120} height={36} animation='wave' />
+          </Box>
+        </Box>}
         <div className="lesson__detail-report">
-          <ReportLessonModel lessonDetail={lessonDetailState} />
+          {!lessonDetailStore.loading && <ReportLessonModel lessonDetail={lessonDetailState} />}
         </div>
         {
           !lessonDetailStore.loading && <div style={{ marginLeft: "10px" }}>
@@ -102,28 +127,57 @@ const LessonDetail = () => {
             </img>
             <div className="left__lesson-infor">
               <div className="infor__row">
-                <i className='bx bxs-graduation'></i>
-                <span>
-                  Giáo viên: {lessonDetailState?.lesson?.teacher?.name}
-                </span>
+                {
+                  lessonDetailStore.loading ? <Skeleton className={classes.SkeletonInline} height={22} variant="text" width={200} />
+                    : <>
+                      <i className='bx bxs-graduation'></i>
+                      <span>
+                        Giáo viên: {lessonDetailState?.lesson?.teacher?.name}
+                      </span>
+                    </>
+                }
               </div>
               <div className="infor__row">
-                <i className='bx bx-calendar-week'></i>
-                <span>{lessonDetailState?.lesson?.weekday}</span>
+                {
+                  lessonDetailStore.loading ? <Skeleton className={classes.SkeletonInline} height={22} variant="text" width={100} />
+                    : <>
+                      <i className='bx bx-calendar-week'></i>
+                      <span>{lessonDetailState?.lesson?.weekday}</span>
+                    </>
+                }
+
               </div>
               <div className="infor__row">
-                <i className='bx bxs-calendar-minus'></i>
-                <span>
-                  Ngày tạo: {dayjs(lessonDetailState?.lesson?.createdAt).format("DD/MM/YYYY")}
-                </span>
+                {
+                  lessonDetailStore.loading ? <Skeleton className={classes.SkeletonInline} height={22} variant="text" width={180} />
+                    : <>
+                      <i className='bx bxs-calendar-minus'></i>
+                      <span>
+                        Ngày tạo: {dayjs(lessonDetailState?.lesson?.createdAt).format("DD/MM/YYYY")}
+                      </span>
+                    </>
+                }
               </div>
               <div className="infor__row">
-                <i className='bx bxs-time'></i>
-                <span>Thời gian bắt đầu: {dayjs(lessonDetailState?.lesson?.timeStart).format("hh:mm a")}</span>
+                {
+                  lessonDetailStore.loading ? <Skeleton className={classes.SkeletonInline} height={22} variant="text" width={210} />
+                    : <>
+                      <i className='bx bxs-time'></i>
+                      <span>Thời gian bắt đầu:
+                        {dayjs(lessonDetailState?.lesson?.timeStart).format("hh:mm a")}
+                      </span>
+                    </>
+                }
+
               </div>
               <div className="infor__row">
-                <i className='bx bxs-time-five'></i>
-                <span>Thời gian kết thúc: {dayjs(lessonDetailState?.lesson?.timeEnd).format("hh:mm a")}</span>
+                {
+                  lessonDetailStore.loading ? <Skeleton className={classes.SkeletonInline} height={22} variant="text" width={210} />
+                    : <>
+                      <i className='bx bxs-time-five'></i>
+                      <span>Thời gian kết thúc: {dayjs(lessonDetailState?.lesson?.timeEnd).format("hh:mm a")}</span>
+                    </>
+                }
               </div>
             </div>
           </div>
@@ -131,54 +185,102 @@ const LessonDetail = () => {
             <div className="right__course-infor">
               <div className="infor__row">
                 <h2 className="infor__row-left infor__row-name">
-                  <Link style={{ textDecoration: "none", color: "inherit" }} to={`/course/${lessonDetailState?.lesson?.course?._id}`}>
-                    {lessonDetailState?.lesson?.course?.name}
-
-                  </Link>
+                  {
+                    lessonDetailStore.loading ? <> <Skeleton className={classes.SkeletonTop} variant="text" width={"100%"} height={50} animation='wave' /></> :
+                      <Link style={{ textDecoration: "none", color: "inherit" }} to={`/course/${lessonDetailState?.lesson?.course?._id}`}>
+                        {lessonDetailState?.lesson?.course?.name}
+                      </Link>
+                  }
                 </h2>
                 <p className="infor__row-right infor__row-code">
-                  #<span>{lessonDetailState?.lesson?.course?.courseCode}</span>
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.SkeletonTop} variant="text" width={"100%"} height={50} animation='wave' /></> :
+                    <>
+                      # < span > {lessonDetailState?.lesson?.course?.courseCode}</span>
+                    </>
+                  }
                 </p>
               </div>
               <div className="infor__row">
                 <span className="infor__row-left">
-                  Ngày tạo
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.classNameInforRowLeft} variant="text" width={70} height={25} animation='wave' /></> :
+                    <>
+                      Ngày tạo
+                    </>
+                  }
                 </span>
                 <span className="infor__row-right">
-                  {dayjs(lessonDetailState?.lesson?.course?.createdAt).format("DD/MM/YYYY")}
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.classNameInforRowRight} variant="text" width={70} height={25} animation='wave' /></> :
+                    <>
+                      {dayjs(lessonDetailState?.lesson?.course?.createdAt).format("DD/MM/YYYY")}
+                    </>
+                  }
                 </span>
               </div>
               <div className="infor__row">
                 <span className="infor__row-left">
-                  Số tín chỉ
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.classNameInforRowLeft} variant="text" width={90} height={25} animation='wave' /></> :
+                    <>
+                      Số tín chỉ
+                    </>
+                  }
                 </span>
                 <span className="infor__row-right">
-                  {lessonDetailState?.lesson?.course?.credit}
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.classNameInforRowRight} variant="text" width={10} height={25} animation='wave' /></> :
+                    <>
+                      {lessonDetailState?.lesson?.course?.credit}
+                    </>
+                  }
                 </span>
               </div>
               <div className="infor__row">
                 <span className="infor__row-left">
-                  Học kì
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.classNameInforRowLeft} variant="text" width={60} height={25} animation='wave' /></> :
+                    <>
+                      Học kì
+                    </>
+                  }
                 </span>
                 <span className="infor__row-right">
-                  {lessonDetailState?.lesson?.course?.semester}
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.classNameInforRowRight} variant="text" width={10} height={25} animation='wave' /></> :
+                    <>
+                      {lessonDetailState?.lesson?.course?.semester}
+                    </>
+                  }
                 </span>
               </div>
               <div className="infor__row">
-                <span className="infor__row-left">
-                  Năm bắt đầu
-                </span>
-                <span className="infor__row-right">
-                  {dayjs(lessonDetailState?.lesson?.course?.yearStart).format('DD-MM-YYYY')}
-                </span>
-              </div>
-              <div className="infor__row">
-                <span className="infor__row-left">
-                  Năm kết thúc
-                </span>
-                <span className="infor__row-right">
-                  {dayjs(lessonDetailState?.lesson?.course?.yearEnd).format('DD-MM-YYYY')}
 
+                <span className="infor__row-left">
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.classNameInforRowLeft} variant="text" width={100} height={25} animation='wave' /></> :
+                    <>
+                      Năm bắt đầu
+                    </>
+                  }
+                </span>
+                <span className="infor__row-right">
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.classNameInforRowRight} variant="text" width={70} height={25} animation='wave' /></> :
+                    <>
+                      {dayjs(lessonDetailState?.lesson?.course?.yearStart).format('DD-MM-YYYY')}
+                    </>
+                  }
+                </span>
+
+              </div>
+              <div className="infor__row">
+
+                <span className="infor__row-left">
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.classNameInforRowLeft} variant="text" width={110} height={25} animation='wave' /></> :
+                    <>
+                      Năm kết thúc
+                    </>
+                  }
+                </span>
+                <span className="infor__row-right">
+                  {lessonDetailStore.loading ? <> <Skeleton className={classes.classNameInforRowRight} variant="text" width={70} height={25} animation='wave' /></> :
+                    <>
+                      {dayjs(lessonDetailState?.lesson?.course?.yearEnd).format('DD-MM-YYYY')}
+                    </>
+                  }
                 </span>
               </div>
             </div>
@@ -274,7 +376,7 @@ const LessonDetail = () => {
           </TableContainer>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

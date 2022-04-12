@@ -99,7 +99,7 @@ const transformDataToCsv = (lessonDetail: LessonDetail) => {
     data.push(['------------ CHI TIẾT CÁC BUỔI ĐIỂM DANH ------------'])
     lessonDetail?.rollCallSessions?.forEach((_rollCallSession, index) => {
         data.push([`------------ Buổi ${++index} ------------`])
-        data.push([`Kết thúc: ${_rollCallSession.end ? "Đã kết thúc" : "Chưa kết thúc"}`])
+        data.push([`${_rollCallSession.end ? "Đã kết thúc" : "Chưa kết thúc"}`])
         data.push(['Ngày', `${dayjs(_rollCallSession?.createdAt).format('DD/MM/YYYY')}`])
         data.push(['Mô tả', _rollCallSession?.comment as string])
 

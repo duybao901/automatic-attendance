@@ -52,7 +52,7 @@ const LessonCard: React.FC<LessonCardProps> = ({ auth, lesson, addStudentClass }
     e.preventDefault();
     const data = {
       lesson: lesson,
-      comment,     
+      comment,
     }
     setLoading(true);
     await dispatch(createRollCallSession(data, auth, history, lessonDetail, lesson))
@@ -103,7 +103,6 @@ const LessonCard: React.FC<LessonCardProps> = ({ auth, lesson, addStudentClass }
         </div>
       </div>
       <div className="lesson-card__line">
-
       </div>
       <div className="lesson-card__button">
         <Link to={`/lesson/${lesson._id}`} className='btn-primary'>
