@@ -74,19 +74,33 @@ export const getDetailRollCallSession =
         }
 
 export const updateDetailRollCallSession =
-    (rollCallSessionDetail: RollCallSession, auth: AuthPayload, RollCallSessionDetailPayload: RollCallSessionDetailPayload) =>
-        async (dispatch: Dispatch<RollCallSessionDetailType | AlertType>) => {
+    (rollCallSessionDetail: RollCallSession, auth: AuthPayload, RollCallSessionDetailPayload: RollCallSessionDetailPayload, lessonDetail: LessonDetailPayload) =>
+        async (dispatch: Dispatch<RollCallSessionDetailType | AlertType | LessonDetailTypes>) => {
             if (!auth.access_token) return;
             try {
-                dispatch({ type: LOADING_ROLL_CALL_SESSION_DETAIL, payload: { loading: true } })
                 const res = await putAPI(`roll_call_session/${rollCallSessionDetail._id}`, rollCallSessionDetail, auth.access_token);
                 dispatch({ type: ALERT, payload: { success: "Cập nhật thành công" } });
+
+                // Udpate roll call session detail
                 RollCallSessionDetailPayload.rollCallSessions?.forEach((_rollCallSession) => {
                     if (_rollCallSession._id === res.data.rollCallSession._id) {
                         dispatch({ type: UPDATE_ROLL_CALL_SESSION_DETAIL, payload: { rollCallSession: rollCallSessionDetail } })
                     }
                 })
-                dispatch({ type: LOADING_ROLL_CALL_SESSION_DETAIL, payload: { loading: false } })
+
+                // update lesson detail
+                lessonDetail.lessons?.forEach(_lesson => {
+                    if (_lesson.lesson?._id === rollCallSessionDetail.lesson?._id) {
+                        const newRollCallSessions = _lesson.rollCallSessions?.map((_rollCallSession) => {
+                            return _rollCallSession._id === rollCallSessionDetail._id ? rollCallSessionDetail : _rollCallSession
+                        })
+                        dispatch({
+                            type: UPDATE_LESSON_DETAIL, payload: {
+                                lessonDetail: { ..._lesson, rollCallSessions: newRollCallSessions }
+                            }
+                        })
+                    }
+                })
             } catch (error: any) {
                 dispatch({ type: LOADING_ROLL_CALL_SESSION_DETAIL, payload: { loading: false } })
                 dispatch({ type: ALERT, payload: { error: error.response.data.msg } })

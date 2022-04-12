@@ -50,7 +50,7 @@ const RollCallSessionDetail = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { slug }: Params = useParams();
-    const { detailRollCallSession: detailRollCallSessionStore, auth, course, lesson } = useSelector((state: RootStore) => state)
+    const { detailRollCallSession: detailRollCallSessionStore, auth, lessonDetail } = useSelector((state: RootStore) => state)
 
     const [detailRollCallSession, setDetailRollCallSession] = useState<RollCallSession>({})
     const [comment, setComment] = useState<string>();
@@ -78,7 +78,7 @@ const RollCallSessionDetail = () => {
     const handleSubmit = async (e: FormSubmit) => {
         e.preventDefault()
         setLoadingCommnet(true)
-        await dispatch(updateDetailRollCallSession({ ...detailRollCallSession, comment }, auth, detailRollCallSessionStore))
+        await dispatch(updateDetailRollCallSession({ ...detailRollCallSession, comment }, auth, detailRollCallSessionStore, lessonDetail))
         setLoadingCommnet(false)
     }
 
@@ -86,7 +86,7 @@ const RollCallSessionDetail = () => {
     const handleEndRollCallSession = async (detailRollCallSession: RollCallSession) => {
         try {
             dispatch({ type: ALERT, payload: { loading: true } })
-            await dispatch(updateDetailRollCallSession({ ...detailRollCallSession, end: true }, auth, detailRollCallSessionStore))
+            await dispatch(updateDetailRollCallSession({ ...detailRollCallSession, end: true }, auth, detailRollCallSessionStore, lessonDetail))
             handleCloseDialog()
         } catch (error: any) {
             dispatch({ type: ALERT, payload: { loading: false } })
