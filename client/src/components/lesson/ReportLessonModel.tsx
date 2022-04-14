@@ -4,6 +4,7 @@ import "./ReportLessonModel.scss"
 import { Link } from 'react-router-dom'
 import { countAbsent } from '../../utils/student'
 import ReportLessonModelDetails from './ReportLessonModelDetail'
+import ExportReportLessonButton from './ExportReportLessonButton'
 
 // Chart
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -67,10 +68,10 @@ const ReportLessonModel: React.FC<ReportLessonModelProps> = ({ lessonDetail }) =
         <div className="lesson-report">
             <div className="lesson-report__button">
                 <PrimaryTooltip title="Tạo khoá học">
-                    <Button onClick={handleOpen} type="submit" variant='contained' className={classes.Button}>
-                        <i style={{ fontSize: "1.8rem", marginRight: "5px", marginTop: "-2px" }} className='bx bx-bar-chart'></i>Thống kê
+                    <Button onClick={handleOpen} variant='contained' className={classes.Button}>
+                        <i style={{ fontSize: "1.8rem", marginRight: "5px", marginTop: "-2px" }} className='bx bxs-report'></i>Thống kê theo lớp
                     </Button>
-                </PrimaryTooltip>
+                </PrimaryTooltip>               
             </div>
             <Modal
                 open={open}
@@ -93,17 +94,40 @@ const ReportLessonModel: React.FC<ReportLessonModelProps> = ({ lessonDetail }) =
                             </PrimaryTooltip>
                         </Box>
                     </Box>
-                    <p style={{ fontSize: "1.8rem", fontWeight: "600", textAlign: "center", color: "#473fce" }}>
-                        Buổi điểm danh: {lessonDetail?.rollCallSessions?.length} buổi
-                    </p>
-                    <div className="lesson-report__body">
-                        <Box height={'300px'} width={'300px'} margin={"20px auto"}>
-                            <Doughnut data={data} />
+                    {
+                        lessonDetail.rollCallSessions && lessonDetail.rollCallSessions?.length > 0 ? <>
+                            <p style={{ fontSize: "1.8rem", fontWeight: "600", textAlign: "center", color: "#473fce" }}>
+                                Buổi điểm danh: {lessonDetail?.rollCallSessions?.length} buổi
+                            </p>
+                            <div className="lesson-report__body">
+                                <Box height={'300px'} width={'300px'} margin={"20px auto"}>
+                                    <Doughnut data={data} />
+                                </Box>
+                            </div>
+                        </> : <Box display={'flex'} alignItems={"center"} justifyContent={'center'} flexDirection={'column'} >
+                            <img className="lesson-report__empty-img" src="https://res.cloudinary.com/dxnfxl89q/image/upload/v1649922972/nienluannganh/roll-call-session-empty_n6bbwp.png" alt='empty-rcs'></img>
+                            <h3 className="lesson-report__empty-title">Chưa có buổi điểm danh nào được tạo</h3>
                         </Box>
-                    </div>
-                    <div>
-                        <ReportLessonModelDetails lessonDetail={lessonDetail} />
-                    </div>
+                    }
+                    {
+                        lessonDetail.rollCallSessions && lessonDetail.rollCallSessions?.length > 0 ? <Box display={'flex'}>
+                            <ReportLessonModelDetails lessonDetail={lessonDetail} />
+
+                            <div style={{ marginLeft: "10px" }}>
+                                <ExportReportLessonButton lessonDetail={lessonDetail} />
+                            </div>
+
+                        </Box> : <Box display={'flex'} justifyContent={"flex-end"}>
+                            <PrimaryTooltip title='Đóng hộp thoại'>
+                                <Button onClick={handleClose} variant='contained'>
+                                    <p className='button-text'>
+                                        Đóng
+                                    </p>
+                                </Button>
+                            </PrimaryTooltip>
+                        </Box>
+                    }
+
                 </Box>
             </Modal>
         </div>

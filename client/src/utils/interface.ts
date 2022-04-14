@@ -140,3 +140,9 @@ export interface LessonDetail {
     lesson?: Lesson
     rollCallSessions?: RollCallSession[]
 }
+
+export interface StudentReport {
+    absent: number
+    isStudy: number
+    student: Student
+}

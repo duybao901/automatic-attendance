@@ -7,6 +7,8 @@ import Logo from '../../images/logo.png';
 import dayjs from 'dayjs'
 import "./LessonDetail.scss"
 import { countAbsent } from '../../utils/student'
+import ReportLessonModel from '../../components/lesson/ReportLessonModel'
+import ReportStudentModel from '../../components/lesson/ReportStudentModel'
 
 // MUI
 import Table from '@mui/material/Table';
@@ -19,8 +21,6 @@ import TableRow from '@mui/material/TableRow';
 import { makeStyles } from '@mui/styles';
 import PrimaryTooltip from '../../components/globals/tool-tip/Tooltip'
 import Button from "@mui/material/Button"
-import ReportLessonModel from '../../components/lesson/ReportLessonModel'
-import ExportReportLessonButton from '../../components/lesson/ExportReportLessonButton'
 import Skeleton from '@mui/material/Skeleton';
 
 const useStyles = makeStyles({
@@ -106,18 +106,21 @@ const LessonDetail = () => {
           <Box marginRight={'20px'}>
             <Skeleton className={classes.SkeletonTop} variant="rectangular" width={120} height={36} animation='wave' />
           </Box>
-          <Box>
+          <Box marginRight={'20px'}>
             <Skeleton className={classes.SkeletonTop} variant="rectangular" width={120} height={36} animation='wave' />
           </Box>
         </Box>}
-        <div className="lesson__detail-report">
-          {!lessonDetailStore.loading && <ReportLessonModel lessonDetail={lessonDetailState} />}
-        </div>
         {
-          !lessonDetailStore.loading && <div style={{ marginLeft: "10px" }}>
-            <ExportReportLessonButton lessonDetail={lessonDetailState} />
-          </div>
+          !lessonDetailStore.loading && <>
+            <div className="lesson__detail-report">
+              {!lessonDetailStore.loading && <ReportLessonModel lessonDetail={lessonDetailState} />}
+            </div>
+            <div className="lesson__detail-report">
+              {!lessonDetailStore.loading && <ReportStudentModel lessonDetail={lessonDetailState} />}
+            </div>
+          </>
         }
+
       </Box>
       <div className="lesson__detail-card">
         <Link to='/lesson' className="card__back"><i className='bx bxs-chevron-left'></i></Link>
