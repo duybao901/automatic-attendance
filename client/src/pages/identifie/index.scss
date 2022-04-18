@@ -1,0 +1,24 @@
+.identifie {
+    &__body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 50px;
+        flex-direction: column;
+    }
+    &__camera {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 800px;
+        height: 800px;
+        position: relative;
+        & canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+        }
+    }
+}

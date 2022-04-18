@@ -24,7 +24,7 @@ const Home = () => {
                         <i className='bx bx-id-card'></i>
                         <h3>Sinh viên</h3>
                     </Link> */}
-                    <Link className="box-item" to="/identified">
+                    <Link className="box-item" to="/identifie">
                         <i className='bx bx-user-circle'></i>
                         <h3>Nhận diện</h3>
                     </Link>

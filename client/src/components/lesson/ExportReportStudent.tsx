@@ -94,7 +94,7 @@ const transfromData = (studentReport: StudentReport[], lessonDetail: LessonDetai
     data.push([''])
     data.push(['------- Thống kê điểm danh sinh viên -------'])
 
-    data.push(['MSSV', 'Họ và tên', 'Tổng các buổi học (buổi)', 'Có mặt (buổi), vắng (buổi), Tỉ lệ vắng (%)'])
+    data.push(['MSSV', 'Họ và tên', 'Tổng các buổi học (buổi)', 'Có mặt (buổi)', 'vắng (buổi)', 'Tỉ lệ vắng (%)'])
     studentReport.forEach((_report) => {
         data.push([`${_report.student.studentCode}`, `${_report.student.name}`, `${_report.absent + _report.isStudy}`, `${_report.isStudy}`, `${_report.isStudy}`, `${(_report.absent / (_report.absent + _report.isStudy)) * 100}%`])
     })
