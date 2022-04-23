@@ -352,7 +352,7 @@ const LessonDetail = () => {
                           <TableCell align="center">
                             <span className={rollCallsessDetail.end ? "table__end table__end--yes" : "table__end  table__end--no"}>
                               {
-                                rollCallsessDetail.end ? "Đã kết thúc" : <PrimaryTooltip title="Tiếp tục điểm danh" placement="left-start">
+                                rollCallsessDetail.end ? "Đã kết thúc" : lessonDetailState.lesson?.teacher?._id === auth.user?._id && <PrimaryTooltip title="Tiếp tục điểm danh" placement="left-start">
                                   <Link style={{ textDecoration: "none", height: "fit-content" }} to={`/roll-call-session/${rollCallsessDetail._id}`}>
                                     <Button className={classes.Button} color="primary" variant='contained'>
                                       <p style={{ fontSize: "1.3rem", textTransform: "initial" }}>Tiếp tục điểm danh</p>
@@ -363,13 +363,15 @@ const LessonDetail = () => {
                             </span>
                           </TableCell>
                           <TableCell align="center">
-                            <PrimaryTooltip title="Xem chi tiết" placement="right-start">
-                              <Link style={{ textDecoration: "none" }} to={`/roll-call-session/${rollCallsessDetail._id}`}>
-                                <Button className={classes.Button} color="primary" variant='contained'>
-                                  <p style={{ fontSize: "1.3rem", textTransform: "initial" }}>Chi tiết</p>
-                                </Button>
-                              </Link>
-                            </PrimaryTooltip>
+                            {
+                              lessonDetailState.lesson?.teacher?._id === auth.user?._id && <PrimaryTooltip title="Xem chi tiết" placement="right-start">
+                                <Link style={{ textDecoration: "none" }} to={`/roll-call-session/${rollCallsessDetail._id}`}>
+                                  <Button className={classes.Button} color="primary" variant='contained'>
+                                    <p style={{ fontSize: "1.3rem", textTransform: "initial" }}>Chi tiết</p>
+                                  </Button>
+                                </Link>
+                              </PrimaryTooltip>
+                            }
                           </TableCell>
                         </TableRow>
                       })

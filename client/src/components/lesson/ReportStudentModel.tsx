@@ -64,34 +64,34 @@ const ReportStudentModel: React.FC<ReportStudentModelProps> = ({ lessonDetail })
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [studentsReport, setStudentsReport] = useState<StudentReport[]>([]);
-  
 
     useEffect(() => {
+
         const studentsArray: StudentReport[] = [];
 
         lessonDetail.lesson?.course?.students?.forEach((student) => {
             let absent = 0;
             let isStudy = 0;
+
             lessonDetail.rollCallSessions?.forEach((rollCallSession) => {
                 rollCallSession.attendanceDetails?.forEach((attendanceDetail) => {
-                    if (student._id === attendanceDetail.student?._id && attendanceDetail.absent === true) {
+                    if ((student._id === attendanceDetail.student?._id || student._id === attendanceDetail.student) && attendanceDetail.absent === true) {
                         absent += 1;
                     }
-                    if (student._id === attendanceDetail.student?._id && attendanceDetail.absent === false) {
+                    if ((student._id === attendanceDetail.student?._id || student._id === attendanceDetail.student) && attendanceDetail.absent === false) {
                         isStudy += 1;
                     }
                 })
             })
+           
             studentsArray.push({ student, absent, isStudy })
-            absent = 0;
-            isStudy = 0;
+
         })
         setStudentsReport(studentsArray)
 
 
     }, [lessonDetail])
 
-    console.log(lessonDetail)
 
     return (
         <div className="lesson-report">
@@ -176,7 +176,7 @@ const ReportStudentModel: React.FC<ReportStudentModelProps> = ({ lessonDetail })
                                                             Vắng: {_student.absent}
                                                         </TableCell>
                                                         <TableCell className={`${classes.TableCellBody} ${classes.TableCellBodyAbsent}`} align="center">
-                                                            {(_student.absent / (_student.absent + _student.isStudy)) * 100}%
+                                                            {(_student.absent !== 0) ? Math.round((_student.absent / (_student.absent + _student.isStudy)) * 100) : 0}%
                                                         </TableCell>
 
                                                     </TableRow>
@@ -195,7 +195,7 @@ const ReportStudentModel: React.FC<ReportStudentModelProps> = ({ lessonDetail })
                     }
                     {
                         lessonDetail.rollCallSessions && lessonDetail.rollCallSessions?.length > 0 ? <>
-                            <ExportReportStudent studentReport={studentsReport} lessonDetail={lessonDetail}/>
+                            <ExportReportStudent studentReport={studentsReport} lessonDetail={lessonDetail} />
                         </> :
                             <Box display={'flex'} justifyContent={"flex-end"}>
                                 <PrimaryTooltip title='Đóng hộp thoại'>

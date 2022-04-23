@@ -67,7 +67,7 @@ const useStyles = makeStyles({
 const StudentTable: React.FC<StudentTableProps> = ({ course, students }) => {
 
     const dispatch = useDispatch()
-    const { auth, detailCourse, lessonDetail, detailRollCallSession } = useSelector((state: RootStore) => state)
+    const { auth, lessonDetail, detailRollCallSession } = useSelector((state: RootStore) => state)
     const classes = useStyles()
     const [openModalForm, setOpenModalForm] = useState<boolean>(false)
     const [onEdit, setOnEdit] = useState<Student | null>({});
@@ -124,14 +124,19 @@ const StudentTable: React.FC<StudentTableProps> = ({ course, students }) => {
                         <TableCell align="left" className={classes.TableCellBody}>{student.phone}</TableCell>
 
                         <TableCell align="center" className={classes.TableCellBody}>
-                            <Button onClick={() => handleOpenModalForm(student)} className={classes.Button} variant='contained'>
-                                <EditIcon />
-                            </Button>
+                            {
+                                auth.user?._id === course?.teacher?._id && <Button onClick={() => handleOpenModalForm(student)} className={classes.Button} variant='contained'>
+                                    <EditIcon />
+                                </Button>
+                            }
                         </TableCell>
                         <TableCell align="center" className={classes.TableCellBody}>
-                            <Button onClick={() => handleOpenDialogDeleteStudent(student._id as string)} className={classes.Button} variant='contained' color='error'>
-                                <DeleteIcon />
-                            </Button>
+                            {
+                                auth.user?._id === course?.teacher?._id &&
+                                <Button onClick={() => handleOpenDialogDeleteStudent(student._id as string)} className={classes.Button} variant='contained' color='error'>
+                                    <DeleteIcon />
+                                </Button>
+                            }
                         </TableCell>
                         {/* Dialog confirm delete student */}
                         <Dialog

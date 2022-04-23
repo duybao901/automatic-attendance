@@ -156,8 +156,6 @@ class CourseController {
             })
 
             const studentArray = await Students.insertMany(studentsArrayObject);
-            console.log({ studentArray })
-            console.log({ course })
 
             course = await Course.findByIdAndUpdate(id, {
                 name, semester, credit, yearStart, yearEnd, courseCode, description, students: course.students.concat(studentArray.map(student => student._id))

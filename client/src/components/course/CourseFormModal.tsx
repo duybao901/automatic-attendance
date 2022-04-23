@@ -70,8 +70,8 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
         courseCode: "",
         credit: 1,
         semester: "1",
-        yearStart: new Date().toISOString(),
-        yearEnd: new Date().toISOString(),
+        yearStart: new Date().toDateString(),
+        yearEnd: new Date().toDateString(),
         description: ""
     }
 
@@ -114,17 +114,27 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
     }
 
     const handleChangeYearStart = (date: Date | null) => {
-        setCourse({
-            ...course,
-            yearStart: date?.toISOString()
-        })
+        try {
+            setCourse({
+                ...course,
+                yearStart: date ? date?.toISOString() : ""
+            })
+        } catch (err) {
+            console.error(err)
+
+        }
     };
 
     const handleChangeYearEnd = (date: Date | null) => {
-        setCourse({
-            ...course,
-            yearEnd: date?.toISOString()
-        })
+        try {
+            setCourse({
+                ...course,
+                yearEnd: date ? date?.toISOString() : ""
+            })
+        } catch (err) {
+            console.error(err)
+
+        }
     };
 
     const handleSubmit = async (e: FormSubmit) => {
@@ -230,7 +240,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                         <label htmlFor="name">Năm bắt đầu *</label>
                         <LocalizationProvider dateAdapter={DateAdapter} >
                             <DesktopDatePicker
-                                inputFormat="MM/dd/yyyy"
+                                inputFormat="dd/MM/yyyy"
                                 value={yearStart}
                                 onChange={handleChangeYearStart}
                                 renderInput={(params: any) => <TextField {...params} />}
@@ -241,7 +251,7 @@ const CourseFormModal: React.FC<CourseFormModalProps> = ({ open, hanldeSetOpen, 
                         <label htmlFor="name">Năm kết thúc *</label>
                         <LocalizationProvider dateAdapter={DateAdapter} >
                             <DesktopDatePicker
-                                inputFormat="MM/dd/yyyy"
+                                inputFormat="dd/MM/yyyy"
                                 value={yearEnd}
                                 onChange={handleChangeYearEnd}
                                 renderInput={(params: any) => <TextField {...params} />}

@@ -3,6 +3,7 @@ import { modelStyle } from '../../utils/model-style'
 import "./ReadExcelModal.scss"
 import * as XLSX from 'xlsx'
 import { Course, Student } from '../../utils/interface'
+import nonAccentVietnamese from '../../utils/non-vietnamese'
 // MUI 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -87,26 +88,40 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
                         if (item.length !== 0) {
 
                             index_stt = item.findIndex((_item: any) => {
-                                return _item === "STT"
+                                if (typeof _item === 'string')
+                                    return _item.toLowerCase() === "stt" || _item.toLowerCase() === "so thu tu"
                             })
+
+
 
                             if (index_stt !== -1) {
                                 if (index_student_code === -1) {
                                     index_student_code = item.findIndex((_item: any) => {
-                                        return _item === "Ma sinh vien"
+                                        if (typeof _item === 'string') {
+                                            return _item.toLowerCase() === "ma sinh vien"
+                                                || _item.toLowerCase() === "mssv"
+                                                || _item.toLowerCase() === "ma so sinh vien"
+                                                || nonAccentVietnamese(_item.toLowerCase()) === "ma sv"
+                                        }
                                     })
                                 }
 
 
                                 if (index_student_name === -1) {
                                     index_student_name = item.findIndex((_item: any) => {
-                                        return _item === "Ho và ten"
+                                        if (typeof _item === 'string') {
+                                            return _item.toLowerCase() === "ho va ten"
+                                                || _item.toLowerCase() === 'hovaten'
+                                                || nonAccentVietnamese(_item.toLowerCase()) === 'ten sinh vien'
+                                        }
                                     })
                                 }
 
                                 if (index_student_gender === -1) {
                                     index_student_gender = item.findIndex((_item: any) => {
-                                        return _item === "Phai"
+                                        if (typeof _item === 'string') {
+                                            return nonAccentVietnamese(_item.toLowerCase()) === "phai"
+                                        }
                                     })
                                 }
                             }
@@ -118,18 +133,20 @@ const ReadExcelModal: React.FC<ReadExcelModalProps> = ({ handleSetStudent }) => 
                     })
 
                     if (data) {
-                        const newData: Student[] = [];
-                        data.slice(stt_top + 1,).forEach((item: any) => {
-                            if (item.length !== 0) {
-                                const student = {
-                                    studentCode: item[index_student_code] ? item[index_student_code].trim() : "",
-                                    name: item[index_student_name] ? item[+ index_student_name].trim() : '',
-                                    gender: item[index_student_gender] ? item[index_student_gender] : 'male'
+                        if (index_student_code !== -1 && index_student_gender !== -1 && index_student_name !== -1) {
+                            const newData: Student[] = [];
+                            data.slice(stt_top + 1,).forEach((item: any) => {
+                                if (item.length !== 0) {
+                                    const student = {
+                                        studentCode: item[index_student_code] ? item[index_student_code].trim() : "",
+                                        name: item[index_student_name] ? item[+ index_student_name].trim() : '',
+                                        gender: item[index_student_gender] ? item[index_student_gender] : 'male'
+                                    }
+                                    newData.push(student)
                                 }
-                                newData.push(student)
-                            }
-                        })
-                        setStudents(newData)
+                            })
+                            setStudents(newData)
+                        }
                     }
                 }
             }
