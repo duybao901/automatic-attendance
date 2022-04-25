@@ -10,7 +10,7 @@ class LessonController {
 
     async getLessonUser(req: RequestUser, res: Response) {
         try {
-            const lessons = await Lessons.find({}).sort('-createdAt')
+            const lessons = await Lessons.find({ teacher: req.user?._id }).sort('-createdAt')
                 .populate({
                     path: 'course',
                     populate: {

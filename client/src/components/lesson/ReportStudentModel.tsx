@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Attendance, LessonDetail as ILessonDetail, LessonDetail, StudentReport } from '../../utils/interface'
+import { LessonDetail as ILessonDetail, StudentReport, RootStore } from '../../utils/interface'
 import "./ReportLessonModel.scss"
 import { Link } from 'react-router-dom'
-import { countAbsent } from '../../utils/student'
 import "./ReportStudentModel.scss"
+import { useSelector } from 'react-redux'
+
 
 // Chart
 
@@ -60,6 +61,7 @@ interface ReportStudentModelProps {
 const ReportStudentModel: React.FC<ReportStudentModelProps> = ({ lessonDetail }) => {
 
     const classes = useStyles();
+    const { auth } = useSelector((state: RootStore) => state)
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -83,7 +85,7 @@ const ReportStudentModel: React.FC<ReportStudentModelProps> = ({ lessonDetail })
                     }
                 })
             })
-           
+
             studentsArray.push({ student, absent, isStudy })
 
         })
@@ -195,7 +197,9 @@ const ReportStudentModel: React.FC<ReportStudentModelProps> = ({ lessonDetail })
                     }
                     {
                         lessonDetail.rollCallSessions && lessonDetail.rollCallSessions?.length > 0 ? <>
-                            <ExportReportStudent studentReport={studentsReport} lessonDetail={lessonDetail} />
+                            {
+                                lessonDetail.lesson?.teacher?._id === auth.user?._id && <ExportReportStudent studentReport={studentsReport} lessonDetail={lessonDetail} />
+                            }
                         </> :
                             <Box display={'flex'} justifyContent={"flex-end"}>
                                 <PrimaryTooltip title='Đóng hộp thoại'>

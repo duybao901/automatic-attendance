@@ -2,9 +2,10 @@ import * as types from '../types/lessontypes'
 import { LessonPayload, LessonTypes } from '../types/lessontypes'
 import { Lesson } from '../../utils/interface'
 import nonAccentVietnamese from '../../utils/non-vietnamese'
+import dayjs from 'dayjs'
 const initialState: LessonPayload = {
     lessons: [],
-    myLesson: {
+    myLesson: { // Mon hoc trong ngay
         list: [],
         toggle: false
     },
@@ -68,7 +69,7 @@ const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes)
                 myLesson: {
                     toggle: action.payload.toggle,
                     list: action.payload.toggle === false ? [] :
-                        state.lessons?.filter(lesson => lesson.teacher?._id === action.payload.auth.user?._id) as Lesson[]
+                        state.lessons?.filter(lesson => dayjs(lesson.createdAt).date() === new Date().getDate()) as Lesson[]
                 }
             }
         }

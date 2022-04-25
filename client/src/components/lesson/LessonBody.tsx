@@ -87,7 +87,7 @@ const LessonBody = () => {
                             onChange={handleToggleMyLesson}
                             color="primary"
                         >
-                            <p className='control__my-lesson'>Buổi học của tôi</p>
+                            <p className='control__my-lesson'>Buổi học trong ngày</p>
                             {selected ? <BookmarkAddedIcon /> : <BookmarkAddedOutlinedIcon />}
                         </ToggleButton>
                     </Box>

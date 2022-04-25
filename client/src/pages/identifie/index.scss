@@ -1,11 +1,25 @@
 @import "../../stylesSass/variables";
-
+@import "../../stylesSass/mixin";
 .identifie {
     &__body {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
         padding: 50px;
+
+        &-form {
+            margin-right: 20px;
+            & label {
+                @include labelStyle;
+            }
+            & input {
+                margin-top: 6px !important;
+                @include inputStyle;
+            }
+            & button {
+                margin-top: 20px;
+            }
+        }
     }
     &__camera {
         display: flex;

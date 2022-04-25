@@ -1,10 +1,11 @@
 import React from 'react'
-import { Attendance, LessonDetail as ILessonDetail, LessonDetail } from '../../utils/interface'
+import { Attendance, LessonDetail as ILessonDetail, LessonDetail, RootStore } from '../../utils/interface'
 import "./ReportLessonModel.scss"
 import { Link } from 'react-router-dom'
 import { countAbsent } from '../../utils/student'
 import ReportLessonModelDetails from './ReportLessonModelDetail'
 import ExportReportLessonButton from './ExportReportLessonButton'
+import { useSelector } from 'react-redux'
 
 // Chart
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -38,6 +39,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const ReportLessonModel: React.FC<ReportLessonModelProps> = ({ lessonDetail }) => {
 
     const classes = useStyles();
+    const { auth } = useSelector((state: RootStore) => state);
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -71,7 +73,7 @@ const ReportLessonModel: React.FC<ReportLessonModelProps> = ({ lessonDetail }) =
                     <Button onClick={handleOpen} variant='contained' className={classes.Button}>
                         <i style={{ fontSize: "1.8rem", marginRight: "5px", marginTop: "-2px" }} className='bx bxs-report'></i>Thống kê theo lớp
                     </Button>
-                </PrimaryTooltip>               
+                </PrimaryTooltip>
             </div>
             <Modal
                 open={open}
@@ -113,9 +115,11 @@ const ReportLessonModel: React.FC<ReportLessonModelProps> = ({ lessonDetail }) =
                         lessonDetail.rollCallSessions && lessonDetail.rollCallSessions?.length > 0 ? <Box display={'flex'}>
                             <ReportLessonModelDetails lessonDetail={lessonDetail} />
 
-                            <div style={{ marginLeft: "10px" }}>
-                                <ExportReportLessonButton lessonDetail={lessonDetail} />
-                            </div>
+                            {
+                                auth.user?._id === lessonDetail.lesson?.teacher?._id && <div style={{ marginLeft: "10px" }}>
+                                    <ExportReportLessonButton lessonDetail={lessonDetail} />
+                                </div>
+                            }
 
                         </Box> : <Box display={'flex'} justifyContent={"flex-end"}>
                             <PrimaryTooltip title='Đóng hộp thoại'>

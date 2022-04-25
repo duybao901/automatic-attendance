@@ -84,7 +84,7 @@ const ReportLessonModelDetails: React.FC<ReportLessonDetailModelProps> = ({ less
 
 
     const labels = lessonDetail.rollCallSessions?.map((_rollCallSession) => {
-        return `Ngày ${dayjs(_rollCallSession.createdAt).format("DD-MM-YYYY ")} (Tổng: ${_rollCallSession.attendanceDetails?.length})`
+        return `Ngày ${dayjs(_rollCallSession.createdAt).format("DD-MM-YYYY ")}`
     });
 
     const data = {
