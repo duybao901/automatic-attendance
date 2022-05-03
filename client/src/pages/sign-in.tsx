@@ -15,8 +15,9 @@ const SignIn = () => {
             </div>
             <div className="auth-page__background">
                 <div className='auth-page__background-content'>
-                    <h2>Welcome to Face Attendance</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius labore molestiae iusto ipsum repudiandae fugiat rem</p>
+                    <h2>Chào mừng bạn đến với CLASSKIT</h2>
+                    <p>Với trang web này việc điểm danh sinh viên trở nên dễ dàng khi giáo viên có thể tự điểm danh, hoặc có thể điểm danh tự động bằng khuôn mặt một cách chính xác,
+                        nhanh gọn, ổn định, hạn chế mọi thủ tục rườm rà.</p>
                     <div className='auth-page__background-circle auth-page__background-circle--small'></div>
                     <div className='auth-page__background-circle auth-page__background-circle--medium'></div>
                     <div className='auth-page__background-dots'>

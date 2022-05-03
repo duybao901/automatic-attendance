@@ -17,7 +17,7 @@ app.use(cookieParser()); // req.cookies to set cooki e
 
 // Connect Database
 import "./config/Database";
-    
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log("Server is running on port:", PORT);
@@ -31,5 +31,6 @@ app.use('/api', routers.studentRouter);
 app.use('/api', routers.lessonRouter);
 app.use('/api', routers.rollCallSession);
 app.use('/api', routers.attendanceDetail);
+app.use('/api', routers.faceRouter)
 
 

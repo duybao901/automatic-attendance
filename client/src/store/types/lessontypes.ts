@@ -13,7 +13,7 @@ export interface LessonPayload {
     loading?: boolean,
     myLesson?: {
         list: Lesson[],
-        toggle: boolean
+        toggle: string
     }
     searching: {
         lessonSearch?: Lesson[],
@@ -65,7 +65,7 @@ export interface SearchLesson {
 export interface ToggleMyLesson {
     type: typeof TOGGLE_MY_LESSON,
     payload: {
-        toggle: boolean,
+        toggle: string,
         auth: AuthPayload
     }
 }

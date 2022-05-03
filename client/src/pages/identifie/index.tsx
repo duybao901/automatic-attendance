@@ -3,39 +3,42 @@ import * as faceapi from 'face-api.js';
 import "./index.scss"
 import { Button } from '@mui/material';
 import { ALERT } from '../../store/types/alertTypes'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { postAPI } from '../../utils/fetchApi'
+import { RootStore } from '../../utils/interface'
 
 const Identifie = () => {
 
   const dispatch = useDispatch()
+  const { auth } = useSelector((state: RootStore) => state)
   const [tracks, setTracks] = useState<any>()
   const [playing, setPlaying] = useState<boolean>(false)
   const [loadingModel, setLoadingModel] = useState<boolean>(false)
   const [timers, setTimers] = useState<any>()
-  const [studentCode, setStudentCode] = useState<string>("duy")
-  const [faceMatcher, setFaceMatcher] = useState<any>()
+  const [studentCode, setStudentCode] = useState<string>("")
+  const [isDetecttion, setIsDetection] = useState<boolean>(false)
+  const [isRecognition, setIsRecognition] = useState<boolean>(false)
 
   const refCamera = useRef<any>(null);
   const refCanvas = useRef<any>(null);
 
-  // Load models
+  // Tai cac mo hinh nhan dien khuon mat da duoc train san
   useEffect(() => {
     const loadModels = async () => {
-      console.log("dang tai model")
       const MODEL_URI = process.env.PUBLIC_URL + '/models'
 
       Promise.all(
         [
-          faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URI),
-          faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URI),
-          faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URI),
-          faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URI)
+          faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URI), // Pre-trained model dùng để phát hiện gương mặt.
+          // faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URI),
+          faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URI), // FaceLandmark68Net Model: Pre-trained model dùng để xác định được các điểm xung quanh mặt.
+          faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URI) // Pre-trained model dùng để nhận dạng gương mặt.
         ]
       )
 
       // Tai cac model nhan dien khuon mat thanh cong
       setLoadingModel(true);
-      dispatch({ type: ALERT, payload: { success: "Tải các mô hình nhận diện khuôn mặt  thành công" } })
+      dispatch({ type: ALERT, payload: { success: "Tải các Pre-trained model thành công" } })
     }
     loadModels()
   }, [])
@@ -84,13 +87,16 @@ const Identifie = () => {
 
   // Phat hien khuon mat
   const hanldeCameraPlay = () => {
+    setIsDetection(true)
     if (loadingModel && studentCode) {
       const descriptors: any[] = [];
+      let flag = false;
       const timer = setInterval(async () => {
-        // Tao canvas de ve 
-        if (descriptors.length <= 6) {
-          refCanvas.current.innerHTML = faceapi.createCanvasFromMedia(refCamera.current)
 
+        // Tao canvas de ve 
+        if (descriptors.length <= 6 && flag === false) {
+          refCanvas.current.innerHTML = faceapi.createCanvasFromMedia(refCamera.current)
+          console.log(refCamera.current)
           const displaySize = {
             width: 640, height: 480
           }
@@ -99,48 +105,58 @@ const Identifie = () => {
 
           // Computing Face Descriptors
           // Tính toán các gốc cạnh trên khuôn mặt
-          const detection = await faceapi.detectSingleFace(refCamera.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor()
-          const fullFaceDescriptions = faceapi.resizeResults(detection, displaySize)
-          console.log({ detection })
-          console.log({ fullFaceDescriptions })
-          // // Xoa cac canvas truoc
-          if (refCanvas.current) {
-            refCanvas.current.getContext('2d').clearRect(0, 0, 640, 480)
-          }
+          const detection = await faceapi.detectSingleFace(refCamera.current, new faceapi.SsdMobilenetv1Options()).withFaceLandmarks().withFaceDescriptor()
 
+          if (detection) {
+            const fullFaceDescriptions = faceapi.resizeResults(detection, displaySize)
 
-          // Lấy các điểm trong khuôn mặt, sau đó vẽ lên canvas
-          const box = fullFaceDescriptions?.detection?.box
-          const drawBox = new faceapi.draw.DrawBox(box as any, {
-            label: "Đang nhận diện..."
-          })
-          drawBox.draw(refCanvas.current)
+            setIsDetection(false)
+            setIsRecognition(true)
 
-          // /* -------------- Huan luyen mo hinh --------------*/
-
-          // Computing Face Descriptors
-          const fullFaceDescription = await faceapi.detectSingleFace(refCamera.current)
-            .withFaceLandmarks().withFaceDescriptor()
-
-          if (!fullFaceDescription) {
-            throw new Error(`no faces detected for ${studentCode}`)
-          }
-
-          // Luu 12 descriptors lai
-          descriptors.push(fullFaceDescription.descriptor)
-
-          // Tai xong 12 descriptors 
-          if (descriptors.length === 12 || descriptors.length === 11 || descriptors.length === 10) {
-            // Tao nhan cho 12 descriptors
-            const faceDescriptors = new faceapi.LabeledFaceDescriptors(studentCode, descriptors)
-            const faceMatcher = new faceapi.FaceMatcher(faceDescriptors, 0.5)
-
-            console.log("success", { faceDescriptors })
-            console.log("success", { faceMatcher })
-
-            // Xoa canvas cuoi cung
+            // // Xoa cac canvas truoc
             if (refCanvas.current) {
               refCanvas.current.getContext('2d').clearRect(0, 0, 640, 480)
+            }
+
+
+            // Lấy các điểm trong khuôn mặt, sau đó vẽ lên canvas
+            const box = fullFaceDescriptions?.detection?.box
+            const drawBox = new faceapi.draw.DrawBox(box as any, {
+              label: "Đang nhận diện..."
+            })
+            drawBox.draw(refCanvas.current)
+
+            // /* -------------- Huan luyen mo hinh --------------*/
+
+            // Computing Face Descriptors
+            const fullFaceDescription = await faceapi.detectSingleFace(refCamera.current)
+              .withFaceLandmarks().withFaceDescriptor()
+
+            if (!fullFaceDescription) {
+              throw new Error(`no faces detected for ${studentCode}`)
+            }
+
+            // Luu 12 descriptors lai
+            descriptors.push(fullFaceDescription.descriptor)
+
+            // Tai xong 12 descriptors 
+            if (flag === false && (descriptors.length === 4 || descriptors.length === 3 || descriptors.length === 2)) {
+
+              // Gan nhan
+              const labedlFaceDescriptors = new faceapi.LabeledFaceDescriptors(studentCode, descriptors);
+
+              saveFile(labedlFaceDescriptors)
+
+              flag = true
+              setStudentCode("")
+              hanldeCloseCamera()
+              setIsRecognition(false)
+              dispatch({ type: ALERT, payload: { success: `Nhận diện ${studentCode} thành công` } })
+
+              // Xoa canvas cuoi cung
+              if (refCanvas.current) {
+                refCanvas.current.getContext('2d').clearRect(0, 0, 640, 480)
+              }
             }
           }
 
@@ -149,6 +165,21 @@ const Identifie = () => {
       setTimers(timer)
     }
   }
+
+
+
+  const saveFile = async (labedlFaceDescriptors: any) => {
+    const labedlFaceDescriptorsJson = faceapi.LabeledFaceDescriptors.fromJSON(labedlFaceDescriptors).toJSON()
+
+    try {
+      const res = await postAPI('face_api', labedlFaceDescriptorsJson, auth.access_token)
+      console.log(res)
+    } catch (error: any) {
+      console.log(error.response)
+    }
+
+  }
+
 
   return (
     <div className="identifie">
@@ -162,10 +193,18 @@ const Identifie = () => {
             type="text" placeholder='Vui lòng nhập MSSV...' name='studentCode' />
           {
             playing ?
-              <Button variant='contained' className="identifie__btn-open" onClick={hanldeCloseCamera}>
-                <p className='button-text'>Đóng camera</p>
-              </Button> :
-              <Button disabled={studentCode ? false : true} variant='contained' className="identifie__btn-open" onClick={handleOpenCamera}>
+
+              <>
+                {
+                  isDetecttion ? <p style={{ marginTop: "20px", fontSize: "1.4rem", fontWeight: "500" }}>
+                    Đang <span style={{ color: 'crimson', textTransform: "uppercase" }}>phát hiện</span>  khuôn mặt, xin vui lòng chờ...
+                  </p> : isRecognition && <p style={{ marginTop: "20px", fontSize: "1.4rem", fontWeight: "500" }}>
+                    Đang <span style={{ color: '#473fce', textTransform: "uppercase" }}>nhận hiện</span> khuôn mặt, xin vui lòng chờ...
+                  </p>
+                }
+              </>
+
+              : <Button disabled={studentCode ? false : true} variant='contained' className="identifie__btn-open" onClick={handleOpenCamera}>
                 <p className='button-text'>Bắt đầu nhận diện</p>
               </Button>
           }

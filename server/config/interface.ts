@@ -47,3 +47,7 @@ export interface IStudent extends Document {
     phone?: number
     course?: ICourse
 }
+
+export interface ILabledFaceDescriptor extends Document {
+    label?: string
+}

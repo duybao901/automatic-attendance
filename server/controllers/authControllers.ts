@@ -75,6 +75,7 @@ class AuthController {
                 user,
                 access_token,
             });
+            
         } catch (error: any) {
             return res.status(500).json({ msg: error.message });
         }

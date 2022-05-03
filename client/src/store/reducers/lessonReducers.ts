@@ -2,12 +2,11 @@ import * as types from '../types/lessontypes'
 import { LessonPayload, LessonTypes } from '../types/lessontypes'
 import { Lesson } from '../../utils/interface'
 import nonAccentVietnamese from '../../utils/non-vietnamese'
-import dayjs from 'dayjs'
 const initialState: LessonPayload = {
     lessons: [],
     myLesson: { // Mon hoc trong ngay
         list: [],
-        toggle: false
+        toggle: ""
     },
     searching: {
         lessonSearch: [],
@@ -26,7 +25,13 @@ const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes)
         case types.CREATE_LESSON: {
             return {
                 ...state,
-                lessons: state.lessons ? [action.payload.newLesson, ...state.lessons] : [action.payload.newLesson]
+                lessons: state.lessons ? [action.payload.newLesson, ...state.lessons] : [action.payload.newLesson],
+                myLesson: {
+                    toggle: state.myLesson?.toggle as string,
+                    list: [action.payload.newLesson, ...state.lessons?.map((lesson) => {
+                        return lesson.weekday === state.myLesson?.toggle
+                    }) as Lesson[]]
+                }
             }
         }
         case types.LOADING_LESSON: {
@@ -42,7 +47,7 @@ const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes)
                     state.lessons.map(lesson => lesson._id === action.payload.newLesson._id ?
                         action.payload.newLesson : lesson) : [],
                 myLesson: {
-                    toggle: state.myLesson?.toggle as boolean,
+                    toggle: state.myLesson?.toggle as string,
                     list: state.myLesson?.list ?
                         state.myLesson?.list.map(lesson => lesson._id === action.payload.newLesson._id ?
                             action.payload.newLesson : lesson) : [],
@@ -56,7 +61,7 @@ const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes)
                     return lesson._id !== action.payload.lesson_id
                 }) : [],
                 myLesson: {
-                    toggle: state.myLesson?.toggle as boolean,
+                    toggle: state.myLesson?.toggle as string,
                     list: state.myLesson?.list ? state.myLesson?.list.filter(lesson => {
                         return lesson._id !== action.payload.lesson_id
                     }) : [],
@@ -64,12 +69,17 @@ const lessonReducer = (state: LessonPayload = initialState, action: LessonTypes)
             }
         }
         case types.TOGGLE_MY_LESSON: {
+
+            console.log(action)
+
             return {
                 ...state,
                 myLesson: {
                     toggle: action.payload.toggle,
-                    list: action.payload.toggle === false ? [] :
-                        state.lessons?.filter(lesson => dayjs(lesson.createdAt).date() === new Date().getDate()) as Lesson[]
+                    list: state.lessons?.filter(lesson => {
+                        console.log(lesson.weekday)
+                        return lesson.weekday === action.payload.toggle
+                    }) as Lesson[]
                 }
             }
         }
