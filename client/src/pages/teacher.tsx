@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import NotFound from '../components/globals/not-found/NotFound';
 import { RootStore } from '../utils/interface'
-import DashBroadHeader from '../components/dashbroad/DashBroadHeader';
 import DashBroadUser from '../components/dashbroad/DashBroadUser';
 import TeacherCp from '../components/teacher/teacher/Teacher';
 import { getTeachers } from '../store/actions/teacherActions'

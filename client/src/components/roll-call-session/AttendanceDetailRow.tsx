@@ -52,6 +52,9 @@ const AttendanceDetailRow: React.FC<AttendanceDetailRowProps> = ({ attendance, d
     const [note, setNote] = useState<string>('');
     const [loadingAttendace, setLoadingAttendace] = useState<boolean>(false);
     const [loadingNote, setLoadingNote] = useState<boolean>(false);
+    
+
+    // Diem danh sinh vien
     const handleAttendance = async (e: InputChange, attendance: Attendance) => {
 
         if (loadingAttendace) return;

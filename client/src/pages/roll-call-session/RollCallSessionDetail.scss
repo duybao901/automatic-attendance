@@ -153,6 +153,36 @@
         box-shadow: $box-shadow-1;
     }
 
+    &__camera {
+        & button {
+            margin-bottom: 30px;
+        }
+        padding: 30px;
+        &-wrapper {
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 550px;
+            position: relative;
+            border: 1px solid $border-color;
+            border-radius: 2px;
+            margin-bottom: 40px;
+            & video {
+                width: 100%;
+                height: 100%;
+            }
+            & canvas {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 3;
+            }
+        }
+    }
+
     @include MediaQuery(SM) {
         & {
             padding: 20px;
@@ -163,16 +193,15 @@
                 & .detail__infor {
                     width: 100%;
                     margin-bottom: 20px;
-                    padding-right: 0px;       
-                    
-                    & img{
+                    padding-right: 0px;
+
+                    & img {
                         width: 70px;
                         height: 70px;
                     }
                 }
 
-
-                & .detail__comment{
+                & .detail__comment {
                     width: 100%;
                 }
             }

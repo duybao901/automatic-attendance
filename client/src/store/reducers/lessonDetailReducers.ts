@@ -29,8 +29,7 @@ const lessonDetailReducers = (state: LessonDetailPayload = initialState, action:
                 }) : []
             }
         }
-
-
+        
         default: {
             return {
                 ...state,

@@ -56,7 +56,7 @@ const Identifie = () => {
     }
   }, [playing, timers, tracks])
 
-  // Play camera
+  // Open camera
   const handleOpenCamera = () => {
     if (navigator.mediaDevices && loadingModel) {
       setPlaying(true)
@@ -92,11 +92,9 @@ const Identifie = () => {
       const descriptors: any[] = [];
       let flag = false;
       const timer = setInterval(async () => {
-
         // Tao canvas de ve 
         if (descriptors.length <= 6 && flag === false) {
           refCanvas.current.innerHTML = faceapi.createCanvasFromMedia(refCamera.current)
-          console.log(refCamera.current)
           const displaySize = {
             width: 640, height: 480
           }
@@ -141,10 +139,10 @@ const Identifie = () => {
 
             // Tai xong 12 descriptors 
             if (flag === false && (descriptors.length === 4 || descriptors.length === 3 || descriptors.length === 2)) {
-
+              console.log(descriptors)
               // Gan nhan
               const labedlFaceDescriptors = new faceapi.LabeledFaceDescriptors(studentCode, descriptors);
-
+              console.log({ labedlFaceDescriptors })
               saveFile(labedlFaceDescriptors)
 
               flag = true
@@ -166,10 +164,10 @@ const Identifie = () => {
     }
   }
 
-
-
   const saveFile = async (labedlFaceDescriptors: any) => {
     const labedlFaceDescriptorsJson = faceapi.LabeledFaceDescriptors.fromJSON(labedlFaceDescriptors).toJSON()
+
+    console.log({ labedlFaceDescriptorsJson })
 
     try {
       const res = await postAPI('face_api', labedlFaceDescriptorsJson, auth.access_token)
@@ -179,7 +177,6 @@ const Identifie = () => {
     }
 
   }
-
 
   return (
     <div className="identifie">
@@ -193,7 +190,6 @@ const Identifie = () => {
             type="text" placeholder='Vui lòng nhập MSSV...' name='studentCode' />
           {
             playing ?
-
               <>
                 {
                   isDetecttion ? <p style={{ marginTop: "20px", fontSize: "1.4rem", fontWeight: "500" }}>
@@ -203,7 +199,6 @@ const Identifie = () => {
                   </p>
                 }
               </>
-
               : <Button disabled={studentCode ? false : true} variant='contained' className="identifie__btn-open" onClick={handleOpenCamera}>
                 <p className='button-text'>Bắt đầu nhận diện</p>
               </Button>

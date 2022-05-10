@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { FormSubmit, InputChange, Params } from '../../utils/interface'
 import { RootStore, RollCallSession, Attendance } from '../../utils/interface'
@@ -10,6 +10,10 @@ import Loading from '../../components/globals/loading/Loading'
 import Logo from '../../images/logo.png';
 import { ALERT } from '../../store/types/alertTypes'
 import { countAbsent } from '../../utils/student'
+import { postAPI } from '../../utils/fetchApi'
+
+// Face Api
+import * as faceapi from 'face-api.js';
 
 // MUI
 import Table from '@mui/material/Table';
@@ -28,6 +32,11 @@ import DialogActions from '@mui/material/DialogActions';
 import Box from '@mui/material/Box';
 import { IconButton } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -42,6 +51,25 @@ const useStyles = makeStyles({
     },
     SekeletonRadius: {
         borderRadius: "5px"
+    },
+    TableCellBody: {
+        fontSize: "1.4rem !important",
+        fontFamily: "-apple-system, BlinkMacSystemFont, Inter,' Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;",
+        fontWeight: "500 !important",
+    },
+
+    TableCellBodyId: {
+        fontSize: "1.4rem !important",
+        fontFamily: "-apple-system, BlinkMacSystemFont, Inter,' Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;",
+        fontWeight: "500 !important",
+        "maxWidth": "150px",
+        "WebkitLineClamp": "1",
+        "WebkitBoxOrient": "vertical",
+        "overflow": "hidden",
+        "textOverflow": "ellipsis",
+    },
+    TableCellBodyDate: {
+        width: "100px !important"
     }
 });
 
@@ -52,10 +80,27 @@ const RollCallSessionDetail = () => {
     const { slug }: Params = useParams();
     const { detailRollCallSession: detailRollCallSessionStore, auth, lessonDetail } = useSelector((state: RootStore) => state)
 
+    // State
     const [detailRollCallSession, setDetailRollCallSession] = useState<RollCallSession>({})
     const [comment, setComment] = useState<string>();
     const [loadingComment, setLoadingCommnet] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
+    const [openControlAttendace, setOpenControlAttendance] = useState<boolean>(true);
+    const [handmade, setHandmade] = useState<number>(0)
+    const [loadingAttendace, setLoadingAttendace] = useState<boolean>(false)
+    const [tracks, setTracks] = useState<any>()
+    const [playing, setPlaying] = useState<boolean>(false)
+    const [loadingModel, setLoadingModel] = useState<boolean>(false)
+    const [loadingDescriptors, setLoadingDescriptors] = useState<boolean>(false)
+    const [faceMatcher, setFaceMatcher] = useState<any>()
+
+    const [timers, setTimers] = useState<any>()
+    const [studentCodeList, setStudentCodeList] = useState<any[]>()
+
+    // Ref
+    const refCamera = useRef<any>(null);
+    const refCanvas = useRef<any>(null);
+
 
     useEffect(() => {
         if (slug) {
@@ -73,6 +118,60 @@ const RollCallSessionDetail = () => {
         })
 
     }, [slug, auth, detailRollCallSessionStore.rollCallSessions])
+
+    // Load models
+    useEffect(() => {
+        if (handmade === 2) {
+            const loadModels = async () => {
+                const MODEL_URI = process.env.PUBLIC_URL + '/models'
+                Promise.all(
+                    [
+                        faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URI), // Pre-trained model dùng để phát hiện gương mặt.
+                        // faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URI),
+                        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URI), // FaceLandmark68Net Model: Pre-trained model dùng để xác định được các điểm xung quanh mặt.
+                        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URI) // Pre-trained model dùng để nhận dạng gương mặt.
+                    ]
+                )
+
+                // Tai cac model nhan dien khuon mat thanh cong
+                setLoadingModel(true);
+                dispatch({ type: ALERT, payload: { success: "Tải các Pre-trained model thành công" } })
+            }
+            loadModels()
+        }
+    }, [handmade])
+
+    // Get Descriptor from server
+    useEffect(() => {
+        if (handmade === 2) {
+            const getDescriptors = async () => {
+                let studentCodeList: any[] = [];
+                detailRollCallSession?.attendanceDetails?.forEach((attendanceDetail) => {
+                    studentCodeList.push(attendanceDetail?.student?.studentCode)
+                })
+                setStudentCodeList(studentCodeList)
+
+                const res = await postAPI('face_api_descriptors', { studentCodeList }, auth.access_token)
+
+                const faceDescriptors: any[] = [];
+
+                console.log(res)
+
+                res.data.descriptors.forEach((_descriptors: any) => {
+                    faceDescriptors.push(new faceapi.LabeledFaceDescriptors(_descriptors.label, [new Float32Array(_descriptors.descriptors[0])]))
+
+                })
+
+                const faceMatcher = new faceapi.FaceMatcher(faceDescriptors, 0.5)
+                setFaceMatcher(faceMatcher)
+                setLoadingDescriptors(true)
+                dispatch({ type: ALERT, payload: { success: res.data.msg } })
+            }
+            getDescriptors()
+        }
+    }, [handmade, detailRollCallSession])
+
+    // console.log(detailRollCallSession)
 
     //  Luu nhan xet
     const handleSubmit = async (e: FormSubmit) => {
@@ -98,9 +197,96 @@ const RollCallSessionDetail = () => {
         setOpen(false)
     }
 
+    const handleCloseDialogControlAttendance = (isClose: boolean) => {
+        if (isClose) setHandmade(1)
+        setOpenControlAttendance(false)
+    }
+
+    // Open camera
+    const handleOpenCamera = () => {
+        if (navigator.mediaDevices) {
+            setPlaying(true)
+            navigator.mediaDevices.getUserMedia({
+                video: true
+            }).then(stream => {
+                let video = refCamera.current
+                if (video) {
+                    video.srcObject = stream
+                    const track = stream.getTracks()
+                    setTracks(track)
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+        }
+    }
+
+    // Close camera
+    const hanldeCloseCamera = () => {
+        if (tracks) {
+            setPlaying(false)
+            tracks && tracks.forEach((track: any) => { track.stop(); })
+            refCamera.current?.srcObject?.getTracks()[0].stop();
+            clearInterval(timers)
+        }
+    }
+
+    // Play camera
+    const hanldeCameraPlay = () => {
+
+        if (loadingModel && loadingDescriptors) {
+
+            const timer = setInterval(async () => {
+
+                console.log('playing')
+
+                // Tao canvas de ve 
+                refCanvas.current.innerHTML = faceapi.createCanvasFromMedia(refCamera.current)
+                const displaySize = {
+                    width: 640, height: 480
+                }
+
+                faceapi.matchDimensions(refCanvas.current, displaySize)
+
+                // Computing Face Descriptors
+                // Tính toán các gốc cạnh trên khuôn mặt
+                const detection = await faceapi.detectSingleFace(refCamera.current, new faceapi.SsdMobilenetv1Options()).withFaceLandmarks().withFaceDescriptor()
+
+                if (detection) {
+                    const fullFaceDescriptions = faceapi.resizeResults(detection, displaySize)
+                    // // Xoa cac canvas truoc
+                    if (refCanvas.current) {
+                        refCanvas.current.getContext('2d').clearRect(0, 0, 640, 480)
+                    }
+
+                    // Lấy các điểm trong khuôn mặt, sau đó vẽ lên canvas
+                    const box = fullFaceDescriptions?.detection?.box
+                    const drawBox = new faceapi.draw.DrawBox(box as any, {
+                        label: faceMatcher.findBestMatch(detection.descriptor)
+                    })
+                    drawBox.draw(refCanvas.current)
+                }
+            }, 200)
+            setTimers(timer)
+        }
+    }
+
+    useEffect(() => {
+        return () => {
+            if (playing === true && tracks) {
+                setPlaying(false)
+                setTracks(null)
+                tracks && tracks.forEach((track: any) => { track.stop(); })
+                refCamera.current?.srcObject?.getTracks()[0].stop();
+                clearInterval(timers)
+            }
+        }
+    }, [playing, tracks])
+
     return (
         <div className='dashbroad__body dashbroad__body--xl'>
             <div className='rollcallsession-detail'>
+                {/* Header */}
                 <div className="rollcallsession-detail__header">
                     <div className="header__left">
                         <h2>
@@ -124,7 +310,7 @@ const RollCallSessionDetail = () => {
                                 </span>
                             }
                         </h2>
-                        <p className="header__left-comment">
+                        <div className="header__left-comment">
                             {
                                 detailRollCallSessionStore.loading && <Box display={'flex'}>
                                     <Skeleton width={300} height={25} variant='text'></Skeleton>
@@ -135,7 +321,7 @@ const RollCallSessionDetail = () => {
                                 !detailRollCallSessionStore.loading && (detailRollCallSession.comment ? detailRollCallSession.comment : "Chưa có nhận xết về buổi học")
 
                             }
-                        </p>
+                        </div>
 
                     </div>
                     <div className="header__right">
@@ -195,6 +381,8 @@ const RollCallSessionDetail = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Control */}
                 <div className="rollcallsession-detail__control">
                     {/* Detail Roll Call Session Card */}
                     <div className='rollcallsession-detail__control-detail'>
@@ -280,11 +468,12 @@ const RollCallSessionDetail = () => {
 
                         </div>
                     </div>
-
-
                 </div>
+
+                {/* Tabel */}
                 <div className='rollcallsession-detail__table'>
-                    <TableContainer className={classes.TableContainer} component={Paper}>
+
+                    {handmade === 1 ? <TableContainer className={classes.TableContainer} component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
@@ -305,8 +494,117 @@ const RollCallSessionDetail = () => {
                                 }
                             </TableBody>
                         </Table>
-                    </TableContainer>
+                    </TableContainer> : handmade === 2 && <div className="rollcallsession-detail__camera">
+                        {/* <p> Hiện chức năng đang phát triển!</p> */}
+                        {
+                            !playing ? <Button variant='contained' onClick={handleOpenCamera}>
+                                <p className="button-text">Mở camera</p>
+                            </Button> :
+                                <Button variant='contained' onClick={hanldeCloseCamera}>
+                                    <p className="button-text">Đóng camera</p>
+                                </Button>
+                        }
+                        {
+                            playing && <div className="rollcallsession-detail__camera-wrapper">
+                                <video onPlay={hanldeCameraPlay} ref={refCamera} autoPlay muted></video>
+                                <canvas ref={refCanvas}></canvas>
+                            </div>
+                        }
+                        <TableContainer className={classes.TableContainer} component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell className={classes.TableCellHead} align="left">Họ và tên</TableCell>
+                                        <TableCell className={classes.TableCellHead} align="left">MSSV</TableCell>
+                                        <TableCell className={classes.TableCellHead} align="left">Giới tính</TableCell>
+                                        <TableCell className={classes.TableCellHead} align="left">Ngày</TableCell>
+                                        <TableCell className={classes.TableCellHead} align="left">Học phần</TableCell>
+                                        <TableCell className={classes.TableCellHead} align="left">Điểm danh</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        detailRollCallSession.attendanceDetails?.map((attendance) => {
+                                            return <TableRow
+                                                key={attendance._id}
+                                                className="detail__row"
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                <TableCell className={classes.TableCellBody} align="left">
+                                                    {
+                                                        !attendance.student?._id && <p style={{ color: "crimson" }}>Sinh viên này đã bị xoá khỏi lớp học</p>
+                                                    }
+                                                    {
+                                                        attendance.student?.name
+                                                    }
+                                                </TableCell>
+                                                <TableCell className={classes.TableCellBody} align="left">
+                                                    {
+                                                        attendance.student?.studentCode
+                                                    }
+                                                </TableCell>
+                                                <TableCell className={classes.TableCellBody} align="left">
+                                                    {
+                                                        attendance.student?.gender
+                                                    }
+                                                </TableCell>
+                                                <TableCell className={`${classes.TableCellBody} ${classes.TableCellBodyDate}`} align="left">
+                                                    <p style={{ width: "100px" }}>
+                                                        {
+                                                            dayjs(attendance?.date).format("DD-MM-YYYY")
+                                                        }
+                                                    </p>
+                                                </TableCell>
+                                                <TableCell className={classes.TableCellBody} align="left">
+                                                    {
+                                                        detailRollCallSession.lesson?.course?.courseCode
+                                                    }
+                                                </TableCell>
+                                                <TableCell className={classes.TableCellBody} align="left">
+                                                    <FormGroup>
+                                                        {
+                                                            attendance.student?._id && <FormControlLabel control={!loadingAttendace ? <Checkbox disabled={true} checked={attendance.absent ? false : true} color='secondary' sx={{ '& .MuiSvgIcon-root': { fontSize: 30 } }} /> : <CircularProgress />} label="Có mặt" />
+                                                        }
+                                                    </FormGroup>
+                                                </TableCell>
+
+                                            </TableRow>
+                                        })
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
+                    }
                 </div>
+
+                {/* Dialog Controll Attendance */}
+                {
+                    !detailRollCallSession.end ? <Dialog
+                        open={openControlAttendace}
+                        onClose={handleCloseDialogControlAttendance}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <Box padding={2}>
+                            <Box display='flex' justifyContent="space-between" alignItems='center' mb={2}>
+                                <h2 className="modal__heading">Chọn cách thức điêm danh</h2>
+                            </Box>
+                            <DialogActions>
+                                <PrimaryTooltip title="Điểm danh thủ công bằng tay">
+                                    <Button color="success" variant='contained' onClick={() => { setHandmade(1); handleCloseDialogControlAttendance(false) }}>
+                                        <i style={{ fontSize: '2.4rem', marginRight: "5px" }} className='bx bx-table'></i>  <p className="button-text">Điểm danh thủ công</p>
+                                    </Button>
+                                </PrimaryTooltip>
+                                <PrimaryTooltip title="Điểm danh tự động bằng khuôn mặt" >
+                                    <Button color="info" variant='contained' onClick={() => { setHandmade(2); handleCloseDialogControlAttendance(false); handleOpenCamera() }}>
+                                        <i style={{ fontSize: '2.4rem', marginRight: "5px" }} className='bx bx-user-circle'></i>  <p className="button-text">Điểm danh tự động</p>
+                                    </Button>
+                                </PrimaryTooltip>
+                            </DialogActions>
+                        </Box>
+                    </Dialog> : <></>
+                }
             </div>
         </div>
 
