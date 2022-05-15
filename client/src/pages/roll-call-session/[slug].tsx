@@ -3,14 +3,14 @@ import { useParams } from 'react-router-dom'
 import { FormSubmit, InputChange, Params } from '../../utils/interface'
 import { RootStore, RollCallSession, Attendance } from '../../utils/interface'
 import { useDispatch, useSelector } from 'react-redux'
-import { getDetailRollCallSession, updateDetailRollCallSession } from '../../store/actions/rollCallSession'
+import { getDetailRollCallSession, updateDetailRollCallSession, updateAttendanceDetail } from '../../store/actions/rollCallSession'
 import dayjs from 'dayjs'
 import "./RollCallSessionDetail.scss"
 import Loading from '../../components/globals/loading/Loading'
 import Logo from '../../images/logo.png';
 import { ALERT } from '../../store/types/alertTypes'
 import { countAbsent } from '../../utils/student'
-import { postAPI } from '../../utils/fetchApi'
+import { postAPI, putAPI } from '../../utils/fetchApi'
 
 // Face Api
 import * as faceapi from 'face-api.js';
@@ -92,6 +92,7 @@ const RollCallSessionDetail = () => {
     const [playing, setPlaying] = useState<boolean>(false)
     const [loadingModel, setLoadingModel] = useState<boolean>(false)
     const [loadingDescriptors, setLoadingDescriptors] = useState<boolean>(false)
+    const [isEmptyDescriptors, setIsEmptyDescriptors] = useState<boolean>(false)
     const [faceMatcher, setFaceMatcher] = useState<any>()
 
     const [timers, setTimers] = useState<any>()
@@ -153,25 +154,39 @@ const RollCallSessionDetail = () => {
 
                 const res = await postAPI('face_api_descriptors', { studentCodeList }, auth.access_token)
 
-                const faceDescriptors: any[] = [];
-
                 console.log(res)
 
-                res.data.descriptors.forEach((_descriptors: any) => {
-                    faceDescriptors.push(new faceapi.LabeledFaceDescriptors(_descriptors.label, [new Float32Array(_descriptors.descriptors[0])]))
+                const faceDescriptors: any[] = [];
 
-                })
 
-                const faceMatcher = new faceapi.FaceMatcher(faceDescriptors, 0.5)
-                setFaceMatcher(faceMatcher)
-                setLoadingDescriptors(true)
-                dispatch({ type: ALERT, payload: { success: res.data.msg } })
+                if (res.data.descriptors.length !== 0) {
+                    res.data.descriptors.forEach((_descriptors: any) => {
+                        faceDescriptors.push(new faceapi.LabeledFaceDescriptors(_descriptors.label, [new Float32Array(_descriptors.descriptors[0],_descriptors.descriptors[1],_descriptors.descriptors[2])]))
+
+                    })
+
+                    console.log(faceDescriptors)
+
+                    const faceMatcher = new faceapi.FaceMatcher(faceDescriptors, 0.6)
+                    setFaceMatcher(faceMatcher)
+                    setLoadingDescriptors(true)
+                    dispatch({ type: ALERT, payload: { success: res.data.msg } })
+                    setIsEmptyDescriptors(false)
+                } else {
+                    setIsEmptyDescriptors(true)
+                    dispatch({ type: ALERT, payload: { error: "Trong lớp học chưa có sinh viên nào được nhận diện khuôn mặt từ trước" } })
+
+                }
             }
             getDescriptors()
         }
-    }, [handmade, detailRollCallSession])
+    }, [handmade])
 
-    // console.log(detailRollCallSession)
+    useEffect(() => {
+        if (isEmptyDescriptors) {
+            hanldeCloseCamera();
+        }
+    }, [isEmptyDescriptors])
 
     //  Luu nhan xet
     const handleSubmit = async (e: FormSubmit) => {
@@ -198,6 +213,12 @@ const RollCallSessionDetail = () => {
     }
 
     const handleCloseDialogControlAttendance = (isClose: boolean) => {
+
+        if (isEmptyDescriptors) {
+            setHandmade(1);
+            return;
+        }
+
         if (isClose) setHandmade(1)
         setOpenControlAttendance(false)
     }
@@ -233,11 +254,8 @@ const RollCallSessionDetail = () => {
 
     // Play camera
     const hanldeCameraPlay = () => {
-
-        if (loadingModel && loadingDescriptors) {
-
+        if (loadingModel && loadingDescriptors && !isEmptyDescriptors) {
             const timer = setInterval(async () => {
-
                 console.log('playing')
 
                 // Tao canvas de ve 
@@ -265,23 +283,53 @@ const RollCallSessionDetail = () => {
                         label: faceMatcher.findBestMatch(detection.descriptor)
                     })
                     drawBox.draw(refCanvas.current)
+
+                    const face = faceMatcher.findBestMatch(detection.descriptor)
+
+                    let attendance: any;
+                    detailRollCallSession.attendanceDetails?.forEach(_attendance => {
+                        if (_attendance.student?.studentCode === face.label) {
+                            attendance = _attendance;
+                        }
+                    })
+
+
+                    console.log(attendance)
+                    if (attendance) {
+                        if (attendance.absent === true) {
+                            const data = {
+                                absent: false
+                            }
+
+                            await putAPI(`attendance_detail/${attendance._id}`, data, auth.access_token)
+                            dispatch({ type: ALERT, payload: { success: "Điểm danh thành công" } })
+
+                            const newAttendanceDetails = detailRollCallSession.attendanceDetails?.map((_attendanceDetail) => {
+                                return _attendanceDetail._id === attendance._id ? { ...attendance, absent: !attendance.absent } : _attendanceDetail
+                            })
+
+                            dispatch(updateAttendanceDetail({ ...detailRollCallSession, attendanceDetails: newAttendanceDetails }, auth, detailRollCallSessionStore, lessonDetail))
+                        } else {
+                            return;
+                        }
+                    }
+
                 }
             }, 200)
+            console.log({ timer })
             setTimers(timer)
         }
     }
 
     useEffect(() => {
         return () => {
-            if (playing === true && tracks) {
-                setPlaying(false)
-                setTracks(null)
-                tracks && tracks.forEach((track: any) => { track.stop(); })
-                refCamera.current?.srcObject?.getTracks()[0].stop();
+            if (playing === true && tracks && timers) {
+                hanldeCloseCamera()
+                setIsEmptyDescriptors(false)
                 clearInterval(timers)
             }
         }
-    }, [playing, tracks])
+    }, [playing, tracks, timers])
 
     return (
         <div className='dashbroad__body dashbroad__body--xl'>
@@ -473,7 +521,7 @@ const RollCallSessionDetail = () => {
                 {/* Tabel */}
                 <div className='rollcallsession-detail__table'>
 
-                    {handmade === 1 ? <TableContainer className={classes.TableContainer} component={Paper}>
+                    {handmade === 1 || (handmade === 2 && isEmptyDescriptors === true) ? <TableContainer className={classes.TableContainer} component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>

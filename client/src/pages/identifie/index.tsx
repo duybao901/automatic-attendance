@@ -166,9 +166,6 @@ const Identifie = () => {
 
   const saveFile = async (labedlFaceDescriptors: any) => {
     const labedlFaceDescriptorsJson = faceapi.LabeledFaceDescriptors.fromJSON(labedlFaceDescriptors).toJSON()
-
-    console.log({ labedlFaceDescriptorsJson })
-
     try {
       const res = await postAPI('face_api', labedlFaceDescriptorsJson, auth.access_token)
       console.log(res)
